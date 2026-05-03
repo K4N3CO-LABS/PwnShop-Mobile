@@ -34,8 +34,10 @@ When you exploit a bug, an explanation pop-up will explain the vulnerability and
    `npm run dev`
 6. Press o and enter to open app.
 
-   *Created for Educational Purposes*
-*Do not perform these attacks against real targets.*
+  
+   *Created for Educational Purposes.*
+*DO NOT perform these attacks against real targets.*
+
 
 Donations are always welcome and extremely appreciated. Thanks!
 
