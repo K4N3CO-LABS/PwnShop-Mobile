@@ -37,5 +37,5 @@ When you exploit a bug, an explanation pop-up will explain the vulnerability and
    *Created for Educational Purposes*
 *Do not perform these attacks against real targets.*
 
-Donations are always welcome and extremely appreciated.
+Donations are always welcome and extremely appreciated. Thanks!
 BTC: bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
