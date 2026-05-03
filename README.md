@@ -28,10 +28,10 @@ When you exploit a bug, an explanation pop-up will explain the vulnerability and
 
 **Prerequisites:**  Node.js
 
-1. Download zip file.
+1. Download zip file & unzip.
 2. In a Terminal cd PwnShop-Mobile
 3. Install dependencies:
   `npm install`
-4. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key (optional)
+4. Set the `GEMINI_API_KEY` in [.env.local](.env.local)to your Gemini API key (optional)
 5. Run the app:
    `npm run dev`
