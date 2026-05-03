@@ -29,7 +29,7 @@ When you exploit a bug, an explanation pop-up will explain the vulnerability and
 2. In a Terminal cd PwnShop-Mobile-main
 3. Install dependencies:
   `npm install`
-4. Set the `GEMINI_API_KEY` in [.env.local](.env.local)to your Gemini API key (OPTIONAL)
+4. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key (OPTIONAL)
 5. Run the app:
    `npm run dev`
 6. Press o and enter to open app.
