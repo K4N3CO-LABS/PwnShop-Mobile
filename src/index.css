@@ -31,3 +31,33 @@
     80% { transform: translate(1px, -1px) }
     100% { transform: translate(0) }
 }
+
+@layer base {
+  html, body {
+    @apply overflow-hidden h-full;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+
+  /* Prevent text selection on UI elements globally, but allow it in specific areas if needed */
+  * {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Allow selection in inputs, textareas, and specific content areas */
+  input, textarea, [contenteditable="true"], .selectable-text {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
+  img {
+    -webkit-user-drag: none;
+    @apply pointer-events-none;
+  }
+
+  /* Smooth scrolling for inner containers */
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+}

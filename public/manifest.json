@@ -1,0 +1,21 @@
+{
+  "name": "PwnShop Mobile",
+  "short_name": "PwnShop",
+  "description": "Educational deliberately insecure mobile-first application.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "https://i.postimg.cc/jnyfsfBd/Screenshot-20260502-163238-Bazaart.jpg",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.postimg.cc/jnyfsfBd/Screenshot-20260502-163238-Bazaart.jpg",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

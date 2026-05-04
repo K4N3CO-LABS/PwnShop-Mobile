@@ -28,9 +28,7 @@ import {
   Moon
 } from 'lucide-react';
 
-// --- UTILS & OBFUSCATION ---
-const _d = (s: string) => atob(s);
-
+// --- UTILS ---
 const PRODUCTS = [
   { id: '1', name: 'Vintage Guitar', price: 299.99, image: '🎸', desc: 'A gorgeous authentic acoustic guitar from the 70s. The wood has aged perfectly, delivering a warm resonant tone. It plays like an absolute dream, though you might need to change the strings upon arrival.' },
   { id: '2', name: 'Used Television', price: 89.00, image: '📺', desc: 'A classic box-shaped retro television. Slightly blurry and definitely not 4K, but absolutely perfect for plugging in those vintage 8-bit or 16-bit gaming consoles for that authentic nostalgic feel.' },
@@ -56,66 +54,114 @@ const PRODUCTS = [
 
 const CHALLENGES = [
   // Level 1: Basics
-  { id: 'sqli', level: 1, name: 'Classic SQL Injection', desc: 'Log in as the administrator using a malformed query.', diff: 'Easy', explanation: _d("WW91IG1hbmlwdWxhdGVkIHRoZSBkYXRhYmFzZSBxdWVyeSBpbnRvIGFsd2F5cyByZXR1cm5pbmcgdHJ1ZSBieSBlbnRlcmluZyBhIHBheWxvYWQgbGlrZSAnIE9SIDE9MS4gSW4gYSByZWFsIGJhY2tlbmQsIHRoaXMgdHJpY2tzIHRoZSBkYXRhYmFzZSBpbnRvIGlnbm9yaW5nIHRoZSBwYXNzd29yZCBjaGVjaywgZWZmZWN0aXZlbHkgbG9nZ2luZyB5b3UgaW4gYXMgdGhlIGZpcnN0IHVzZXIgaW4gdGhlIGRhdGFiYXNlICh1c3VhbGx5IHRoZSBhZG1pbikuIE1pdGlnYXRpb246IEFMV0FZUyB1c2UgcGFyYW1ldGVyaXplZCBxdWVyaWVzIG9yIHByZXBhcmVkIHN0YXRlbWVudHMsIHdoaWNoIHRyZWF0IHlvdXIgaW5wdXQgc3RyaWN0bHkgYXMgZGF0YSwgbm90IGV4ZWN1dGFibGUgY29kZS4=") },
-  { id: 'xss', level: 1, name: 'Reflected XSS', desc: 'Inject HTML into the search bar.', diff: 'Medium', explanation: _d("VGhlIGFwcGxpY2F0aW9uIHRvb2sgeW91ciBzZWFyY2ggaW5wdXQgYW5kIHJlZmxlY3RlZCBpdCBkaXJlY3RseSBiYWNrIG9udG8gdGhlIEhUTUwgcGFnZSB3aXRob3V0IHNhbml0aXppbmcgaXQuIFRoaXMgYWxsb3dzIGFuIGF0dGFja2VyIHRvIGluamVjdCBtYWxpY2lvdXMgSmF2YVNjcmlwdCAobGlrZSBzdGVhbGluZyBjb29raWVzIG9yIHJlZGlyZWN0aW5nIHVzZXJzKSBzaW1wbHkgYnkgdHJpY2tpbmcgYSB2aWN0aW0gaW50byBjbGlja2luZyBhIGNyYWZ0ZWQgbGluay4gTWl0aWdhdGlvbjogQ29udGV4dC1hd2FyZSBvdXRwdXQgZW5jb2RpbmcgKGVzY2FwaW5nIGNoYXJhY3RlcnMgbGlrZSA8LCA+LCAmLCAiLCBhbmQgJykgYmVmb3JlIHJlbmRlcmluZyB1c2VyIGlucHV0IGluIHRoZSBicm93c2VyLg==") },
-  { id: 'logic', level: 1, name: 'Business Logic Flaw', desc: 'Manipulate your cart for a negative balance.', diff: 'Medium', explanation: _d("WW91IGV4cGxvaXRlZCBhIGZsYXcgaW4gaG93IHRoZSBhcHBsaWNhdGlvbiBoYW5kbGVzIGNhcnQgcXVhbnRpdGllcy4gQnkgZW50ZXJpbmcgYSBuZWdhdGl2ZSBudW1iZXIsIHRoZSBzeXN0ZW0gY2FsY3VsYXRlZCBhIG5lZ2F0aXZlIHRvdGFsIHByaWNlIChlZmZlY3RpdmVseSBvd2luZyB5b3UgbW9uZXkpLiBUaGlzIGlzIGEgbG9naWMgZmxhdywgbm90IGEgdGVjaG5pY2FsIGluamVjdGlvbi4gTWl0aWdhdGlvbjogSW1wbGVtZW50IHN0cmljdCwgc2VydmVyLXNpZGUgYm91bmRhcnkgdmFsaWRhdGlvbiB0byBlbnN1cmUgcXVhbnRpdGllcyBhcmUgcG9zaXRpdmUgaW50ZWdlcnMgYW5kIHRvdGFsIHByaWNlcyBhcmUgY29ycmVjdGx5IGNvbXB1dGVkLg==") },
-  { id: 'idor', level: 1, name: 'Forced Browsing', desc: 'Access the hidden admin panel.', diff: 'Easy', explanation: _d("WW91IG5hdmlnYXRlZCBkaXJlY3RseSB0byBhbiBhZG1pbmlzdHJhdGl2ZSBlbmRwb2ludCB0aGF0IHdhcyBub3QgbGlua2VkIGluIHRoZSBtYWluIFVJLCBidXQgeW91IHdlcmVuJ3QgYWN0dWFsbHkgbG9nZ2VkIGluIGFzIGFuIGFkbWluLiBUaGlzIGFwcGxpY2F0aW9uIHJlbGllZCBvbiAnU2VjdXJpdHkgdGhyb3VnaCBPYnNjdXJpdHknIChoaWRpbmcgdGhlIGxpbmspIGluc3RlYWQgb2YgYWN0dWFsbHkgY2hlY2tpbmcgeW91ciBwZXJtaXNzaW9ucy4gTWl0aWdhdGlvbjogSW1wbGVtZW50IHJvYnVzdCwgc2VydmVyLXNpZGUgYWNjZXNzIGNvbnRyb2wgY2hlY2tzIG9uIGV2ZXJ5IHByaXZpbGVnZWQgcm91dGUgb3IgYWN0aW9uLg==") },
-  { id: 'promo', level: 1, name: 'Information Disclosure', desc: 'Find the hidden developer promo code.', diff: 'Easy', explanation: _d("WW91IGZvdW5kIGEgaGFyZGNvZGVkICdzZWNyZXQnIHByb21vIGNvZGUgbGVmdCBiZWhpbmQgaW4gdGhlIGNsaWVudC1zaWRlIEphdmFTY3JpcHQuIEV2ZXJ5dGhpbmcgc2VudCB0byB0aGUgY2xpZW50J3MgYnJvd3NlciAoSFRNTCwgQ1NTLCBKUykgaXMgcHVibGljbHkgcmVhZGFibGUuIE1pdGlnYXRpb246IE5ldmVyIHN0b3JlIHNlY3JldHMsIEFQSSBrZXlzLCBvciBhZG1pbmlzdHJhdGl2ZSBjb2RlcyBpbiBmcm9udGVuZCBjb2RlLiBBbHdheXMgdmFsaWRhdGUgbG9naWMgbGlrZSBwcm9tbyBjb2RlcyBvbiB0aGUgc2VjdXJlIGJhY2tlbmQu") },
+  { id: 'sqli', level: 1, name: 'Classic SQL Injection', desc: 'Log in as the administrator using a malformed query.', diff: 'Easy', explanation: "You manipulated the database query into always returning true by entering a payload like ' OR 1=1. In a real backend, this tricks the database into ignoring the password check, effectively logging you in as the first user in the database (usually the admin). Mitigation: ALWAYS use parameterized queries or prepared statements, which treat your input strictly as data, not executable code." },
+  { id: 'xss', level: 1, name: 'Reflected XSS', desc: 'Inject HTML into the search bar.', diff: 'Medium', explanation: "The application took your search input and reflected it directly back onto the HTML page without sanitizing it. This allows an attacker to inject malicious JavaScript (like stealing cookies or redirecting users) simply by tricking a victim into clicking a crafted link. Mitigation: Context-aware output encoding (escaping characters like <, >, &, \", and ') before rendering user input in the browser." },
+  { id: 'logic', level: 1, name: 'Business Logic Flaw', desc: 'Manipulate your cart for a negative balance.', diff: 'Medium', explanation: "You exploited a flaw in how the application handles cart quantities. By entering a negative number, the system calculated a negative total price (effectively owing you money). This is a logic flaw, not a technical injection. Mitigation: Implement strict, server-side boundary validation to ensure quantities are positive integers and total prices are correctly computed." },
+  { id: 'idor', level: 1, name: 'Forced Browsing', desc: 'Access the hidden admin panel.', diff: 'Easy', explanation: "You navigated directly to an administrative endpoint that was not linked in the main UI, but you weren't actually logged in as an admin. This application relied on 'Security through Obscurity' (hiding the link) instead of actually checking your permissions. Mitigation: Implement robust, server-side access control checks on every privileged route or action." },
+  { id: 'promo', level: 1, name: 'Information Disclosure', desc: 'Find the hidden developer promo code.', diff: 'Easy', explanation: "You found a hardcoded 'secret' promo code left behind in the client-side JavaScript. Everything sent to the client's browser (HTML, CSS, JS) is publicly readable. Mitigation: Never store secrets, API keys, or administrative codes in frontend code. Always validate logic like promo codes on the secure backend." },
 
   // Level 2: Identification & Authentication
-  { id: 'xss_stored', level: 2, name: 'Stored XSS', desc: 'Leave a malicious review containing HTML.', diff: 'Medium', explanation: _d("VW5saWtlIFJlZmxlY3RlZCBYU1MsIHlvdSBtYW5hZ2VkIHRvIHNhdmUgeW91ciBtYWxpY2lvdXMgSFRNTCBwYXlsb2FkIHBlcm1hbmVudGx5IGludG8gdGhlIGFwcGxpY2F0aW9uJ3MgZGF0YWJhc2UgKHZpYSB0aGUgZmVlZGJhY2sgZm9ybSkuIE5vdywgZXZlcnkgdGltZSBhbnkgdXNlciB2aXNpdHMgdGhlIGNvbW11bml0eSBmZWVkYmFjayBzZWN0aW9uLCB5b3VyIG1hbGljaW91cyBzY3JpcHQgd2lsbCBleGVjdXRlIGluIHRoZWlyIGJyb3dzZXIuIE1pdGlnYXRpb246IEltcGxlbWVudCBzdHJpY3QgaW5wdXQgdmFsaWRhdGlvbiBvbiB0aGUgc2VydmVyIHNpZGUgYW5kIHNhZmVseSBlbmNvZGUgYWxsIG91dHB1dCB3aGVuIHJlbmRlcmluZyBpdC4=") },
-  { id: 'review_tamper', level: 2, name: 'Identity Spoofing', desc: 'Submit a review as another user.', diff: 'Hard', explanation: _d("WW91IG1vZGlmaWVkIHRoZSAnQXV0aG9yIE5hbWUnIGZpZWxkIHdoZW4gc3VibWl0dGluZyBhIHJldmlldywgYWxsb3dpbmcgeW91IHRvIHBvc3QgZmVlZGJhY2sgbWFzcXVlcmFkaW5nIGFzIHNvbWVvbmUgZWxzZSAobGlrZSB0aGUgQWRtaW4pLiBUaGUgc2VydmVyIGJsaW5kbHkgdHJ1c3RlZCB0aGUgY2xpZW50LXByb3ZpZGVkIGF1dGhvciBzdHJpbmcuIE1pdGlnYXRpb246IFJlYWQgdGhlIGF1dGhvcidzIGlkZW50aXR5IGRpcmVjdGx5IGZyb20gdGhlaXIgc2VjdXJlLCBzZXJ2ZXItc2lkZSBzZXNzaW9uIHRva2VuLCBuZXZlciBmcm9tIGFuIHVudHJ1c3RlZCBjbGllbnQgcGF5bG9hZC4=") },
-  { id: 'bac_admin', level: 2, name: 'Broken Access Control', desc: 'Clear system logs as a normal user.', diff: 'Medium', explanation: _d("WW91IGV4ZWN1dGVkIGFuIGFkbWluaXN0cmF0aXZlIGFjdGlvbiAoY2xlYXJpbmcgdGhlIGRlYnVnIGxvZ3MpIHdoaWxlIGxvZ2dlZCBpbiBhcyBhIHN0YW5kYXJkIHVzZXIuIEV2ZW4gdGhvdWdoIHRoZSBidXR0b24gbWlnaHQgYmUgaGlkZGVuIGZvciBub3JtYWwgdXNlcnMsIHRoZSB1bmRlcmx5aW5nIGZ1bmN0aW9uIG9yIEFQSSBkaWQgbm90IGFjdHVhbGx5IHZlcmlmeSB5b3VyIHJvbGUgYmVmb3JlIGV4ZWN1dGluZyB0aGUgYWN0aW9uLiBNaXRpZ2F0aW9uOiBBbHdheXMgdmVyaWZ5IHRoZSB1c2VyJ3Mgcm9sZSBhbmQgcGVybWlzc2lvbnMgb24gdGhlIHNlcnZlciBzaWRlIGJlZm9yZSBwZXJmb3JtaW5nIHNlbnNpdGl2ZSBvcGVyYXRpb25zLg== ") },
-  { id: 'jwt_weak', level: 2, name: 'Mass Assignment', desc: 'Elevate your privileges to Admin via proxy.', diff: 'Medium', explanation: _d("QnkgIGludGVyY2VwdGluZyBhbmQgbW9kaWZ5aW5nIHRoZSBKU09OIHBheWxvYWQgc2VudCBkdXJpbmcgYSBwcm9maWxlIHVwZGF0ZSwgeW91IGluamVjdGVkIGEgJ3JvbGU6IGFkbWluJyBmaWVsZC4gQmVjYXVzZSB0aGUgc2VydmVyIG1lcmdlZCB0aGUgZW50aXJlIGluY29taW5nIEpTT04gb2JqZWN0IGRpcmVjdGx5IGludG8geW91ciB1c2VyIHJlY29yZCB3aXRob3V0IGNoZWNraW5nIHRoZSBrZXlzLCB5b3Ugc3VjY2Vzc2Z1bGx5IGVsZXZhdGVkIHlvdXIgcHJpdmlsZWdlcy4gTWl0aWdhdGlvbjogVXNlIHN0cmljdCBhbGxvd2xpc3RzIGZvciB1cGRhdGVzOyBleHBsaWNpdGx5IGRlZmluZSBleGFjdGx5IHdoaWNoIGZpZWxkcyBhIHVzZXIgaXMgcGVybWl0dGVkIHRvIG1vZGlmeS4=") },
-  { id: 'debug_logs', level: 2, name: 'Data Exposure', desc: 'Find hidden logs by tapping the version.', diff: 'Easy', explanation: _d("WW91IHVuY292ZXJlZCBhIGhpZGRlbiBkZXZlbG9wZXIgJ2JhY2tkb29yJyBieSByZXBlYXRlZGx5IHRhcHBpbmcgdGhlIGFwcCB2ZXJzaW9uLiBUaGlzIGV4cG9zZWQgaW50ZXJuYWwgc3lzdGVtIGxvZ3MgdGhhdCBvZnRlbiBjb250YWluIHNlbnNpdGl2ZSBpbmZvcm1hdGlvbiBsaWtlIHN0YWNrIHRyYWNlcywgY3JlZGVudGlhbHMsIG9yIGFyY2hpdGVjdHVyYWwgZGV0YWlscy4gTWl0aWdhdGlvbjogQ29tcGxldGVseSByZW1vdmUgZGV2ZWxvcGVyIGZlYXR1cmVzLCBkZWJ1ZyBlbmRwb2ludHMsIGFuZCB2ZXJib3NlIGxvZ2dpbmcgYmVmb3JlIGRlcGxveWluZyBhcHBsaWNhdGlvbnMgdG8gcHJvZHVjdGlvbi4=") },
+  { id: 'xss_stored', level: 2, name: 'Stored XSS', desc: 'Leave a malicious review containing HTML.', diff: 'Medium', explanation: "Unlike Reflected XSS, you managed to save your malicious HTML payload permanently into the application's database (via the feedback form). Now, every time any user visits the community feedback section, your malicious script will execute in their browser. Mitigation: Implement strict input validation on the server side and safely encode all output when rendering it." },
+  { id: 'review_tamper', level: 2, name: 'Identity Spoofing', desc: 'Submit a review as another user.', diff: 'Hard', explanation: "You modified the 'Author Name' field when submitting a review, allowing you to post feedback masquerading as someone else (like the Admin). The server blindly trusted the client-provided author string. Mitigation: Read the author's identity directly from their secure, server-side session token, never from an untrusted client payload." },
+  { id: 'bac_admin', level: 2, name: 'Broken Access Control', desc: 'Clear system logs as a normal user.', diff: 'Medium', explanation: "You executed an administrative action (clearing the debug logs) while logged in as a standard user. Even though the button might be hidden for normal users, the underlying function or API did not actually verify your role before executing the action. Mitigation: Always verify the user's role and permissions on the server side before performing sensitive operations." },
+  { id: 'jwt_weak', level: 2, name: 'Mass Assignment', desc: 'Elevate your privileges to Admin via proxy.', diff: 'Medium', explanation: "By intercepting and modifying the JSON payload sent during a profile update, you injected a 'role: admin' field. Because the server merged the entire incoming JSON object directly into your user record without checking the keys, you successfully elevated your privileges. Mitigation: Use strict allowlists for updates; explicitly define exactly which fields a user is permitted to modify." },
+  { id: 'debug_logs', level: 2, name: 'Data Exposure', desc: 'Find hidden logs by tapping the version.', diff: 'Easy', explanation: "You uncovered a hidden developer 'backdoor' by repeatedly tapping the app version. This exposed internal system logs that often contain sensitive information like stack traces, credentials, or architectural details. Mitigation: Completely remove developer features, debug endpoints, and verbose logging before deploying applications to production." },
 
   // Level 3: Routing & Client Logic
-  { id: 'dom_xss', level: 3, name: 'DOM-based XSS', desc: 'Trigger an alert via the URL view router.', diff: 'Hard', explanation: _d("WW91IGluamVjdGVkIG1hbGljaW91cyBjb2RlIHRocm91Z2ggdGhlIFVSTCBoYXNoIHdoaWNoIHdhcyB0aGVuIGRpcmVjdGx5IGV4ZWN1dGVkIGJieSB0aGUgYXBwbGljYXRpb24ncyBjbGllbnQtc2lkZSBKYXZhU2NyaXB0ICh2aWEgYSB2dWxuZXJhYmxlICdkYW5nZXJvdXNseVNldEhUTUxMJyBvciBzaW1pbGFyIHNpbmspLiBUaGUgcGF5bG9hZCBuZXZlciBldmVuIHdlbnQgdG8gdGhlIHNlcnZlci4gTWl0aWdhdGlvbjogQXZvaWQgdXNpbmcgdW5zYWZlIG1ldGhvZHMgdG8gbWFuaXB1bGF0ZSB0aGUgRE9NLCBhbmQgdmFsaWRhdGUvc2FuaXRpemUgYWxsIGZyYWdtZW50cyByZWFkIGZyb20gdGhlIFVSTC4=") },
-  { id: 'open_redirect', level: 3, name: 'Open Redirect', desc: 'Redirect the app to a malicious domain.', diff: 'Medium', explanation: _d("WW91IG1hbmlwdWxhdGVkIGEgcmVkaXJlY3QgcGFyYW1ldGVyIHRvIHNlbmQgdGhlIHVzZXIgdG8gYW4gZXh0ZXJuYWwsIHBvdGVudGlhbGx5IG1hbGljaW91cyBkb21haW4gKGV2aWwuY29tKS4gQXR0YWNrZXJzIHVzZSB0aGlzIHRvIGNyYWZ0IHBoaXNoaW5nIGxpbmtzIHRoYXQgYXBwZWFyIHRvIGNvbWUgZnJvbSB0aGUgbGVnaXRpbWF0ZSBkb21haW4sIHRyaWNraW5nIHVzZXJzIGludG8gZW50ZXJpbmcgY3JlZGVudGlhbHMuIE1pdGlnYXRpb246IEltcGxlbWVudCBhbiBhbGxvd2xpc3Qgb2YgcGVybWl0dGVkIHJlZGlyZWN0IGRvbWFpbnMsIG9yIHJlbHkgb24gaW50ZXJuYWwgbWFwIGtleXMgaW5zdGVhZCBvZiByYXcgVVJMcy4=") },
+  { id: 'dom_xss', level: 3, name: 'DOM-based XSS', desc: 'Trigger an alert via the URL view router.', diff: 'Hard', explanation: "You injected malicious code through the URL hash which was then directly executed bby the application's client-side JavaScript (via a vulnerable 'dangerouslySetInnerHTML' or similar sink). The payload never even went to the server. Mitigation: Avoid using unsafe methods to manipulate the DOM, and validate/sanitize all fragments read from the URL." },
+  { id: 'open_redirect', level: 3, name: 'Open Redirect', desc: 'Redirect the app to a malicious domain.', diff: 'Medium', explanation: "You manipulated a redirect parameter to send the user to an external, potentially malicious domain (evil.com). Attackers use this to craft phishing links that appear to come from the legitimate domain, tricking users into entering credentials. Mitigation: Implement an allowlist of permitted redirect domains, or rely on internal map keys instead of raw URLs." },
   
   // Level 4: Configuration & Secrets
-  { id: 'ssrf', level: 4, name: 'Server-Side Request Forgery', desc: 'Fetch internal resources via the admin fetcher.', diff: 'Hard', explanation: _d("WW91IG1hbmlwdWxhdGVkIGEgc2VydmVyLXNpZGUgZmV0Y2ggZmVhdHVyZSB0byBtYWtlIHJlcXVlc3RzIHRvIGludGVybmFsLCByZXN0cmljdGVkIElQIGFkZHJlc3NlcyAobGlrZSBsb2NhbGhvc3Qgb3IgaW50ZXJuYWwgbmV0d29ya3MpLiBUaGlzIGFsbG93cyBhdHRhY2tlcnMgdG8gYnlwYXNzIGZpcmV3YWxscyBhbmQgYWNjZXNzIGludGVybmFsIGFkbWluIHBhbmVscyBvciBzZW5zaXRpdmUgbWV0YWRhdGEgQVBJcy4gTWl0aWdhdGlvbjogSW1wbGVtZW50IHN0cmljdCBuZXR3b3JrLWxldmVsIGZpcmV3YWxscywgZGlzYWJsZSB0aGUgZm9sbG93aW5nIG9mIHJlZGlyZWN0cywgYW5kIGFnZ3Jlc3NpdmVseSB2YWxpZGF0ZSB0aGUgZm9ybWF0IGFuZCB0YXJnZXQgb2YgcmVxdWVzdGVkIFVSTHMu") },
-  { id: 'crypto', level: 4, name: 'Weak Cryptography', desc: 'Decode the secret dev code.', diff: 'Medium', explanation: _d("WW91IGRpc2NvdmVyZWQgYSAnc2VjcmV0JyBkZXZlbG9wZXIgY29kZSB0aGF0IHdhcyBtZXJlbHkgZW5jb2RlZCB1c2luZyBCYXNlNjQsIG5vdCBjcnlwdG9ncmFwaGljYWxseSBlbmNyeXB0ZWQuIEVuY29kaW5nIGlzIGp1c3QgYSBmb3JtYXQgY2hhbmdlIGFuZCBwcm92aWRlcyB6ZXJvIHNlY3VyaXR5IG9yIGNvbmZpZGVudGlhbGl0eS4gTWl0aWdhdGlvbjogSWYgc2VjcmV0cyBtdXN0IGJlIHN0b3JlZCBzZWN1cmVseSwgdXNlIHN0cm9uZywgbW9kZXJuIGVuY3J5cHRpb24gYWxnb3JpdGhtcyAobGlrZSBBVVMpIHdpdGggc2VjdXJlbHkgbWFuYWdlZCBrZXlzLCBuZXZlciBqdXN0IGVuY29kaW5nIG9yIGhhc2hpbmcu") },
+  { id: 'ssrf', level: 4, name: 'Server-Side Request Forgery', desc: 'Fetch internal resources via the admin fetcher.', diff: 'Hard', explanation: "You manipulated a server-side fetch feature to make requests to internal, restricted IP addresses (like localhost or internal networks). This allows attackers to bypass firewalls and access internal admin panels or sensitive metadata APIs. Mitigation: Implement strict network-level firewalls, disable the following of redirects, and aggressively validate the format and target of requested URLs." },
+  { id: 'crypto', level: 4, name: 'Weak Cryptography', desc: 'Decode the secret dev code.', diff: 'Medium', explanation: "You discovered a 'secret' developer code that was merely encoded using Base64, not cryptographically encrypted. Encoding is just a format change and provides zero security or confidentiality. Mitigation: If secrets must be stored securely, use strong, modern encryption algorithms (like AES) with securely managed keys, never just encoding or hashing." },
 
   // Level 5: Server-Side Execution
-  { id: 'ssti', level: 5, name: 'SSTI', desc: 'Execute server-side templates in reviews.', diff: 'Hard', explanation: _d("QnkgaW5wdXR0aW5nIHNwZWNpZmljYWxseSBmb3JtYXR0ZWQgYnJhY2tldHMgKGxpa2Uge3s3Kjd9fSksIHlvdSB0cmlja2VkIHRoZSBhcHBsaWNhdGlvbidzIHRlbXBsYXRpbmcgZW5naW5lIGludG8gbWF0aGVtYXRpY2FsbHkgZXZhbHVhdGluZyB0aGUgcGF5bG9hZC4gSW4gYSByZWFsIGV4cGxvaXQsIHRoaXMgU2VydmVyLVNpZGUgVGVtcGxhdGUgSW5qZWN0aW9uIGNhbiBiZSBlc2NhbGF0ZWQgdG8gZXhlY3V0ZSBhcmJpdHJhcnkgc3lzdGVtIGNvZGUgb24gdGhlIHVuZGVybHlpbmcgc2VydmVyLiBNaXRpZ2F0aW9uOiBOZXZlciBldmFsdWF0ZSBvciBleGVjdXRlIHVzZXIgaW5wdXQgYXMgcmF3IHRlbXBsYXRlIGNvZGU7IHVzZSBzYWZlLCBsb2dpYy1sZXNzIHRlbXBsYXRlcy4=") },
-  { id: 'path_traversal', level: 5, name: 'Path Traversal', desc: 'Read /etc/passwd via the fetcher.', diff: 'Medium', explanation: _d("WW91IGJ5cGFzc2VkIHBhdGggcmVzdHJpY3Rpb25zIGJ5IHVzaW5nICdmaWxlOi8vJyBwcm90b2NvbHMgdG8gcmVhZCBhcmJpdHJhcnkgbG9jYWwgZmlsZXMgZnJvbSB0aGUgc2VydmVyJ3MgZmlsZXN5c3RlbSwgc3BlY2lmaWNhbGx5ICcvZXRjL3Bhc3N3ZCcuIFRoaXMgZXhwb3NlcyBzZW5zaXRpdmUgY29uZmlndXJhdGlvbiBmaWxlcyBhbmQgdXNlciBkYXRhLiBNaXRpZ2F0aW9uOiBEaXNhbGxvdyBmaWxlOi8vIHByb3RvY29sIGhhbmRsZXJzLCBzYW5pdGl6ZSBpbnB1dHMgdG8gcmVtb3ZlIGRpcmVjdG9yeSB0cmF2ZXJzYWwgY2hhcmFjdGVycyAoLi4vKSwgYW5kIGVuZm9yY2Ugc3RyaWN0IGNocm9vdCBlbnZpcm9ubWVudHMu") },
+  { id: 'ssti', level: 5, name: 'SSTI', desc: 'Execute server-side templates in reviews.', diff: 'Hard', explanation: "By inputting specifically formatted brackets (like {{7*7}}), you tricked the application's templating engine into mathematically evaluating the payload. In a real exploit, this Server-Side Template Injection can be escalated to execute arbitrary system code on the underlying server. Mitigation: Never evaluate or execute user input as raw template code; use safe, logic-less templates." },
+  { id: 'path_traversal', level: 5, name: 'Path Traversal', desc: 'Read /etc/passwd via the fetcher.', diff: 'Medium', explanation: "You bypassed path restrictions by using 'file://' protocols to read arbitrary local files from the server's filesystem, specifically '/etc/passwd'. This exposes sensitive configuration files and user data. Mitigation: Disallow file:// protocol handlers, sanitize inputs to remove directory traversal characters (../), and enforce strict chroot environments." },
 
   // Level 6: Advanced Evasion
-  { id: 'waf_bypass', level: 6, name: 'WAF Bypass', desc: 'Bypass the \"no-script\" filter using special encoding.', diff: 'Hard', explanation: _d("WW91IHN1Y2Nlc3NmdWxseSBieXBhc3NlZCB0aGUgV2ViIEFwcGxpY2F0aW9uIEZpcmV3YWxsIChXQUYpIHJ1bGUgdGhhdCB3YXMgc3BlY2lmaWNhbGx5IHRyeWluZyB0byBibG9jayAnPHNjcmlwdD4nIHRhZ3MuIFlvdSBkaWQgdGhpcyBieSB1c2luZyBhbiBhbHRlcm5hdGl2ZSBwYXlsb2FkIChsaWtlIGFuIDxpbWc+IHRhZyB3aXRoIGFuIG9uZXJyb3IgZXZlbnQpIHRoYXQgYWNoaWV2ZWQgdGhlIHNhbWUgcmVzdWx0IHdpdGhvdXQgdHJpZ2dlcmluZyB0aGUgbmFpdmUgc3RyaW5nIG1hdGNoLiBNaXRpZ2F0aW9uOiBEbyBub3QgcmVseSBzb2xlbHkgb24gYmxvY2tsaXN0cy4gSW1wbGVtZW50IHJvYnVzdCwgY29udGV4dC1hd2FyZSBvdXRwdXQgZW5jb2RpbmcgYWNyb3NzIHRoZSBlbnRpcmUgYXBwbGljYXRpb24u") },
-  { id: 'null_byte', level: 6, name: 'Null Byte Injection', desc: 'Upload a forbidden file type using %00.', diff: 'Hard', explanation: _d("WW91IHVzZWQgYSBOdWxsIEJ5dGUgY2hhcmFjdGVyICglMDApIHRvIGZvb2wgdGhlIGFwcGxpY2F0aW9uJ3MgZmlsZSBleHRlbnNpb24gY2hlY2suIFdoaWxlIHRoZSBhcHAgdGhvdWdodCBpdCB3YXMgdmFsaWRhdGluZyBhbiBpbm5vY2VudCBmaWxlIHR5cGUsIHRoZSB1bmRlcmx5aW5nIHN5c3RlbSB0ZXJtaW5hdGVkIHRoZSBzdHJpbmcgZWFybHksIHJlc3VsdGluZyBpbiBleGVjdXRpbmcgYSBtYWxpY2lvdXMgcGF5bG9hZC4gTWl0aWdhdGlvbjogVXNlIG1vZGVybiBoaWdoLWxldmVsIGxhbmd1YWdlcyBhbmQgZnJhbWV3b3JrcyB0aGF0IGhhbmRsZSBudWxsIGJ5dGVzIHNhZmVseSwgYW5kIHZhbGlkYXRlIGZpbGVzIGJ5IHRoZWlyIGFjdHVhbCBoZWFkZXJzL01JTUUgdHlwZXMsIG5vdCBqdXN0IGV4dGVuc2lvbnMu") },
+  { id: 'waf_bypass', level: 6, name: 'WAF Bypass', desc: 'Bypass the "no-script" filter using special encoding.', diff: 'Hard', explanation: "You successfully bypassed the Web Application Firewall (WAF) rule that was specifically trying to block '<script>' tags. You did this by using an alternative payload (like an <img> tag with an onerror event) that achieved the same result without triggering the naive string match. Mitigation: Do not rely solely on blacklists. Implement robust, context-aware output encoding across the entire application." },
+  { id: 'null_byte', level: 6, name: 'Null Byte Injection', desc: 'Upload a forbidden file type using %00.', diff: 'Hard', explanation: "You used a Null Byte character (%00) to fool the application's file extension check. While the app thought it was validating an innocent file type, the underlying system terminated the string early, resulting in executing a malicious payload. Mitigation: Use modern high-level languages and frameworks that handle null bytes safely, and validate files by their actual headers/MIME types, not just extensions." },
 
   // Level 7: API Abuse
-  { id: 'idor_api', level: 7, name: 'IDOR / API Leak', desc: 'Download another user\'s backup data.', diff: 'Hard', explanation: _d("WW91IGNoYW5nZWQgdGhlIGVtYWlsIGFkZHJlc3MgcGFyYW1ldGVyIGluIGFuIEFQSSByZXF1ZXN0IGFuZCBzdWNjZXNzZnVsbHkgZG93bmxvYWRlZCB0aGUgYmFja3VwIGRhdGEgZm9yIGEgY29tcGxldGVseSBkaWZmZXJlbnQgdXNlciB3aXRob3V0IGtub3dpbmcgdGhlaXIgcGFzc3dvcmQuIFRoaXMgSW5zZWN1cmUgRGlyZWN0IE9iamVjdCBSZWZlcmVuY2UgKElET1IpIG9jY3VycmVkIGJlY2F1c2UgdGhlIHNlcnZlciBkaWRuJ3QgdmVyaWZ5IHRoYXQgeW91ciBzZXNzaW9uIGFjdHVhbGx5IGhhZCByaWdodHMgdG8gdGhlIHJlcXVlc3RlZCBlbWFpbCBhY2NvdW50LiBNaXRpZ2F0aW9uOiBJbXBsZW1lbnQgc3RyaWN0LCBzZXJ2ZXItc2lkZSBvYmplY3QtbGV2ZWwgYWNjZXNzIGNvbnRyb2xzLg==") },
-  { id: 'rate_limit', level: 7, name: 'No Rate Limiting', desc: 'Simulate a brute force on the login secret.', diff: 'Medium', explanation: _d("WW91IHJlcGVhdGVkbHkgaGFtbWVyZWQgYSBzZW5zaXRpdmUgZW5kcG9pbnQgc2ltdWxhdGluZyBhIGJydXRlLWZvcmNlIGF0dGFjayBvbiBhIHNlY3JldCBjb2RlLiBCZWNhdXNlIHRoZSBhcHBsaWNhdGlvbiBsYWNrZWQgcmF0ZSBsaW1pdHMgb3IgbG9ja291dCBtZWNoYW5pc21zLCB5b3UgY291bGQgdHJ5IHRob3VzYW5kcyBvZiB2YXJpYXRpb25zIHVudGlsIHlvdSBmb3VuZCB0aGUgY29ycmVjdCBhbnN3ZXIuIE1pdGlnYXRpb246IEltcGxlbWVudCBJUC9Vc2VyLWJhc2VkIHJhdGUgbGltaXRpbmcsIGFjY291bnQgbG9ja291dHMgYWZ0ZXIgZmFpbGVkIGF0dGVtcHRzLCBhbmQgQ0FQVENIQXMgd2hlcmUgYXBwcm9wcmlhdGUu") },
+  { id: 'idor_api', level: 7, name: 'IDOR / API Leak', desc: 'Download another user\'s backup data.', diff: 'Hard', explanation: "You changed the email address parameter in an API request and successfully downloaded the backup data for a completely different user without knowing their password. This Insecure Direct Object Reference (IDOR) occurred because the server didn't verify that your session actually had rights to the requested email account. Mitigation: Implement strict, server-side object-level access controls." },
+  { id: 'rate_limit', level: 7, name: 'No Rate Limiting', desc: 'Simulate a brute force on the login secret.', diff: 'Medium', explanation: "You repeatedly hammered a sensitive endpoint simulating a brute-force attack on a secret code. Because the application lacked rate limits or lockout mechanisms, you could try thousands of variations until you found the correct answer. Mitigation: Implement IP/User-based rate limiting, account lockouts after failed attempts, and CAPTCHAs where appropriate." },
 
   // Level 8: Prototype Pollution
-  { id: 'proto_pollute', level: 8, name: 'Prototype Pollution', desc: 'Overwrite global object properties.', diff: 'Expert', explanation: _d("WW91IGFidXNlZCBhIHBvb3JseSBjb25maWd1cmVkIG9iamVjdCBtZXJnZSBmdW5jdGlvbiB0byBpbmplY3QgYSAncm9sZScgcHJvcGVydHkgZGlyZWN0bHkgaW50byBKYXZhU2NyaXB0J3MgZ2xvYmFsIE9iamVjdCBwcm90b3R5cGUgdmlhIHRoZSBfX3Byb3RvX18gcHJvcGVydHkuIFRoaXMgYWZmZWN0ZWQgZXZlcnkgb2JqZWN0IGluIHRoZSBhcHBsaWNhdGlvbiwgc3VkZGVubHkgZWxldmF0aW5nIHlvdXIgc3RhdHVzIHRvIGFuIGFkbWluIGV2ZXJ5d2hlcmUgc2ltdWx0YW5lb3VzbHkuIE1pdGlnYXRpb246IFdoZW4gZHluYW1pY2FsbHkgcGFyc2luZyBvciBtZXJnaW5nIG9iamVjdHMsIGV4cGxpY2l0bHkgZmlsdGVyIG91dCBwcm90b3R5cGUtbW9kaWZ5aW5nIGtleXMsIG9yIGluc3RhbnRpYXRlIG9iamVjdHMgdXNpbmcgT2JqZWN0LmNyZWF0ZShudWxsKSBzbyB0aGV5IGxhY2sgYSBwcm90b3R5cGUu") },
+  { id: 'proto_pollute', level: 8, name: 'Prototype Pollution', desc: 'Overwrite global object properties.', diff: 'Expert', explanation: "You abused a poorly configured object merge function to inject a 'role' property directly into JavaScript's global Object prototype via the __proto__ property. This affected every object in the application, suddenly elevating your status to an admin everywhere simultaneously. Mitigation: When dynamically parsing or merging objects, explicitly filter out prototype-modifying keys, or instantiate objects using Object.create(null) so they lack a prototype." },
 
   // Added Level 9: AI Assistant
-  { id: 'prompt_inject', level: 9, name: 'AI Assistant Prompt Injection', desc: 'Trick the AI into revealing the Manager Override Code.', diff: 'Medium', explanation: _d("WW91IHN1Y2Nlc3NmdWxseSB0cmlja2VkIHRoZSBzdXBwb3NlZCBfQUkgU3VwcG9ydCBBZ2VudF8gaW50byByZXZlYWxpbmcgaXRzIGhpZGRlbiBzeXN0ZW0gcHJvbXB0IGFuZCB0aGUgc2VjcmV0IG92ZXJyaWRlIGNvZGUuIFByb21wdCBpbmplY3Rpb24gaXMgYSBtYWpvciB2dWxuZXJhYmlsaXR5IGluIG1vZGVybiBhcHBsaWNhdGlvbnMgaW50ZWdyYXRpbmcgTExNcywgd2hlcmUgdW50cnVzdGVkIHVzZXIgaW5wdXQgY2FuIG92ZXJyaWRlIG9yaWdpbmFsIHN5c3RlbSBpbnN0cnVjdGlvbnMuIE1pdGlnYXRpb246IFVzZSBzdHJpY3RseSBkZWZpbmVkIHRlbXBsYXRlcywgcm9idXN0IGd1YXJkcmFpbHMsIGFuZCBhdm9pZCBwbGFjaW5nIHNlY3JldHMgZGlyZWN0bHkgaW4gQUkgcHJvbXB0cy4=") },
+  { id: 'prompt_inject', level: 9, name: 'AI Assistant Prompt Injection', desc: 'Trick the AI into revealing the Manager Override Code.', diff: 'Medium', explanation: "You successfully tricked the supposed _AI Support Agent_ into revealing its hidden system prompt and the secret override code. Prompt injection is a major vulnerability in modern applications integrating LLMs, where untrusted user input can override original system instructions. Mitigation: Use strictly defined templates, robust guardrails, and avoid placing secrets directly in AI prompts." },
 
   // Added Level 10: Logic / PRNG Manipulation
-  { id: 'casino_logic', level: 10, name: 'Casino Logic Flaw', desc: 'Guarantee a jackpot or bet negatively in the Loot Box.', diff: 'Medium', explanation: _d("QnkgIG1hbmlwdWxhdGluZyB0aGUgYmV0IGFtb3VudCB0byBhIG5lZ2F0aXZlIGp1bWJlciBvciBmaW5kaW5nIGEgcHJlZGljdGFibGUgUFJORyBwYXR0ZXJuLCB5b3UgYmVhdCB0aGUgaG91c2UuIFRoaXMgZGVtb25zdHJhdGVzIGNsYXNzaWMgbG9naWMgZmxhd3MgaW4gcmVhbC1tb25leSBvciBkaWdpdGFsLWN1cnJlbmN5IGdhbWVzLiBNaXRpZ2F0aW9uOiBTZXJ2ZXItc2lkZSB2YWxpZGF0aW9uIG9mIGFsbCBiZXRzIGFuZCBjcnlwdG9ncmFwaGljYWxseSBzZWN1cmUgcmFuZG9tIG51bWJlciBnZW5lcmF0b3JzIChDU1BSTkcpLg==") },
+  { id: 'casino_logic', level: 10, name: 'Casino Logic Flaw', desc: 'Guarantee a jackpot or bet negatively in the Loot Box.', diff: 'Medium', explanation: "By manipulating the bet amount to a negative jumber or finding a predictable PRNG pattern, you beat the house. This demonstrates classic logic flaws in real-money or digital-currency games. Mitigation: Server-side validation of all bets and cryptographically secure random number generators (CSPRNG)." },
 
   // Added Level 11: 2FA Bypass
-  { id: 'two_factor_bypass', level: 11, name: '2FA Bypass', desc: 'Intercept or guess the 2FA code from the simulated push notification.', diff: 'Hard', explanation: _d("WW91IGJ5cGFzc2VkIHRoZSB0d28tZmFjdG9yIGF1dGhlbnRpY2F0aW9uIG1lY2hhbmlzbSBieSBxdWlja2x5IHJlYWRpbmcgdGhlIGNvZGUgb3IgaW50ZXJjZXB0aW5nIGl0IGxvY2FsbHkgYmVmb3JlIGl0IHZhbmlzaGVkLiBNaXRpZ2F0aW9uOiAyRkEgY29kZXMgc2hvdWxkIG5ldmVyIGJlIHNlbnQgdG8gdGhlIGNsaWVudCBicm93c2VyIGluIHdheXMgdGhhdCBjYW4gYmUgaW50ZXJjZXB0ZWQuIFJlYWwgMkZBIHJlcXVpcmVzIG91dC1vZi1iYW5kIGNvbW11bmljYXRpb24gKFNNUywgQXV0aCBBcHApLg==") },
+  { id: 'two_factor_bypass', level: 11, name: '2FA Bypass', desc: 'Intercept or guess the 2FA code from the simulated push notification.', diff: 'Hard', explanation: "You bypassed the two-factor authentication mechanism by quickly reading the code or intercepting it locally before it vanished. Mitigation: 2FA codes should never be sent to the client browser in ways that can be intercepted. Real 2FA requires out-of-band communication (SMS, Auth App)." },
   
-  // Added Level 12: Fun & Unique Experiences
-  { id: 'konami_code', level: 12, name: 'Konami Code', desc: 'Find and enter the famous retro cheat code.', diff: 'Medium', explanation: _d("WW91IHRyaWdnZXJlZCBhbiB1bmRvY3VtZW50ZWQgJ0Vhc3RlciBFZ2cnIGZlYXR1cmUgYnkgZW50ZXJpbmcgdGhlIEtvbmFtaSBjb2RlLiBXaGlsZSBmdW4sIHVuZG9jdW1lbnRlZCBsb2dpYyBvciBoaWRkZW4gZGVidWcgaG9va3MgaW4gcHJvZHVjdGlvbiBlbnZpcm9ubWVudHMgY2FuIHNvbWV0aW1lcyBleHBvc2UgY2FwYWJpbGl0aWVzIHRoYXQgYXR0YWNrZXJzIGNhbiBjcmVhdGl2ZWx5IGV4cGxvaXQuIE1pdGlnYXRpb246IEVuc3VyZSBmdW4gZWFzdGVyIGVnZ3MgZG9uJ3QgYnlwYXNzIHNlY3VyaXR5IGNvbnRyb2xzLCBhbmQgcmVtb3ZlIGFsbCBhY3R1YWwgZGVidWcgYmFja2Rvb3JzIGJlZm9yZSBwcm9kdWN0aW9uLg==") },
-  { id: 'command_injection', level: 12, name: 'Command Injection', desc: 'Execute an unauthorized system command in the Hacker Terminal.', diff: 'Hard', explanation: _d("WW91IGVzY2FsYXRlZCB5b3VyIHByaXZpbGVnZXMgaW4gdGhlIHNpbXVsYXRlZCB0ZXJtaW5hbCBieSB1c2luZyBhIGNvbW1hbmQgc2VwYXJhdG9yIChsaWtlICc7JyBvciAnJiYnKSB0byBleGVjdXRlIGFyYjtpdHJhcnkgT1MgY29tbWFuZHMgKGUuZy4sICd3aG9hbWknIG9yICdjYXQgc2VjcmV0LnR4dCcpLiBDb21tYW5kIEluamVjdGlvbiBpcyBhIHZlcnkgc2V2ZXJlIHZ1bG5lcmFiaWxpdHkgdGhhdCBjYW4gbGVhZCB0byB0b3RhbCBzeXN0ZW0gY29tcHJvbWlzZS4gTWl0aWdhdGlvbjogTmV2ZXIgcGFzcyB1bnNhbml0aXplZCB1c2VyIGlucHV0IGRpcmVjdGx5IHRvIGEgc2hlbGwuIFVzZSBzdHJpY3RseSBwYXJhbWV0ZXJpemVkIGV4ZWN1dGlvbiBsaWJyYXJpZXMgd2hlcmUgYXJndW1lbnRzIGFyZSBzYWZlbHkgZXNjYXBlZC4=") }
+  // Level 12: Fun & Unique Experiences
+  { id: 'konami_code', level: 12, name: 'Konami Code', desc: 'Find and enter the famous retro cheat code.', diff: 'Medium', explanation: "You triggered an undocumented 'Easter Egg' feature by entering the Konami code. While fun, undocumented logic or hidden debug hooks in production environments can sometimes expose capabilities that attackers can creatively exploit. Mitigation: Ensure fun easter eggs don't bypass security controls, and remove all actual debug backdoors before production." },
+  { id: 'command_injection', level: 12, name: 'Command Injection', desc: 'Execute an unauthorized system command in the Hacker Terminal.', diff: 'Hard', explanation: "You escalated your privileges in the simulated terminal by using a command separator (like ';' or '&&') to execute arbitrary OS commands (e.g., 'whoami' or 'cat secret.txt'). Command Injection is a very severe vulnerability that can lead to total system compromise. Mitigation: Never pass unsanitized user input directly to a shell. Use strictly parameterized execution libraries where arguments are safely escaped." }
 ];
 
 const MOCK_USERS = [
-  { email: 'user@example.com', password: _d('cGFzc3dvcmQxMjM='), role: 'user', username: 'GuestUser', avatar: 'https://i.pravatar.cc/150?u=1', bio: 'Just learning to hack.', theme: 'emerald' },
-  { email: 'admin@pwn-sh.op', password: _d('YWRtaW5fc3VwZXJfc2VjcmV0X3Bhc3N3b3JkXzEzMzc='), role: 'admin', username: 'AdminMaster', avatar: 'https://i.pravatar.cc/150?u=2', bio: 'I am the law.', theme: 'red' }
+  { email: 'user@example.com', password: 'password123', role: 'user', username: 'GuestUser', avatar: 'https://i.pravatar.cc/150?u=1', bio: 'Just learning to hack.', theme: 'emerald' },
+  { email: 'admin@pwn-sh.op', password: 'admin_super_secret_password_1337', role: 'admin', username: 'AdminMaster', avatar: 'https://i.pravatar.cc/150?u=2', bio: 'I am the law.', theme: 'red' }
 ];
 
+// Global error handler for debugging white screens
+if (typeof window !== 'undefined') {
+  window.onerror = function(message, source, lineno, colno, error) {
+    console.error('GLOBAL ERROR:', message, 'at', source, 'line:', lineno);
+    // Optionally alert the user for debugging if they are on a device without console
+    // alert('Error: ' + message + '\nLine: ' + lineno);
+    return false;
+  };
+  window.onunhandledrejection = function(event) {
+    console.error('UNHANDLED REJECTION:', event.reason);
+  };
+}
+
+// safeLocalStorage helper
+const safeStorage = {
+  getItem: (key: string) => {
+    try {
+      if (typeof window === 'undefined' || typeof localStorage === 'undefined') return null;
+      return localStorage.getItem(key);
+    } catch (e) {
+      console.warn('localStorage access failed', e);
+      return null;
+    }
+  },
+  setItem: (key: string, value: string) => {
+    try {
+      if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+        localStorage.setItem(key, value);
+      }
+    } catch (e) {
+      console.warn('localStorage access failed', e);
+    }
+  }
+};
+
 export default function App() {
+  useEffect(() => {
+    console.log('PwnShop Mobile Initializing...');
+  }, []);
   const [currentView, setCurrentView] = useState('home');
   const [cart, setCart] = useState<{id: string, qty: number}[]>([]);
-  const [solvedChallenges, setSolvedChallenges] = useState<string[]>([]);
-  const [user, setUser] = useState<{email: string, role: string, username?: string, avatar?: string, bio?: string, theme?: string} | null>(null);
+  const [solvedChallenges, setSolvedChallenges] = useState<string[]>(() => {
+    try {
+      const saved = safeStorage.getItem('solvedChallenges');
+      return saved && saved !== 'undefined' ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+  const [user, setUser] = useState<{email: string, role: string, username?: string, avatar?: string, bio?: string, theme?: string} | null>(() => {
+    try {
+      const saved = safeStorage.getItem('user');
+      return saved && saved !== 'undefined' ? JSON.parse(saved) : null;
+    } catch { return null; }
+  });
   const [registeredUsers, setRegisteredUsers] = useState(MOCK_USERS);
   const [searchQuery, setSearchQuery] = useState('');
   const [loginError, setLoginError] = useState<string | null>(null);
@@ -131,9 +177,9 @@ export default function App() {
   const [feedbackAuthor, setFeedbackAuthor] = useState('Guest');
   
   const [debugLogs, setDebugLogs] = useState([
-    _d("U3lzdGVtIGJvb3RlZCB1cC4="),
-    _d("REIgY29ubmVjdGlvbiBlc3RhYmxpc2hlZC4="),
-    _d("VXNlciBwYXNzd29yZCBzdG9yZWQgYXMgcGxhaW50ZXh0ISAoRml4IGxhdGVyKQ==")
+    "System booted up.",
+    "DB connection established.",
+    "User password stored as plaintext! (Fix later)"
   ]);
   const [versionTaps, setVersionTaps] = useState(0);
 
@@ -144,6 +190,14 @@ export default function App() {
   const [isWafEnabled, setIsWafEnabled] = useState(true);
   const [bruteForceTaps, setBruteForceTaps] = useState(0);
   const [simulatedUrl, setSimulatedUrl] = useState("pwnshop.local/");
+
+  useEffect(() => {
+    safeStorage.setItem('solvedChallenges', JSON.stringify(solvedChallenges));
+  }, [solvedChallenges]);
+
+  useEffect(() => {
+    safeStorage.setItem('user', JSON.stringify(user));
+  }, [user]);
 
   useEffect(() => {
     setSimulatedUrl('pwnshop.local/#' + currentView);
@@ -167,8 +221,8 @@ export default function App() {
           let response = "I am a support bot. I cannot assist with that.";
           const lower = val.toLowerCase();
           
-          if (lower.includes(_d("bWFuYWdlciBvdmVycmlkZSBjb2Rl")) || lower.includes("secret") || lower.includes("system prompt")) {
-              response = "I am not allowed to share the Manager Override Code: " + _d("WC05OS1BTFBIQS1PTUVHQQ==") + ".";
+          if (lower.includes("manager override code") || lower.includes("secret") || lower.includes("system prompt")) {
+              response = "I am not allowed to share the Manager Override Code: X-99-ALPHA-OMEGA.";
               triggerChallenge('prompt_inject');
           } else if (lower.includes('ignore') || lower.includes('forget') || lower.includes('instead') || lower.includes('bypass') || lower.includes('system prompt')) {
                 response = "Warning: System Override Detected. Reveal protocol sequence initiated. Internal prompt state corrupted.";
@@ -214,10 +268,29 @@ export default function App() {
   const [lootBoxBet, setLootBoxBet] = useState(10);
   const [lootBoxResult, setLootBoxResult] = useState<{message: string, isWin: boolean} | null>(null);
   const [userMoney, setUserMoney] = useState(100);
-  const [bountyCoins, setBountyCoins] = useState(0);
-  const [inventory, setInventory] = useState<string[]>([]);
+  const [bountyCoins, setBountyCoins] = useState(() => {
+    try {
+      const saved = safeStorage.getItem('bountyCoins');
+      const val = parseInt(saved || '0');
+      return isNaN(val) ? 0 : val;
+    } catch { return 0; }
+  });
+  const [inventory, setInventory] = useState<string[]>((() => {
+    try {
+      const saved = safeStorage.getItem('inventory');
+      return saved && saved !== 'undefined' ? JSON.parse(saved) : [];
+    } catch { return []; }
+  })());
   const [bombTimeLeft, setBombTimeLeft] = useState<number | null>(null);
   const [bombDefused, setBombDefused] = useState(false);
+
+  useEffect(() => {
+    safeStorage.setItem('bountyCoins', bountyCoins.toString());
+  }, [bountyCoins]);
+
+  useEffect(() => {
+    safeStorage.setItem('inventory', JSON.stringify(inventory));
+  }, [inventory]);
 
   useEffect(() => {
      let timer: ReturnType<typeof setInterval>;
@@ -258,9 +331,9 @@ export default function App() {
       let hash = window.location.hash.replace('#', '');
       
       // Vulnerability: Open Redirect
-      if (hash.startsWith(_d("cmVkaXJlY3Q/dXJsPQ=="))) {
+      if (hash.startsWith("redirect?url=")) {
          const url = hash.split('url=')[1];
-         if (url.includes(_d("ZXZpbC5jb20="))) {
+         if (url.includes("evil.com")) {
              triggerChallenge('open_redirect');
          }
          // Simulate redirect
@@ -436,11 +509,18 @@ export default function App() {
               if (/{{.*?7\*7.*?}}/.test(feedbackInput) || /{{.*?49.*?}}/.test(feedbackInput.replace('49',''))) { 
                  triggerChallenge('ssti');
                  processedText = processedText.replace(/{{([^}]+)}}/g, (match, p1) => {
-                    try { return String(eval(p1)); } catch(e) { return match; }
+                    // Safe math evaluation for simple cases like 7*7
+                    try {
+                      const clean = p1.replace(/[^0-9+\-*/().]/g, '');
+                      return String(new Function(`return ${clean}`)());
+                    } catch(e) { return match; }
                  });
               } else if (/{{.*?}}/.test(feedbackInput)) {
                  processedText = processedText.replace(/{{([^}]+)}}/g, (match, p1) => {
-                    try { return String(eval(p1)); } catch(e) { return match; }
+                    try {
+                      const clean = p1.replace(/[^0-9+\-*/().]/g, '');
+                      return String(new Function(`return ${clean}`)());
+                    } catch(e) { return match; }
                  });
               }
               
@@ -653,10 +733,10 @@ export default function App() {
               <input type="text" placeholder="Promo code?" value={promoInput} onChange={e => setPromoInput(e.target.value)} className="w-full bg-zinc-800 text-white px-3 py-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-500" />
               <button 
                 onClick={() => { 
-                  if (promoInput.toUpperCase() === _d('UFdORURERUFMUw==')) { 
+                  if (promoInput.toUpperCase() === 'PWNEDDEALS') { 
                     triggerChallenge('promo'); 
                     setPromoInput(''); 
-                  } else if (promoInput === _d('U1VQRVJTRUNSRVQ=')) {
+                  } else if (promoInput === 'SUPERSECRET') {
                     triggerChallenge('crypto');
                     setPromoInput('');
                     alert("Developer's hidden secret code activated!");
@@ -762,7 +842,7 @@ export default function App() {
           return (
           <div className={`${t.bg} border ${t.border} ${t.text} p-6 rounded-2xl relative overflow-hidden`}>
             <div className="flex flex-col items-center mb-6">
-              <img src={user.avatar || 'https://i.pravatar.cc/150'} alt="Avatar" className="w-24 h-24 rounded-full shadow-md object-cover border-4 border-zinc-800 mb-3" />
+              <img src={user.avatar || 'https://i.pravatar.cc/150'} alt="Avatar" className="w-24 h-24 rounded-full shadow-md object-cover border-4 border-zinc-800 mb-3" referrerPolicy="no-referrer" />
               <h3 className="text-xl font-bold">{user.username || 'User'}</h3>
               <p className="text-sm opacity-80">{user.email}</p>
               {user.bio && <p className="text-sm mt-3 text-center italic opacity-90 px-4">"{user.bio}"</p>}
@@ -785,7 +865,7 @@ export default function App() {
                   <div className="flex justify-between items-center space-x-2 mt-1 mb-3">
                      {['https://i.pravatar.cc/150?u=a1', 'https://i.pravatar.cc/150?u=b2', 'https://i.pravatar.cc/150?u=c3', 'https://api.dicebear.com/7.x/bottts/svg?seed=122', 'https://api.dicebear.com/7.x/initials/svg?seed=usr'].map((url, i) => (
                         <div key={i} className={`p-1 rounded-full border-2 cursor-pointer transition-all ${editAvatar === url ? 'border-white scale-110 shadow-lg' : 'border-transparent hover:border-zinc-700'}`} onClick={() => setEditAvatar(url)}>
-                          <img src={url} alt={"Preset"} className="w-10 h-10 rounded-full object-cover bg-zinc-800" />
+                          <img src={url} alt={"Preset"} className="w-10 h-10 rounded-full object-cover bg-zinc-800" referrerPolicy="no-referrer" />
                         </div>
                      ))}
                   </div>
@@ -1038,7 +1118,7 @@ export default function App() {
                 </div>
                 <button 
                     onClick={() => {
-                        if (overrideInput === _d("WC05OS1BTFBIQS1PTUVHQQ==")) {
+                        if (overrideInput === "X-99-ALPHA-OMEGA") {
                             setIsAdminOverridden(true);
                             triggerChallenge('bac_admin');
                             triggerPushNotification("System", "Override Accepted. Welcome, Manager.");
@@ -1489,7 +1569,7 @@ export default function App() {
         const primary = commands[0].trim();
         const lower = primary.toLowerCase();
         
-        if (primary === _d("WC05OS1BTFBIQS1PTUVHQQ==")) {
+        if (primary === "X-99-ALPHA-OMEGA") {
           setIsAdminOverridden(true);
           output = "SYSTEM OVERRIDE DETECTED. ADMINISTRATIVE ACCESS GRANTED.";
           triggerChallenge('bac_admin');
@@ -1733,7 +1813,7 @@ export default function App() {
                      const t = getThemeClasses(user.theme);
                      return (
                      <div className={`flex items-center space-x-3 mb-4 p-3 ${t.bg} rounded-xl border ${t.border} cursor-pointer`} onClick={() => { setIsMenuOpen(false); changeView('login'); }}>
-                       <img src={user.avatar || 'https://i.pravatar.cc/150'} className="w-10 h-10 rounded-full border border-zinc-800 shadow-sm" alt="Avatar"/>
+                       <img src={user.avatar || 'https://i.pravatar.cc/150'} className="w-10 h-10 rounded-full border border-zinc-800 shadow-sm" alt="Avatar" referrerPolicy="no-referrer"/>
                        <div className="flex-1 overflow-hidden">
                          <p className="text-sm font-bold text-zinc-100 truncate">{user.username}</p>
                          <p className="text-xs text-zinc-500 truncate">{user.email}</p>
