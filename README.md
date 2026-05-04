@@ -43,6 +43,5 @@ On your Android phone or tablet download the APK file from the releases section 
 *DO NOT perform these attacks against real targets.*
 
 
-Donations are always welcome and extremely appreciated. Thanks!
-
+Donations are always welcome and extremely appreciated. Thanks!                                                      
 BTC: bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
