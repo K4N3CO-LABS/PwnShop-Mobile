@@ -38,8 +38,9 @@ On your Android phone or tablet download the APK file from the releases section 
    `npm run dev`
 6. Press o and enter to open app.
 
+
 Donations are always welcome and extremely appreciated. Thanks!                                                      
 BTC: bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
 
-   *Created for Educational Purposes.*
-*DO NOT perform these attacks against real targets.*
+
+  ## *Created for Educational Purposes. DO NOT perform these attacks against real targets. Enjoy!*
