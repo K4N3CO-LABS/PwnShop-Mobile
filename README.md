@@ -1,6 +1,6 @@
 # About The PwnShop
 
-Welcome to the **PwnShop**—an educational, deliberately insecure mobile-first application designed for cybersecurity enthusiasts, beginners, and seasoned professionals alike.
+Welcome to the **PwnShop**—an educational, deliberately insecure mobile-first application designed for cybersecurity enthusiasts, beginners, and seasoned professionals alike to learn about exploits & vulnerabilities using their phone or tablets environment. (eg. inspecting elements and viewing source code is NOT needed to complete any of the 26 tasks.)
 
 Unlike traditional educational platforms, PwnShop aims to teach real-world security concepts through practical, hands-on experience. This environment has been laced with numerous vulnerabilities typically found in production applications, ranging from classic SQL injection and Cross-Site Scripting (XSS) to complex business logic flaws, leaky APIs, and hidden endpoints.
 
@@ -20,8 +20,12 @@ Submit weird data, modify your local storage or requests, and look for unintende
 When you exploit a bug, an explanation pop-up will explain the vulnerability and how to fix it in code.
 
 ---
+## Easiest way to play
+On your Android phone or tablet download the APK file from the releases section and install on your device.
+(You may have to request Desktop site to see the releases section properly.)
 
-## Run Locally
+
+## Run Locally (Debug/Testing)
 
 **Prerequisites:**  Node.js
 
