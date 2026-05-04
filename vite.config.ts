@@ -8,7 +8,12 @@ export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   return {
     build: {
-      target: 'es2020',
+      target: 'es2015',
+      rollupOptions: {
+        output: {
+          format: 'iife'
+        }
+      }
     },
     plugins: [
       react(), 

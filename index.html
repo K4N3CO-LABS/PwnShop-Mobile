@@ -7,8 +7,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="theme-color" content="#10b981" />
-    <link rel="icon" type="image/png" href="https://i.postimg.cc/jnyfsfBd/Screenshot-20260502-163238-Bazaart.jpg" />
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/png" href="https://i.postimg.cc/tZsyNg6D/Screenshot-2026-05-04-at-6-11-06-PM.png" />
+    <link rel="manifest" href="./manifest.json" />
     <title>PwnShop Mobile</title>
     <style>
       #loader-feedback {
@@ -31,33 +31,38 @@
   <body class="bg-black">
     <div id="root"></div>
     <div id="loader-feedback">
-      <b>PwnShop Mobile Error:</b> Application failed to initialize within 5 seconds. This might be due to a JavaScript error or an incompatible environment.
+      <b>PwnShop Mobile Error:</b> Application failed to initialize.
     </div>
-    <script type="module" src="/src/main.tsx"></script>
     <script>
       // Diagnostic script for white screen
-      setTimeout(function() {
+      window.diagnosticTimeout = setTimeout(function() {
         if (!document.querySelector('#root').hasChildNodes()) {
           var fb = document.getElementById('loader-feedback');
           if (fb) {
             fb.style.display = 'block';
-            if (window.location.protocol === 'file:' && !window.location.pathname.endsWith('PwnShop_Playable.html')) {
-              fb.innerHTML = "<b>Setup Required:</b> You are trying to run the raw source code. Please open the terminal, run <code>npm install</code> then <code>npm run dev</code>. <br><br><b>Or better yet:</b> Open the generated <b>PwnShop_Playable.html</b> file instead to play directly without setup!";
-            } else {
-              fb.innerHTML = "<b>PwnShop Mobile Error:</b> Application failed to initialize within 5 seconds. Check the browser console (F12) for more errors.";
-            }
+            fb.innerHTML = "<b>PwnShop Mobile Error:</b> Application failed to initialize.<br><br>Detailed Info:<br>- JavaScript may be disabled or crashed.<br>- WebView version might be too old.<br>- file:// access might be restricted.";
           }
-          console.error("App failed to load. Check console.");
         }
-      }, 5000);
-      window.onerror = function(m, s, l) {
+      }, 15000);
+      window.onerror = function(m, s, l, c, err) {
         var fb = document.getElementById('loader-feedback');
         if (fb) {
           fb.style.display = 'block';
-          fb.innerHTML = "<b>Critical Error:</b> " + m + " (" + s + ":" + l + ")";
+          // Extract specific error details if available
+          var errMsg = err ? err.message : m;
+          var errStack = err && err.stack ? "<br><br><small>" + err.stack.replace(/\n/g, '<br>') + "</small>" : "";
+          fb.innerHTML = "<b>Critical Error:</b> " + errMsg + " (" + s + ":" + l + ")" + errStack;
+        }
+      };
+      window.onunhandledrejection = function(event) {
+        var fb = document.getElementById('loader-feedback');
+        if (fb) {
+          fb.style.display = 'block';
+          fb.innerHTML = "<b>Promise Error:</b> " + (event.reason ? event.reason.toString() : "Unknown Promise Error");
         }
       };
     </script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
 

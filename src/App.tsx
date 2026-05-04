@@ -122,24 +122,28 @@ if (typeof window !== 'undefined') {
   };
 }
 
-// safeLocalStorage helper
+// safeLocalStorage helper with in-memory fallback for restricted environments (like some Android WebViews)
+const memoryStorage: Record<string, string> = {};
 const safeStorage = {
   getItem: (key: string) => {
     try {
-      if (typeof window === 'undefined' || typeof localStorage === 'undefined') return null;
+      if (typeof window === 'undefined' || typeof localStorage === 'undefined') return memoryStorage[key] || null;
       return localStorage.getItem(key);
     } catch (e) {
-      console.warn('localStorage access failed', e);
-      return null;
+      console.warn('localStorage access failed, using memory', e);
+      return memoryStorage[key] || null;
     }
   },
   setItem: (key: string, value: string) => {
     try {
       if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
         localStorage.setItem(key, value);
+      } else {
+        memoryStorage[key] = value;
       }
     } catch (e) {
-      console.warn('localStorage access failed', e);
+      console.warn('localStorage access failed, using memory', e);
+      memoryStorage[key] = value;
     }
   }
 };
@@ -147,6 +151,11 @@ const safeStorage = {
 export default function App() {
   useEffect(() => {
     console.log('PwnShop Mobile Initializing...');
+    if ((window as any).diagnosticTimeout) {
+      clearTimeout((window as any).diagnosticTimeout);
+    }
+    const fb = document.getElementById('loader-feedback');
+    if (fb) fb.style.display = 'none';
   }, []);
   const [currentView, setCurrentView] = useState('home');
   const [cart, setCart] = useState<{id: string, qty: number}[]>([]);
@@ -461,7 +470,7 @@ export default function App() {
             Start Shopping
           </button>
         </div>
-        <img src="https://i.postimg.cc/jnyfsfBd/Screenshot-20260502-163238-Bazaart.jpg" alt="" className="absolute -right-8 -bottom-8 w-40 h-40 opacity-20 object-cover rotate-12" referrerPolicy="no-referrer" />
+        <img src="https://i.postimg.cc/tZsyNg6D/Screenshot-2026-05-04-at-6-11-06-PM.png" alt="" className="absolute -right-8 -bottom-8 w-40 h-40 opacity-20 object-cover rotate-12" referrerPolicy="no-referrer" />
       </div>
       
       <div>
@@ -831,7 +840,7 @@ export default function App() {
       <div className="p-6">
         <div className="text-center mb-8 mt-4 flex flex-col items-center">
           <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 overflow-hidden shadow-[0_0_15px_rgba(16,185,129,0.3)] mb-4">
-             <img src="https://i.postimg.cc/jnyfsfBd/Screenshot-20260502-163238-Bazaart.jpg" alt="PwnShop Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+             <img src="https://i.postimg.cc/tZsyNg6D/Screenshot-2026-05-04-at-6-11-06-PM.png" alt="PwnShop Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           </div>
           <h2 className="text-2xl font-bold text-white">{is2FAPending ? 'Two-Factor Auth' : isRegistering ? 'Create Account' : 'Welcome Back'}</h2>
           <p className="text-zinc-500 text-sm mt-2">{is2FAPending ? 'Enter the code sent to your device.' : isRegistering ? 'Join PwnShop today!' : 'Log in to your PwnShop account.'}</p>
@@ -1740,7 +1749,7 @@ export default function App() {
           <div className={`absolute top-0 left-0 w-full h-[1px] ${isDarkMode ? 'bg-emerald-500/30' : 'bg-emerald-500/50'} animate-[scan_3s_linear_infinite]`} />
           <div className="flex items-center space-x-3">
             <div className="w-14 h-14 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 overflow-hidden shadow-[0_0_10px_rgba(16,185,129,0.3)]">
-              <img src="https://i.postimg.cc/jnyfsfBd/Screenshot-20260502-163238-Bazaart.jpg" alt="Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              <img src="https://i.postimg.cc/tZsyNg6D/Screenshot-2026-05-04-at-6-11-06-PM.png" alt="Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
             </div>
             <div className={`${isDarkMode ? 'bg-zinc-900/80 border-white/10' : 'bg-zinc-100 border-zinc-200'} border px-3 py-1.5 rounded-lg flex flex-col justify-center`}>
               <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest leading-none mb-0.5">Balance</span>
@@ -1964,7 +1973,7 @@ export default function App() {
                   {(() => {
                     // Check for DOM XSS
                     if (/<[a-z1-6]+.*?>/i.test(currentView) || /javascript:/i.test(currentView)) {
-                       triggerChallenge('dom_xss');
+                       setTimeout(() => triggerChallenge('dom_xss'), 0);
                     }
                     return null;
                   })()}

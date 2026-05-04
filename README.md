@@ -1,6 +1,6 @@
 # About The PwnShop
 
-Welcome to the **PwnShop**—an educational, deliberately insecure MOBILE-dedicted application designed for cybersecurity enthusiasts, beginners, and seasoned professionals alike to learn about exploits & vulnerabilities using their phone or tablets environment. (eg. inspecting elements and viewing source code is NOT needed to complete any of the current 26 tasks.)
+Welcome to the **PwnShop**—an educational, deliberately insecure mobile-first application designed for cybersecurity enthusiasts, beginners, and seasoned professionals alike.
 
 Unlike traditional educational platforms, PwnShop aims to teach real-world security concepts through practical, hands-on experience. This environment has been laced with numerous vulnerabilities typically found in production applications, ranging from classic SQL injection and Cross-Site Scripting (XSS) to complex business logic flaws, leaky APIs, and hidden endpoints.
 
@@ -21,16 +21,12 @@ When you exploit a bug, an explanation pop-up will explain the vulnerability and
 
 ---
 
-## Install/Run (Android APK built, just testing)
+## Run Locally
 
 **Prerequisites:**  Node.js
 
-## Easiest Way to Play
-Just download the PwnShop_Playable.html file and open in any browser.
-
-## Run Locally (Debug & Testing)
 1. Download zip file & unzip.
-2. Open a Terminal: cd PwnShop-Mobile-main
+2. In a Terminal cd PwnShop-Mobile-main
 3. Install dependencies:
   `npm install`
 4. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key (OPTIONAL)
@@ -38,9 +34,11 @@ Just download the PwnShop_Playable.html file and open in any browser.
    `npm run dev`
 6. Press o and enter to open app.
 
+  
+   *Created for Educational Purposes.*
+*DO NOT perform these attacks against real targets.*
 
-Donations are always welcome and extremely appreciated. Thanks!                                      
+
+Donations are always welcome and extremely appreciated. Thanks!
+
 BTC: bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
-
- *Created for Educational Purposes.*
-*DO NOT perform these attacks against real targets. Enjoy!*
