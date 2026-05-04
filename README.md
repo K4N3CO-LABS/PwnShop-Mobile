@@ -19,7 +19,9 @@ Submit weird data, modify your local storage or requests, and look for unintende
 ### 3. Learn and mitigate
 When you exploit a bug, an explanation pop-up will explain the vulnerability and how to fix it in code.
 
----
+ *Created for Educational Purposes.*
+*DO NOT perform these attacks against real targets.*
+----
 
 ## Run Locally
 
@@ -33,11 +35,6 @@ When you exploit a bug, an explanation pop-up will explain the vulnerability and
 5. Run the app:
    `npm run dev`
 6. Press o and enter to open app.
-
-  
-   *Created for Educational Purposes.*
-*DO NOT perform these attacks against real targets.*
-
 
 Donations are always welcome and extremely appreciated. Thanks!
 
