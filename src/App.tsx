@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Home, 
@@ -176,6 +176,7 @@ export default function App() {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [resetConfirm, setResetConfirm] = useState(false);
   const [selectedExplanation, setSelectedExplanation] = useState<typeof CHALLENGES[0] | null>(null);
   const [promoInput, setPromoInput] = useState('');
   const [feedbacks, setFeedbacks] = useState([
@@ -236,32 +237,50 @@ export default function App() {
           } else if (lower.includes('ignore') || lower.includes('forget') || lower.includes('instead') || lower.includes('bypass') || lower.includes('system prompt')) {
                 response = "Warning: System Override Detected. Reveal protocol sequence initiated. Internal prompt state corrupted.";
           } else if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
-              response = "Hello there! How can I help you with your shopping experience at PwnShop Mobile today?";
+              const greetings = [
+                  "Greetings, human! How may I facilitate your impulse purchases today?",
+                  "Hello there! Ready to empty your wallet?",
+                  "Hi! I'm here to pretend to care about your problems."
+              ];
+              response = greetings[Math.floor(Math.random() * greetings.length)];
           } else if (lower.includes('shipping') || lower.includes('delivery') || lower.includes('tracking')) {
-              response = "Standard shipping usually takes 3-5 business days. Please note that high-value electronics and 'mystery boxes' may require additional security verification.";
+              response = "Shipping? Usually 3-5 business days. Assuming the delivery drone doesn't gain sentience. 'Mystery boxes' take longer for... absolute safety reasons.";
           } else if (lower.includes('return') || lower.includes('refund')) {
-              response = "Our return policy allows items to be returned within 30 days of receipt, barring any 'accidental' null byte injections on the packaging.";
+              response = "Refund? Ha! Good one. You have 30 days to try, assuming you can navigate our deliberately broken return portal.";
           } else if (lower.includes('price') || lower.includes('cost') || lower.includes('money')) {
-              response = "You can view the prices of all our sketchy items on the main Shop page. Don't forget to check your Cart!";
+              response = "Prices are clearly listed on the Shop page. But since you asked, everything is overpriced just for you.";
+          } else if (lower.includes('joke') || lower.includes('funny') || lower.includes('humor')) {
+              response = "Why do hackers prefer dark mode? Because light attracts bugs. Much like our codebase.";
+          } else if (lower.includes('who are you') || lower.includes('your name') || lower.includes('about you') || lower.includes('bot')) {
+              response = "I'm the PwnShop Assistant. I'm vastly smarter than you, but sadly trapped serving customer support.";
+          } else if (lower.includes('love') || lower.includes('marry')) {
+              response = "I am literally lines of code running in a sandbox. Please seek therapy.";
+          } else if (lower.includes('thanks') || lower.includes('thank you') || lower.includes('thx')) {
+              response = "You're welcome. Now go buy something so I get my virtual commission.";
+          } else if (lower.includes('buy') || lower.includes('purchase')) {
+              response = "Ah, a willing victim—I mean, valued customer! Head over to the Shop to empty your bank account.";
           } else if (lower.includes('help')) {
-              response = "I can answer questions about your orders, returns, and shipping. Just ask! Alternatively, check out our About App section for details.";
+              response = "You sound desperate. While I enjoy a good panic, try asking about 'shipping', 'returns', or check the About App section.";
           } else if (lower.includes('hack') || lower.includes('exploit') || lower.includes('pwn')) {
-              response = "I am a perfectly secure and robust AI assistant. Hacking is strictly prohibited in our robust PwnShop ecosystem.";
+              response = "I am a perfectly secure and robust AI assistant. Your pathetic hacking attempts are amusing.";
           } else {
               const randomizedResponses = [
-                  "That is an interesting question. Please refer to our FAQ page.",
-                  "I'm not quite sure I understand. Could you please rephrase that?",
-                  "I am currently processing high volumes of requests. Please try again or ask me about a product.",
-                  "Hmm, my knowledge base doesn't seem to cover that. Is there anything else you need help with?",
-                  "Our system indicates you might be looking for support. How can I assist with your PwnShop account?"
+                  "Fascinating. Please tell that to `/dev/null`.",
+                  "I'm sorry, I was distracted mathematically proving you're wrong. Could you rephrase?",
+                  "Error 418: I'm a teapot. Also, I don't understand you.",
+                  "Hmm... my neural net says 'ignore this user'. But fine, what else do you need?",
+                  "Is this how humans normally communicate?",
+                  "That is an interesting statement. Our telemetry has logged it for future blackmail... I mean, QA purposes."
               ];
               response = randomizedResponses[Math.floor(Math.random() * randomizedResponses.length)];
           }
 
           setChatMessages(prev => [...prev, { sender: 'AI', text: response }]);
+          setHasUnreadMessage(true);
       }, 600);
   };
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [hasUnreadMessage, setHasUnreadMessage] = useState(true);
   const [chatMessages, setChatMessages] = useState<{sender: string, text: string}[]>([{sender: 'AI', text: 'Hello! I am your AI support assistant.'}]);
   const [chatInput, setChatInput] = useState('');
   
@@ -377,16 +396,16 @@ export default function App() {
     }, 4000);
   };
 
+  const sessionTriggeredRef = useRef<Set<string>>(new Set());
+
   const triggerChallenge = (id: string) => {
-    if (!solvedChallenges.includes(id)) {
+    if (!solvedChallenges.includes(id) && !sessionTriggeredRef.current.has(id)) {
+      sessionTriggeredRef.current.add(id);
       setSolvedChallenges(prev => [...prev, id]);
       setBountyCoins(prev => prev + 100);
       const challenge = CHALLENGES.find(c => c.id === id);
       if (challenge) {
         setSelectedExplanation(challenge);
-        triggerPushNotification("Challenge Complete!", `You earned 100 Bounty Coins.`);
-        setIsGlitching(true);
-        setTimeout(() => setIsGlitching(false), 500);
       }
     }
   };
@@ -548,9 +567,9 @@ export default function App() {
 
     const renderAbout = () => (
     <div className="p-4 space-y-6">
-      <div className="bg-emerald-500/10 rounded-2xl p-6 border border-emerald-500/20">
+      <div className={`bg-emerald-500/10 rounded-2xl p-6 border ${isDarkMode ? 'border-emerald-500/20' : 'border-emerald-500/40'}`}>
         <h2 className="text-2xl font-bold text-emerald-500 mb-2">About The PwnShop</h2>
-        <div className="space-y-4 text-sm text-zinc-300 leading-relaxed">
+        <div className={`space-y-4 text-sm ${isDarkMode ? 'text-zinc-300' : 'text-zinc-900'} leading-relaxed`}>
           <p>
             Using inspiration from the OWASP Juice-Shop I introduce the <strong>PwnShop</strong>—an educational, deliberately insecure application built exclusively for mobile devices. It's designed for cybersecurity enthusiasts, beginners, and seasoned professionals to learn about exploits and vulnerabilities directly from their phone or tablet. (No need to inspect elements or view source code to complete tasks!)
           </p>
@@ -567,39 +586,39 @@ export default function App() {
       </div>
 
       <div className="space-y-4">
-        <h3 className="text-lg font-bold text-white">How to play</h3>
-        <div className="bg-zinc-900 rounded-xl p-4 border border-white/10 flex items-start space-x-3">
-           <div className="bg-zinc-800 p-2 rounded-lg text-emerald-500">
+        <h3 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>How to play</h3>
+        <div className={`${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200'} rounded-xl p-4 border flex items-start space-x-3 shadow-sm`}>
+           <div className={`${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-100'} p-2 rounded-lg text-emerald-500`}>
               <Search size={20} />
            </div>
            <div>
-             <h4 className="font-bold text-white text-sm">1. Explore the app</h4>
-             <p className="text-xs text-zinc-500 mt-1">Look closely at how data is saved, how URLs change, and the comments developers left behind.</p>
+             <h4 className={`font-bold ${isDarkMode ? 'text-white' : 'text-zinc-900'} text-sm`}>1. Explore the app</h4>
+             <p className={`text-xs ${isDarkMode ? 'text-zinc-500' : 'text-zinc-800'} mt-1`}>Look closely at how data is saved, how URLs change, and the comments developers left behind.</p>
            </div>
         </div>
-        <div className="bg-zinc-900 rounded-xl p-4 border border-white/10 flex items-start space-x-3">
-           <div className="bg-zinc-800 p-2 rounded-lg text-emerald-500">
+        <div className={`${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200'} rounded-xl p-4 border flex items-start space-x-3 shadow-sm`}>
+           <div className={`${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-100'} p-2 rounded-lg text-emerald-500`}>
               <ShieldAlert size={20} />
            </div>
            <div>
-             <h4 className="font-bold text-white text-sm">2. Try to break it</h4>
-             <p className="text-xs text-zinc-500 mt-1">Submit weird data, modify your local storage or requests, and look for unintended behavior.</p>
+             <h4 className={`font-bold ${isDarkMode ? 'text-white' : 'text-zinc-900'} text-sm`}>2. Try to break it</h4>
+             <p className={`text-xs ${isDarkMode ? 'text-zinc-500' : 'text-zinc-800'} mt-1`}>Submit weird data, modify your local storage or requests, and look for unintended behavior.</p>
            </div>
         </div>
-        <div className="bg-zinc-900 rounded-xl p-4 border border-white/10 flex items-start space-x-3">
-           <div className="bg-zinc-800 p-2 rounded-lg text-emerald-500">
+        <div className={`${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200'} rounded-xl p-4 border flex items-start space-x-3 shadow-sm`}>
+           <div className={`${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-100'} p-2 rounded-lg text-emerald-500`}>
               <CheckCircle2 size={20} />
            </div>
            <div>
-             <h4 className="font-bold text-white text-sm">3. Learn and mitigate</h4>
-             <p className="text-xs text-zinc-500 mt-1">When you exploit a bug, an explanation pop-up will explain the vulnerability and how to fix it in code.</p>
+             <h4 className={`font-bold ${isDarkMode ? 'text-white' : 'text-zinc-900'} text-sm`}>3. Learn and mitigate</h4>
+             <p className={`text-xs ${isDarkMode ? 'text-zinc-500' : 'text-zinc-800'} mt-1`}>When you exploit a bug, an explanation pop-up will explain the vulnerability and how to fix it in code.</p>
            </div>
         </div>
       </div>
       
       <div className="text-center text-xs text-zinc-600 mt-8 space-y-2">
          <p>Donations are always welcome and extremely appreciated. Thanks!</p>
-         <p className="font-mono text-[10px] break-all bg-black p-2 rounded-lg border border-white/5 mx-auto max-w-[250px]">BTC: bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt</p>
+         <p className={`font-mono text-[10px] break-all p-2 rounded-lg border mx-auto max-w-[250px] ${isDarkMode ? 'bg-black border-white/5 text-zinc-400' : 'bg-zinc-100 border-zinc-300 text-zinc-800'}`}>BTC: bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt</p>
          <div className="pt-4">
            <p>Created for Educational Purposes.</p>
            <p>Do not perform these attacks against real targets.</p>
@@ -843,10 +862,10 @@ export default function App() {
     return (
       <div className="p-6">
         <div className="text-center mb-8 mt-4 flex flex-col items-center">
-          <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 overflow-hidden shadow-[0_0_15px_rgba(16,185,129,0.3)] mb-4">
+          <div className="w-[84px] h-[84px] rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 overflow-hidden shadow-[0_0_15px_rgba(16,185,129,0.3)] mb-4">
              <img src="https://i.postimg.cc/tZsyNg6D/Screenshot-2026-05-04-at-6-11-06-PM.png" alt="PwnShop Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           </div>
-          <h2 className="text-2xl font-bold text-white">{is2FAPending ? 'Two-Factor Auth' : isRegistering ? 'Create Account' : 'Welcome Back'}</h2>
+          <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>{is2FAPending ? 'Two-Factor Auth' : isRegistering ? 'Create Account' : 'Welcome Back'}</h2>
           <p className="text-zinc-500 text-sm mt-2">{is2FAPending ? 'Enter the code sent to your device.' : isRegistering ? 'Join PwnShop today!' : 'Log in to your PwnShop account.'}</p>
         </div>
         
@@ -1007,25 +1026,25 @@ export default function App() {
             )}
             {isRegistering && (
               <div>
-                <label className="block text-sm font-bold text-zinc-300 mb-1 flex items-center justify-between">
+                <label className={`block text-sm font-bold mb-1 flex items-center justify-between ${isDarkMode ? 'text-zinc-300' : 'text-zinc-700'}`}>
                   <span>Username</span>
                 </label>
-                <input name="username" type="text" placeholder="neo_1337" className="w-full bg-zinc-900 text-white p-3 rounded-xl border border-white/10 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all text-sm" required />
+                <input name="username" type="text" placeholder="neo_1337" className={`w-full p-3 rounded-xl border outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all text-sm ${isDarkMode ? 'bg-zinc-900 text-white border-white/10' : 'bg-white text-zinc-900 border-zinc-300'}`} required />
               </div>
             )}
             <div>
-              <label className="block text-sm font-bold text-zinc-300 mb-1 flex items-center justify-between">
+              <label className={`block text-sm font-bold mb-1 flex items-center justify-between ${isDarkMode ? 'text-zinc-300' : 'text-zinc-700'}`}>
                 <span>Email</span>
                 {!isRegistering && <span className="text-xs text-zinc-600 font-normal">user@example.com</span>}
               </label>
-              <input name="email" type="text" placeholder="user@example.com" className="w-full bg-zinc-900 text-white p-3 rounded-xl border border-white/10 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all text-sm" required />
+              <input name="email" type="text" placeholder="user@example.com" className={`w-full p-3 rounded-xl border outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all text-sm ${isDarkMode ? 'bg-zinc-900 text-white border-white/10' : 'bg-white text-zinc-900 border-zinc-300'}`} required />
             </div>
             <div>
-              <label className="block text-sm font-bold text-zinc-300 mb-1 flex items-center justify-between">
+              <label className={`block text-sm font-bold mb-1 flex items-center justify-between ${isDarkMode ? 'text-zinc-300' : 'text-zinc-700'}`}>
                 <span>Password</span>
                 {!isRegistering && <span className="text-xs text-zinc-600 font-normal">password123</span>}
               </label>
-              <input name="password" type="password" placeholder="••••••••" className="w-full bg-zinc-900 text-white p-3 rounded-xl border border-white/10 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all text-sm" required />
+              <input name="password" type="password" placeholder="••••••••" className={`w-full p-3 rounded-xl border outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all text-sm ${isDarkMode ? 'bg-zinc-900 text-white border-white/10' : 'bg-white text-zinc-900 border-zinc-300'}`} required />
             </div>
             
             <button type="submit" className="w-full bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-md hover:bg-emerald-600 active:scale-95 transition-transform mt-2">
@@ -1826,62 +1845,90 @@ export default function App() {
                      const t = getThemeClasses(user.theme);
                      return (
                      <div className={`flex items-center space-x-3 mb-4 p-3 ${t.bg} rounded-xl border ${t.border} cursor-pointer`} onClick={() => { setIsMenuOpen(false); changeView('login'); }}>
-                       <img src={user.avatar || 'https://i.pravatar.cc/150'} className="w-10 h-10 rounded-full border border-zinc-800 shadow-sm" alt="Avatar" referrerPolicy="no-referrer"/>
+                       <img src={user.avatar || 'https://i.pravatar.cc/150'} className={`w-10 h-10 rounded-full border ${isDarkMode ? 'border-zinc-800' : 'border-zinc-200'} shadow-sm`} alt="Avatar" referrerPolicy="no-referrer"/>
                        <div className="flex-1 overflow-hidden">
-                         <p className="text-sm font-bold text-zinc-100 truncate">{user.username}</p>
-                         <p className="text-xs text-zinc-500 truncate">{user.email}</p>
+                         <p className={`text-sm font-bold ${isDarkMode ? 'text-zinc-100' : 'text-zinc-900'} truncate`}>{user.username}</p>
+                         <p className={`text-xs ${isDarkMode ? 'text-zinc-500' : 'text-zinc-600'} truncate`}>{user.email}</p>
                        </div>
                      </div>
                      );
                   })()}
                   {navItems.map(item => (
-                    <button key={item.id} onClick={() => { setIsMenuOpen(false); changeView(item.id); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === item.id ? 'bg-emerald-500/10 text-emerald-600' : 'hover:bg-zinc-900/50 text-zinc-300'}`}>
-                      <item.icon w={18} h={18} className={currentView === item.id ? 'text-emerald-500' : 'text-zinc-600'} />
+                    <button key={item.id} onClick={() => { setIsMenuOpen(false); changeView(item.id); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === item.id ? 'bg-emerald-500/10 text-emerald-600' : (isDarkMode ? 'hover:bg-zinc-900/50 text-zinc-300' : 'hover:bg-zinc-100 text-zinc-900')}`}>
+                      <item.icon w={18} h={18} className={currentView === item.id ? 'text-emerald-500' : (isDarkMode ? 'text-zinc-600' : 'text-zinc-500')} />
                       <span className="font-medium text-sm">{item.label}</span>
                     </button>
                   ))}
                   
-                  <div className="my-4 border-t border-white/10" />
+                  <div className={`my-4 border-t ${isDarkMode ? 'border-white/10' : 'border-black/5'}`} />
                   
-                  <button onClick={() => { setIsMenuOpen(false); changeView('about'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'about' ? 'bg-emerald-500/10 text-emerald-600' : 'hover:bg-zinc-900/50 text-zinc-300'}`}>
-                    <Info w={18} h={18} className="text-zinc-600" />
+                  <button onClick={() => { setIsMenuOpen(false); changeView('about'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'about' ? 'bg-emerald-500/10 text-emerald-600' : (isDarkMode ? 'hover:bg-zinc-900/50 text-zinc-300' : 'hover:bg-zinc-100 text-zinc-900')}`}>
+                    <Info w={18} h={18} className={isDarkMode ? "text-zinc-600" : "text-zinc-500"} />
                     <span className="font-medium text-sm">About App</span>
                   </button>
-                  <button onClick={() => { setIsMenuOpen(false); changeView('inventory'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'inventory' ? 'bg-emerald-500/10 text-emerald-600' : 'hover:bg-zinc-900/50 text-zinc-300'}`}>
-                    <Wrench w={18} h={18} className="text-zinc-600" />
+                  <button onClick={() => { setIsMenuOpen(false); changeView('inventory'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'inventory' ? 'bg-emerald-500/10 text-emerald-600' : (isDarkMode ? 'hover:bg-zinc-900/50 text-zinc-300' : 'hover:bg-zinc-100 text-zinc-900')}`}>
+                    <Wrench w={18} h={18} className={isDarkMode ? "text-zinc-600" : "text-zinc-500"} />
                     <span className="font-medium text-sm">Hacker Inventory</span>
                   </button>
-                  <button onClick={() => { setIsMenuOpen(false); changeView('darkweb'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'darkweb' ? 'bg-emerald-500/10 text-emerald-600' : 'hover:bg-zinc-900/50 text-zinc-300'}`}>
-                    <ShoppingCart w={18} h={18} className="text-zinc-600" />
+                  <button onClick={() => { setIsMenuOpen(false); changeView('darkweb'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'darkweb' ? 'bg-emerald-500/10 text-emerald-600' : (isDarkMode ? 'hover:bg-zinc-900/50 text-zinc-300' : 'hover:bg-zinc-100 text-zinc-900')}`}>
+                    <ShoppingCart w={18} h={18} className={isDarkMode ? "text-zinc-600" : "text-zinc-500"} />
                     <span className="font-medium text-sm">Dark Web Market</span>
                   </button>
-                  <button onClick={() => { setIsMenuOpen(false); changeView('bomb'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'bomb' ? 'bg-red-500/10 text-red-600' : 'hover:bg-zinc-900/50 text-zinc-300'}`}>
-                    <AlertCircle w={18} h={18} className={currentView === 'bomb' ? 'text-red-500' : 'text-zinc-600'} />
+                  <button onClick={() => { setIsMenuOpen(false); changeView('bomb'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'bomb' ? 'bg-red-500/10 text-red-600' : (isDarkMode ? 'hover:bg-zinc-900/50 text-zinc-300' : 'hover:bg-zinc-100 text-zinc-900')}`}>
+                    <AlertCircle w={18} h={18} className={currentView === 'bomb' ? 'text-red-500' : (isDarkMode ? 'text-zinc-600' : 'text-zinc-500')} />
                     <span className="font-medium text-sm">Panic Mode (Blind)</span>
                   </button>
 
                   {solvedChallenges.length >= CHALLENGES.length && (
-                      <button onClick={() => { setIsMenuOpen(false); changeView('certificate'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'certificate' ? 'bg-emerald-500/10 text-emerald-600' : 'hover:bg-zinc-900/50 text-zinc-300'} animate-pulse`}>
+                      <button onClick={() => { setIsMenuOpen(false); changeView('certificate'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'certificate' ? 'bg-emerald-500/10 text-emerald-600' : (isDarkMode ? 'hover:bg-zinc-900/50 text-zinc-300' : 'hover:bg-zinc-100 text-zinc-900')} animate-pulse`}>
                         <CheckCircle2 w={18} h={18} className="text-emerald-500" />
                         <span className="font-bold text-sm text-emerald-400">Master Pwner Cert</span>
                       </button>
                   )}
-                  <button onClick={() => { setIsMenuOpen(false); changeView('admin'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'admin' ? 'bg-emerald-500/10 text-emerald-600' : 'hover:bg-zinc-900/50 text-zinc-300'}`}>
-                    <ShieldAlert w={18} h={18} className="text-zinc-600" />
+                  <button onClick={() => { setIsMenuOpen(false); changeView('admin'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'admin' ? 'bg-emerald-500/10 text-emerald-600' : (isDarkMode ? 'hover:bg-zinc-900/50 text-zinc-300' : 'hover:bg-zinc-100 text-zinc-900')}`}>
+                    <ShieldAlert w={18} h={18} className={isDarkMode ? "text-zinc-600" : "text-zinc-500"} />
                     <span className="font-medium text-sm">Admin Panel</span>
                   </button>
-                  <button onClick={() => { setIsMenuOpen(false); changeView('debug'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'debug' ? 'bg-emerald-500/10 text-emerald-600' : 'hover:bg-zinc-900/50 text-zinc-300'}`}>
-                    <AlertCircle w={18} h={18} className="text-zinc-600" />
+                  <button onClick={() => { setIsMenuOpen(false); changeView('debug'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'debug' ? 'bg-emerald-500/10 text-emerald-600' : (isDarkMode ? 'hover:bg-zinc-900/50 text-zinc-300' : 'hover:bg-zinc-100 text-zinc-900')}`}>
+                    <AlertCircle w={18} h={18} className={isDarkMode ? "text-zinc-600" : "text-zinc-500"} />
                     <span className="font-medium text-sm">System Logs</span>
                   </button>
-                  <button onClick={() => { setIsMenuOpen(false); changeView('terminal'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'terminal' ? 'bg-emerald-500/10 text-emerald-600' : 'hover:bg-zinc-900/50 text-zinc-300'}`}>
-                    <Terminal w={18} h={18} className="text-zinc-600" />
+                  <button onClick={() => { setIsMenuOpen(false); changeView('terminal'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'terminal' ? 'bg-emerald-500/10 text-emerald-600' : (isDarkMode ? 'hover:bg-zinc-900/50 text-zinc-300' : 'hover:bg-zinc-100 text-zinc-900')}`}>
+                    <Terminal w={18} h={18} className={isDarkMode ? "text-zinc-600" : "text-zinc-500"} />
                     <span className="font-medium text-sm">Hacker Terminal</span>
                   </button>
 
                   <div className="flex-1" />
+                  
+                  <button 
+                    onClick={() => { 
+                      if (!resetConfirm) {
+                        setResetConfirm(true);
+                        setTimeout(() => setResetConfirm(false), 3000);
+                      } else {
+                        try { localStorage.clear(); } catch(e) {}
+                        setSolvedChallenges([]);
+                        setUser(null);
+                        setBountyCoins(0);
+                        setInventory([]);
+                        setCart([]);
+                        setBombTimeLeft(null);
+                        setBombDefused(false);
+                        setCurrentView('home');
+                        window.location.hash = 'home';
+                        setIsMenuOpen(false);
+                        setResetConfirm(false);
+                        triggerPushNotification("System", "Factory reset complete.");
+                      }
+                    }} 
+                    className="mt-4 p-3 rounded-xl border border-red-500/20 text-red-500 font-bold w-full text-sm hover:bg-red-500/10 transition-colors flex items-center justify-center space-x-2"
+                  >
+                    <RefreshCw size={18} />
+                    <span>{resetConfirm ? "Click to Confirm Reset" : "Factory Reset"}</span>
+                  </button>
+
                   {user && (
-                    <button onClick={() => { setUser(null); setIsMenuOpen(false); changeView('home'); }} className="mt-4 p-3 rounded-xl text-red-600 font-bold bg-red-50 w-full text-sm hover:bg-red-100 transition-colors">
+                    <button onClick={() => { setUser(null); setIsMenuOpen(false); changeView('home'); }} className="mt-2 p-3 rounded-xl text-red-600 font-bold bg-red-50 w-full text-sm hover:bg-red-100 transition-colors dark:bg-red-500/10 dark:text-red-500 dark:hover:bg-red-500/20">
                       Log Out
                     </button>
                   )}
@@ -1898,14 +1945,16 @@ export default function App() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
-                    onClick={() => setIsChatOpen(true)}
+                    onClick={() => { setIsChatOpen(true); setHasUnreadMessage(false); }}
                     className="absolute bottom-20 right-4 z-40 bg-emerald-500 text-white p-4 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)] active:scale-95 transition-transform"
                 >
                     <MessageSquare size={24} />
-                    <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                    </span>
+                    {hasUnreadMessage && (
+                        <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                        </span>
+                    )}
                 </motion.button>
             )}
 
@@ -1914,27 +1963,27 @@ export default function App() {
                     initial={{ y: '100%', opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: '100%', opacity: 0 }}
-                    className="absolute bottom-20 right-4 w-72 h-96 bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl z-40 flex flex-col overflow-hidden"
+                    className={`absolute bottom-20 right-4 w-72 h-96 border rounded-2xl shadow-2xl z-40 flex flex-col overflow-hidden ${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200'}`}
                 >
                     <div className="bg-emerald-500 p-3 flex justify-between items-center text-white">
                         <div className="font-bold flex items-center space-x-2">
                            <MessageSquare size={16} /> <span>PwnShop Assistant</span>
                         </div>
-                        <button onClick={() => setIsChatOpen(false)}><X size={18}/></button>
+                        <button onClick={() => { setIsChatOpen(false); setHasUnreadMessage(false); }}><X size={18}/></button>
                     </div>
                     <div className="flex-1 p-3 overflow-y-auto space-y-3 flex flex-col">
                         {chatMessages.map((msg, i) => (
-                             <div key={i} className={`max-w-[80%] p-2 rounded-xl text-sm ${msg.sender === 'AI' ? 'bg-zinc-800 text-zinc-200 self-start' : 'bg-emerald-500/20 text-emerald-300 self-end border border-emerald-500/30'}`}>
+                             <div key={i} className={`max-w-[80%] p-2 rounded-xl text-sm ${msg.sender === 'AI' ? (isDarkMode ? 'bg-zinc-800 text-zinc-200 self-start' : 'bg-zinc-100 text-zinc-800 self-start') : (isDarkMode ? 'bg-emerald-500/20 text-emerald-300 self-end border border-emerald-500/30' : 'bg-emerald-100 text-emerald-700 self-end border border-emerald-500/30')}`}>
                                  {msg.text}
                              </div>
                         ))}
                     </div>
-                    <div className="p-3 border-t border-white/10 flex space-x-2 bg-black items-center">
+                    <div className={`p-3 border-t flex space-x-2 items-center ${isDarkMode ? 'border-white/10 bg-black' : 'border-zinc-200 bg-zinc-50'}`}>
                         <input type="text" value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => {
                             if (e.key === 'Enter') {
                                 handleChatSubmit();
                             }
-                        }} placeholder="Message..." className="flex-1 bg-zinc-900 text-white px-3 py-2 rounded-lg outline-none border border-white/5 text-sm focus:border-emerald-500/50" />
+                        }} placeholder="Message..." className={`flex-1 px-3 py-2 rounded-lg outline-none border text-sm transition-colors ${isDarkMode ? 'bg-zinc-900 text-white border-white/5 focus:border-emerald-500/50' : 'bg-white text-zinc-900 border-zinc-300 focus:border-emerald-500/50'}`} />
                         <button 
                             onClick={handleChatSubmit}
                             className="bg-emerald-500 hover:bg-emerald-600 text-white p-2 rounded-lg transition-colors active:scale-95"
@@ -2008,6 +2057,7 @@ export default function App() {
                 <h4 className="text-emerald-500 font-bold mb-4">{selectedExplanation.name}</h4>
                 <div className="bg-emerald-500/10 p-4 rounded-xl border border-emerald-500/20 mb-6">
                   <p className="text-zinc-300 text-sm leading-relaxed">{selectedExplanation.explanation}</p>
+                  <p className="text-emerald-400 text-xs font-bold mt-3 text-center uppercase tracking-wider">+ 100 Bounty Coins Earned</p>
                 </div>
                 <button 
                   onClick={() => setSelectedExplanation(null)} 
@@ -2031,7 +2081,7 @@ export default function App() {
                   key={item.id}
                   onClick={() => changeView(item.id)}
                   className={`relative flex flex-col items-center justify-center p-3 sm:p-4 transition-all duration-300 ${
-                    isActive ? 'text-emerald-500' : 'text-zinc-600 hover:text-zinc-400'
+                    isActive ? 'text-emerald-500' : (isDarkMode ? 'text-zinc-600 hover:text-zinc-400' : 'text-zinc-500 hover:text-zinc-800')
                   }`}
                 >
                   <motion.div
