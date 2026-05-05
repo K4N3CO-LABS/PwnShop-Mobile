@@ -1,6 +1,6 @@
 # About The PwnShop
 
-Welcome to the **PwnShop**—an educational, deliberately insecure mobile-first application designed for cybersecurity enthusiasts, beginners, and seasoned professionals alike.
+Welcome to the **PwnShop**—an educational, deliberately insecure mobile-first application designed for cybersecurity enthusiasts, beginners, and seasoned professionals alike to learn about exploits & vulnerabilities using their phone or tablets environment. (eg. inspecting elements and viewing source code is NOT needed to complete any task.)
 
 Unlike traditional educational platforms, PwnShop aims to teach real-world security concepts through practical, hands-on experience. This environment has been laced with numerous vulnerabilities typically found in production applications, ranging from classic SQL injection and Cross-Site Scripting (XSS) to complex business logic flaws, leaky APIs, and hidden endpoints.
 
