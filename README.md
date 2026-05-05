@@ -22,10 +22,9 @@ When you exploit a bug, an explanation pop-up will explain the vulnerability and
 ---
 ## Easiest way to play
 On your Android phone or tablet download the APK file from the releases section and install on your device.
-(You may have to request Desktop site to see the releases section properly.)
 
 
-## Run Locally (Debug/Testing)
+## Run Locally on PC (Debug/Testing)
 
 **Prerequisites:**  Node.js
 
