@@ -32,7 +32,6 @@ Download the APK file in the release section on your Android device and install 
 2. In a Terminal cd PwnShop-Mobile-main
 3. Install dependencies:
   `npm install`
-4. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key (OPTIONAL)
 5. Run the app:
    `npm run dev`
 6. Press o and enter to open app.
