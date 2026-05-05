@@ -24,7 +24,7 @@ When you exploit a bug, an explanation pop-up will explain the vulnerability and
 Download the APK file in the release section on your Android device and install it.
 
 
-## Run Locally(Debug/Test)
+## Run Locally on PC(Debug/Test)
 
 **Prerequisites:**  Node.js
 
