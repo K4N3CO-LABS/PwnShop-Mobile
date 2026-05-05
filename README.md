@@ -20,9 +20,9 @@ Submit weird data, modify your local storage or requests, and look for unintende
 When you exploit a bug, an explanation pop-up will explain the vulnerability and how to fix it in code.
 
 ---
-## Easiest way to play
-Download the APK file in the release section on your Android device and install it.
-
+## Easiest way to get started
+1. Download the APK file from the release section onto your Android device.
+2. Install it. Open App.
 
 ## Run Locally on PC(Debug/Test)
 
@@ -39,5 +39,6 @@ Download the APK file in the release section on your Android device and install 
 
 Donations are always welcome and extremely appreciated. Thanks!                              
 BTC: bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
+
 
    *Created for Educational Purposes.DO NOT perform these attacks against real targets. Enjoy!*
