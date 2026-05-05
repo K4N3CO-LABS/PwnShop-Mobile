@@ -1691,17 +1691,17 @@ export default function App() {
             if (levelChallenges.length === 0) return null;
             return (
               <div key={level} className="space-y-3">
-                <h3 className="font-bold text-white text-lg border-b border-white/10 pb-2">Level {level}</h3>
+                <h3 className={`font-bold text-lg border-b pb-2 ${isDarkMode ? 'text-white border-white/10' : 'text-zinc-900 border-zinc-200'}`}>Level {level}</h3>
                 {levelChallenges.map(c => {
                   const solved = solvedChallenges.includes(c.id);
                   return (
-                    <div key={c.id} className={`p-4 rounded-xl border flex items-start space-x-4 transition-all ${solved ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-zinc-900 border-white/10 shadow-sm'}`}>
-                      <div className={`mt-1 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${solved ? 'text-emerald-500' : 'bg-zinc-900/80 text-zinc-300'}`}>
-                        {solved ? <CheckCircle2 w={24} h={24} /> : <div className="w-3 h-3 rounded-full bg-zinc-700" />}
+                    <div key={c.id} className={`p-4 rounded-xl border flex items-start space-x-4 transition-all ${solved ? 'bg-emerald-500/10 border-emerald-500/30' : (isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200 shadow-sm')}`}>
+                      <div className={`mt-1 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${solved ? 'text-emerald-500' : (isDarkMode ? 'bg-zinc-900/80 text-zinc-300' : 'bg-zinc-100 text-zinc-400')}`}>
+                        {solved ? <CheckCircle2 size={24} /> : <div className="w-3 h-3 rounded-full bg-zinc-700" />}
                       </div>
                       <div>
                         <div className="flex items-center space-x-2 mb-1">
-                          <h4 className={`font-bold ${solved ? 'text-emerald-400' : 'text-zinc-300'}`}>{c.name}</h4>
+                          <h4 className={`font-bold ${solved ? 'text-emerald-400' : (isDarkMode ? 'text-zinc-300' : 'text-zinc-900')}`}>{c.name}</h4>
                           <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
                             c.diff === 'Easy' ? 'bg-blue-100 text-blue-700' :
                             c.diff === 'Medium' ? 'bg-yellow-100 text-yellow-700' :
@@ -1710,7 +1710,7 @@ export default function App() {
                             {c.diff}
                           </span>
                         </div>
-                        <p className={`text-sm ${solved ? 'text-emerald-400' : 'text-zinc-500'} mb-3`}>
+                        <p className={`text-sm ${solved ? 'text-emerald-400' : (isDarkMode ? 'text-zinc-500' : 'text-zinc-600')} mb-3`}>
                           {c.desc}
                         </p>
                         {solved && (
@@ -1907,6 +1907,7 @@ export default function App() {
                         setTimeout(() => setResetConfirm(false), 3000);
                       } else {
                         try { localStorage.clear(); } catch(e) {}
+                        sessionTriggeredRef.current.clear();
                         setSolvedChallenges([]);
                         setUser(null);
                         setBountyCoins(0);
