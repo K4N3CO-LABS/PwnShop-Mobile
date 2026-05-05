@@ -552,7 +552,7 @@ export default function App() {
         <h2 className="text-2xl font-bold text-emerald-500 mb-2">About The PwnShop</h2>
         <div className="space-y-4 text-sm text-zinc-300 leading-relaxed">
           <p>
-            Welcome to the <strong>PwnShop</strong>—an educational, deliberately insecure mobile-first application designed for cybersecurity enthusiasts, beginners, and seasoned professionals alike.
+            Using inspiration from the OWASP Juice-Shop I introduce the <strong>PwnShop</strong>—an educational, deliberately insecure application built exclusively for mobile devices. It's designed for cybersecurity enthusiasts, beginners, and seasoned professionals to learn about exploits and vulnerabilities directly from their phone or tablet. (No need to inspect elements or view source code to complete tasks!)
           </p>
           <p>
             Unlike traditional educational platforms, PwnShop aims to teach real-world security concepts through practical, hands-on experience. This environment has been laced with numerous vulnerabilities typically found in production applications, ranging from classic SQL injection and Cross-Site Scripting (XSS) to complex business logic flaws, leaky APIs, and hidden endpoints.
@@ -597,9 +597,13 @@ export default function App() {
         </div>
       </div>
       
-      <div className="text-center text-xs text-zinc-600 mt-8">
-         <p>Created for Educational Purposes</p>
-         <p className="mt-1">Do not perform these attacks against real targets.</p>
+      <div className="text-center text-xs text-zinc-600 mt-8 space-y-2">
+         <p>Donations are always welcome and extremely appreciated. Thanks!</p>
+         <p className="font-mono text-[10px] break-all bg-black p-2 rounded-lg border border-white/5 mx-auto max-w-[250px]">BTC: bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt</p>
+         <div className="pt-4">
+           <p>Created for Educational Purposes.</p>
+           <p>Do not perform these attacks against real targets.</p>
+         </div>
       </div>
     </div>
   );

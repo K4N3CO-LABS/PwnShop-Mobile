@@ -6,7 +6,7 @@ Unlike traditional educational platforms, PwnShop aims to teach real-world secur
 
 Your ultimate goal is to step into the shoes of an ethical hacker. Navigate the application, hunt down security misconfigurations, and exploit these deliberate flaws. As you uncover vulnerabilities, you will unlock items in your Hacker Inventory, learn the underlying mechanisms of why the exploit works, and discover industry-standard mitigation strategies.
 
-There are currently 26 tasks with many more coming soon! Keep a close eye on the **Hacker Scoreboard** to track your progress. The more vulnerabilities you find, the closer you get to earning your completion certificate! Good luck, and remember: with great power comes great responsibility. Always conduct security research ethically and legally.
+Keep a close eye on the **Hacker Scoreboard** to track your progress. The more vulnerabilities you find, the closer you get to earning your completion certificate! Good luck, and remember: with great power comes great responsibility. Always conduct security research ethically and legally.
 
 ## How to play
 
@@ -20,11 +20,13 @@ Submit weird data, modify your local storage or requests, and look for unintende
 When you exploit a bug, an explanation pop-up will explain the vulnerability and how to fix it in code.
 
 ---
+
 ## Easiest way to get started
-1. Download the APK file from the release section onto your Android device.
+
+1. Download the APK file below onto your Android device.
 2. Install it. Open App.
 
-## Run Locally on PC(Debug/Test)
+## Run Locally on PC (Debug/Testing)
 
 **Prerequisites:**  Node.js
 
@@ -37,8 +39,9 @@ When you exploit a bug, an explanation pop-up will explain the vulnerability and
 6. Press o and enter to open app.
 
 
-Donations are always welcome and extremely appreciated. Thanks!                              
+Donations are always welcome and extremely appreciated. Thanks!
 BTC: bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
 
+*Created for Educational Purposes. DO NOT perform these attacks against real targets.*
 
-   *Created for Educational Purposes.DO NOT perform these attacks against real targets. Enjoy!*
+
