@@ -20,8 +20,11 @@ Submit weird data, modify your local storage or requests, and look for unintende
 When you exploit a bug, an explanation pop-up will explain the vulnerability and how to fix it in code.
 
 ---
+## Easiest way to play
+Download the APK file in the release section on your Android device and install it.
 
-## Run Locally
+
+## Run Locally(Debug/Test)
 
 **Prerequisites:**  Node.js
 
@@ -34,11 +37,8 @@ When you exploit a bug, an explanation pop-up will explain the vulnerability and
    `npm run dev`
 6. Press o and enter to open app.
 
-  
-   *Created for Educational Purposes.*
-*DO NOT perform these attacks against real targets.*
 
-
-Donations are always welcome and extremely appreciated. Thanks!
-
+Donations are always welcome and extremely appreciated. Thanks!                              
 BTC: bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
+
+   *Created for Educational Purposes.DO NOT perform these attacks against real targets. Enjoy!*
