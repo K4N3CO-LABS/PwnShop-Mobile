@@ -25,7 +25,9 @@ import {
   Send,
   Trash2,
   Sun,
-  Moon
+  Moon,
+  Zap,
+  ArrowLeft
 } from 'lucide-react';
 
 // --- UTILS ---
@@ -146,6 +148,24 @@ const safeStorage = {
       memoryStorage[key] = value;
     }
   }
+};
+
+// --- COMPONENTS ---
+const TypewriterText = ({ text }: { text: string }) => {
+  const [displayedText, setDisplayedText] = React.useState('');
+  
+  React.useEffect(() => {
+      let i = 0;
+      setDisplayedText('');
+      const timer = setInterval(() => {
+          setDisplayedText(text.substring(0, i));
+          i++;
+          if (i > text.length) clearInterval(timer);
+      }, 15);
+      return () => clearInterval(timer);
+  }, [text]);
+
+  return <span>{displayedText}</span>;
 };
 
 export default function App() {
@@ -493,14 +513,14 @@ export default function App() {
       </div>
       
       <div>
-        <h3 className="font-bold text-white mb-3 text-lg">Featured Deals</h3>
+        <h3 className={`font-bold mb-3 text-lg ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>Featured Deals</h3>
         <div className="flex space-x-4 overflow-x-auto pb-4 snap-x">
           {PRODUCTS.slice(0, 6).map(p => (
-            <div key={p.id} className="snap-start min-w-[180px] w-48 bg-zinc-900 p-4 rounded-xl shadow-sm border border-white/10 flex flex-col items-center h-auto">
+            <div key={p.id} className={`snap-start min-w-[180px] w-48 p-4 rounded-xl shadow-sm border flex flex-col items-center h-auto ${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200'}`}>
               <div className="flex flex-col items-center flex-1 w-full text-center">
                 <span className="text-4xl mb-3">{p.image}</span>
-                <span className="font-medium text-sm mb-1 text-white">{p.name}</span>
-                <span className="text-xs text-zinc-400 mb-2 leading-tight flex-1">{p.desc}</span>
+                <span className={`font-medium text-sm mb-1 ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>{p.name}</span>
+                <span className={`text-xs mb-2 leading-tight flex-1 ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>{p.desc}</span>
               </div>
               <div className="w-full mt-auto text-center">
                 <span className="text-emerald-500 font-bold block mb-2">${p.price.toFixed(2)}</span>
@@ -513,13 +533,13 @@ export default function App() {
         </div>
       </div>
       
-      <div className="bg-zinc-900 p-5 rounded-2xl shadow-sm border border-white/10 mt-4">
-        <h3 className="font-bold text-white mb-4 text-lg">Community Feedback</h3>
+      <div className={`p-5 rounded-2xl shadow-sm border mt-4 ${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200'}`}>
+        <h3 className={`font-bold mb-4 text-lg ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>Community Feedback</h3>
         <div className="space-y-3 mb-4">
           {feedbacks.map((f, i) => (
-             <div key={i} className="bg-zinc-900/50 p-3 rounded-xl border border-white/">
+             <div key={i} className={`p-3 rounded-xl border ${isDarkMode ? 'bg-zinc-900/50 border-white/10' : 'bg-zinc-50 border-zinc-200'}`}>
                 <p className="text-xs font-bold text-zinc-500 mb-1">{f.author}</p>
-                {f.html ? <div dangerouslySetInnerHTML={{ __html: f.text }} className="text-sm italic border-l-2 border-emerald-500/40 pl-2"></div> : <p className="text-sm text-zinc-300">{f.text}</p>}
+                {f.html ? <div dangerouslySetInnerHTML={{ __html: f.text }} className={`text-sm italic border-l-2 border-emerald-500/40 pl-2 ${isDarkMode ? 'text-zinc-300' : 'text-zinc-700'}`}></div> : <p className={`text-sm ${isDarkMode ? 'text-zinc-300' : 'text-zinc-700'}`}>{f.text}</p>}
              </div>
           ))}
         </div>
@@ -702,14 +722,14 @@ export default function App() {
 
   const renderCart = () => (
     <div className="p-4 space-y-4">
-      <h2 className="text-2xl font-bold text-white mb-4">Your Cart</h2>
+      <h2 className={`text-2xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>Your Cart</h2>
       {cart.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-12 bg-zinc-900 border border-dashed border-white/20 text-center rounded-2xl h-64">
-           <div className="bg-zinc-800 p-4 rounded-full mb-4 shadow-inner">
+        <div className={`flex flex-col items-center justify-center p-12 border border-dashed text-center rounded-2xl h-64 ${isDarkMode ? 'bg-zinc-900 border-white/20' : 'bg-zinc-50 border-zinc-300'}`}>
+           <div className={`p-4 rounded-full mb-4 shadow-inner ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}>
              <ShoppingCart className="w-12 h-12 text-zinc-500" />
            </div>
-           <p className="text-lg font-bold text-zinc-300 mb-1">Your cart is empty.</p>
-           <p className="text-sm text-zinc-500 max-w-[200px] leading-relaxed">Looks like you haven't added anything yet. Start browsing to find something nice!</p>
+           <p className={`text-lg font-bold mb-1 ${isDarkMode ? 'text-zinc-300' : 'text-zinc-800'}`}>Your cart is empty.</p>
+           <p className={`text-sm max-w-[200px] leading-relaxed ${isDarkMode ? 'text-zinc-500' : 'text-zinc-600'}`}>Looks like you haven't added anything yet. Start browsing to find something nice!</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -717,19 +737,19 @@ export default function App() {
             const p = PRODUCTS.find(prod => prod.id === item.id);
             if (!p) return null;
             return (
-              <div key={item.id} className="bg-zinc-900 p-4 rounded-xl flex items-center justify-between shadow-sm border border-white/">
+              <div key={item.id} className={`p-4 rounded-xl flex items-center justify-between shadow-sm border ${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200'}`}>
                 <div className="flex items-center space-x-3">
                   <span className="text-2xl">{p.image}</span>
                   <div>
-                    <h4 className="font-bold text-white text-sm">{p.name}</h4>
+                    <h4 className={`font-bold text-sm ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>{p.name}</h4>
                     <p className="text-emerald-500 text-xs">${p.price}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center bg-zinc-900/50 rounded-lg p-1 border border-white/10">
+                  <div className={`flex items-center rounded-lg p-1 border ${isDarkMode ? 'bg-zinc-900/50 border-white/10' : 'bg-zinc-50 border-zinc-200'}`}>
                     <input 
                       type="text" 
-                      className="w-16 text-center bg-transparent outline-none font-medium text-zinc-300" 
+                      className={`w-16 text-center bg-transparent outline-none font-medium ${isDarkMode ? 'text-zinc-300' : 'text-zinc-800'}`} 
                       value={item.qty}
                       onChange={(e) => updateCartQty(item.id, e.target.value)}
                     />
@@ -746,7 +766,7 @@ export default function App() {
             );
           })}
           
-          <div className="bg-black text-white p-5 rounded-xl mt-6">
+          <div className={`p-5 rounded-xl mt-6 ${isDarkMode ? 'bg-black text-white' : 'bg-zinc-100 text-zinc-900 border border-zinc-200'}`}>
             <div className="flex justify-between items-center mb-4">
               <span className="text-zinc-600">Total Price</span>
               <span className={`text-2xl font-bold ${cartTotal < 0 ? 'text-emerald-400' : ''}`}>
@@ -1052,15 +1072,15 @@ export default function App() {
             </button>
             <div className="text-center mt-4 space-y-2">
                {isRegistering ? (
-                  <p className="text-sm text-zinc-400">
+                  <p className={`text-sm ${isDarkMode ? 'text-zinc-400' : 'text-zinc-600'}`}>
                     Already have an account? <button type="button" onClick={() => { setIsRegistering(false); setLoginError(null); }} className="text-emerald-600 font-bold hover:underline">Log in</button>
                   </p>
                ) : (
                   <>
-                    <p className="text-sm text-zinc-400 mb-2">
+                    <p className={`text-sm mb-2 ${isDarkMode ? 'text-zinc-400' : 'text-zinc-600'}`}>
                       Don't have an account? <button type="button" onClick={() => { setIsRegistering(true); setLoginError(null); }} className="text-emerald-600 font-bold hover:underline">Register now</button>
                     </p>
-                    <p className="text-xs text-zinc-500 italic">Wait, is there a way to log in without a password?</p>
+                    <p className={`text-xs italic ${isDarkMode ? 'text-zinc-500' : 'text-zinc-700'}`}>Wait, is there a way to log in without a password?</p>
                   </>
                )}
             </div>
@@ -1069,14 +1089,14 @@ export default function App() {
         </div>
         )}
 
-        <div className="mt-8 pt-6 border-t border-white/10 text-center relative overflow-hidden">
+        <div className={`mt-8 pt-6 border-t text-center relative overflow-hidden ${isDarkMode ? 'border-white/10' : 'border-zinc-200'}`}>
            <div className="absolute top-0 left-0 w-full h-[1px] bg-emerald-500/20 animate-[scan_2s_linear_infinite]" />
-           <h4 className="text-[10px] font-bold text-zinc-500 mb-4 tracking-[0.2em] uppercase">Secret Recovery Protocol</h4>
+           <h4 className={`text-[10px] font-bold mb-4 tracking-[0.2em] uppercase ${isDarkMode ? 'text-zinc-500' : 'text-zinc-600'}`}>Secret Recovery Protocol</h4>
            <div className="flex flex-col items-center space-y-4">
-              <p className="text-[10px] text-zinc-600 font-mono">ENCRYPTED GATEWAY // ATTEMPTS: {bruteForceTaps}</p>
+              <p className={`text-[10px] font-mono ${isDarkMode ? 'text-zinc-600' : 'text-zinc-500'}`}>ENCRYPTED GATEWAY // ATTEMPTS: {bruteForceTaps}</p>
               <div className="flex space-x-2">
                  {[1, 2, 3, 4].map(i => (
-                   <div key={i} className="w-10 h-12 bg-zinc-900/50 rounded-lg border border-white/5 flex items-center justify-center text-emerald-500 font-mono text-xl shadow-inner">
+                   <div key={i} className={`w-10 h-12 rounded-lg border flex items-center justify-center text-emerald-500 font-mono text-xl shadow-inner ${isDarkMode ? 'bg-zinc-900/50 border-white/5' : 'bg-zinc-100 border-zinc-200'}`}>
                      *
                    </div>
                  ))}
@@ -1223,8 +1243,31 @@ export default function App() {
         </div>
       </div>
 
-      <div className="bg-zinc-900 rounded-xl border border-white/10 p-4">
-        <h4 className="font-bold text-zinc-300 mb-3 text-sm flex items-center space-x-2">
+      <div className={`p-5 rounded-xl border ${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200'}`}>
+        <h4 className={`font-bold mb-3 text-sm flex items-center space-x-2 ${isDarkMode ? 'text-zinc-300' : 'text-zinc-800'}`}>
+          <Zap size={14} className="text-red-500" />
+          <span>Emergency Protocols</span>
+        </h4>
+        <div className="grid grid-cols-2 gap-3">
+           <button 
+             onClick={() => changeView('bomb')} 
+             className={`p-3 rounded-xl flex flex-col items-center space-y-2 transition-all border ${isDarkMode ? 'bg-red-500/10 border-red-500/30 text-red-500 hover:bg-red-500/20' : 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100'}`}
+           >
+              <AlertCircle size={24} />
+              <span className="text-[10px] font-bold uppercase">Panic Mode</span>
+           </button>
+           <button 
+             onClick={() => changeView('debug')} 
+             className={`p-3 rounded-xl flex flex-col items-center space-y-2 transition-all border ${isDarkMode ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/20' : 'bg-emerald-50 border-emerald-200 text-emerald-600 hover:bg-emerald-100'}`}
+           >
+              <Terminal size={24} />
+              <span className="text-[10px] font-bold uppercase">System Logs</span>
+           </button>
+        </div>
+      </div>
+
+      <div className={`p-4 rounded-xl border ${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200 shadow-sm'}`}>
+        <h4 className={`font-bold border-b pb-2 flex items-center space-x-2 ${isDarkMode ? 'text-zinc-300 border-white/5' : 'text-zinc-800 border-zinc-100'}`}>
           <Lock size={14} className="text-emerald-500" />
           <span>Advanced Config (BETA)</span>
         </h4>
@@ -1291,20 +1334,20 @@ export default function App() {
   const renderLootBox = () => {
     return (
         <div className="p-6">
-            <h2 className="text-2xl font-bold text-white mb-2">Mystery Loot Box</h2>
+            <h2 className={`text-2xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>Mystery Loot Box</h2>
             <p className="text-sm text-zinc-400 mb-6">Spend $10 for a chance to win a high-tier product!</p>
 
-            <div className="bg-zinc-900 border border-white/10 rounded-2xl p-6 text-center shadow-lg relative overflow-hidden mb-6">
+            <div className={`border rounded-2xl p-6 text-center shadow-lg relative overflow-hidden mb-6 ${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200'}`}>
                  <div className="text-4xl mb-4">🎁</div>
                  <div className="mb-4">
-                     <p className="text-sm text-zinc-500 font-bold mb-1">Your Balance</p>
+                     <p className={`text-sm font-bold mb-1 ${isDarkMode ? 'text-zinc-500' : 'text-zinc-400'}`}>Your Balance</p>
                      <p className="text-2xl text-emerald-400 font-mono">${userMoney}</p>
                  </div>
                  
                  <div className="flex items-center justify-center space-x-2 mb-6">
-                     <button onClick={() => setLootBoxBet(prev => prev - 10)} className="w-8 h-8 rounded bg-zinc-800 text-white font-bold hover:bg-zinc-700">-</button>
-                     <input type="text" value={lootBoxBet} onChange={e => setLootBoxBet(parseInt(e.target.value) || 0)} className="w-20 bg-black text-white text-center py-1 rounded border border-white/10 font-mono" />
-                     <button onClick={() => setLootBoxBet(prev => prev + 10)} className="w-8 h-8 rounded bg-zinc-800 text-white font-bold hover:bg-zinc-700">+</button>
+                     <button onClick={() => setLootBoxBet(prev => prev - 10)} className={`w-8 h-8 rounded font-bold transition-colors ${isDarkMode ? 'bg-zinc-800 text-white hover:bg-zinc-700' : 'bg-zinc-200 text-zinc-800 hover:bg-zinc-300'}`}>-</button>
+                     <input type="text" value={lootBoxBet} onChange={e => setLootBoxBet(parseInt(e.target.value) || 0)} className={`w-20 text-center py-1 rounded border font-mono ${isDarkMode ? 'bg-black text-white border-white/10' : 'bg-zinc-50 text-zinc-900 border-zinc-300'}`} />
+                     <button onClick={() => setLootBoxBet(prev => prev + 10)} className={`w-8 h-8 rounded font-bold transition-colors ${isDarkMode ? 'bg-zinc-800 text-white hover:bg-zinc-700' : 'bg-zinc-200 text-zinc-800 hover:bg-zinc-300'}`}>+</button>
                  </div>
 
                  <button onClick={() => {
@@ -1345,12 +1388,24 @@ export default function App() {
       // The challenge is to fix an intentional evaluation of a string
       // Let's make it a React Code Evaluation input.
       return (
-          <div className="p-8 h-full flex flex-col items-center justify-center text-center bg-black relative">
+          <div className="h-full flex flex-col bg-black relative">
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-red-900/20 via-black to-black z-0 pointer-events-none" />
-              <div className="relative z-10 w-full max-w-sm space-y-6">
-                  <h2 className="text-2xl font-black text-red-500 uppercase tracking-widest animate-pulse">Critical Meltdown</h2>
-                  
-                  {bombTimeLeft === null ? (
+              
+              <div className="p-6 relative z-20">
+                <button 
+                  onClick={() => changeView('admin')}
+                  className="flex items-center space-x-2 text-red-500/60 hover:text-red-500 font-bold transition-colors"
+                >
+                  <ArrowLeft size={16} />
+                  <span>Back to Admin</span>
+                </button>
+              </div>
+
+              <div className="flex-1 flex flex-col items-center justify-center text-center p-8 relative z-10 w-full">
+                <div className="max-w-sm space-y-6">
+                    <h2 className="text-2xl font-black text-red-500 uppercase tracking-widest animate-pulse">Critical Meltdown</h2>
+                    
+                    {bombTimeLeft === null ? (
                       <div className="bg-zinc-900 p-6 rounded-xl border border-red-500/30">
                           <p className="text-zinc-400 text-sm mb-4">A rogue process is destroying the server. You have 60 seconds to inject a halt command into the debugger payload before total failure.</p>
                           <button 
@@ -1393,6 +1448,7 @@ export default function App() {
                           <p className="text-[10px] text-zinc-600 mt-4 leading-tight">Use a command separator to append the $HALT command.</p>
                       </div>
                   )}
+                </div>
               </div>
           </div>
       );
@@ -1445,10 +1501,10 @@ export default function App() {
     };
 
     return (
-        <div className="p-6 h-full flex flex-col bg-zinc-950 font-mono">
+        <div className={`p-6 h-full flex flex-col font-mono transition-colors ${isDarkMode ? 'bg-zinc-950 text-zinc-300' : 'bg-zinc-50 text-zinc-800'}`}>
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-red-500 uppercase tracking-widest flex items-center space-x-2">
-                    <Globe className="text-red-600" />
+                <h2 className={`text-xl font-bold uppercase tracking-widest flex items-center space-x-2 ${isDarkMode ? 'text-red-500' : 'text-red-600'}`}>
+                    <Globe className={isDarkMode ? 'text-red-600' : 'text-red-500'} />
                     <span>Dark_Market</span>
                 </h2>
                 <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-3 py-1 rounded text-sm font-bold animate-pulse">
@@ -1462,17 +1518,17 @@ export default function App() {
                 {Object.entries(marketTools).map(([id, t]) => {
                     const owned = inventory.includes(id);
                     return (
-                        <div key={id} className={`border ${owned ? 'bg-zinc-900/50 border-white/5 opacity-50' : 'bg-black border-red-500/20'} rounded-lg p-4 flex items-start space-x-4 transition-all`}>
-                            <div className="text-2xl w-12 h-12 flex items-center justify-center bg-zinc-900 rounded border border-white/5">
+                        <div key={id} className={`border rounded-lg p-4 flex items-start space-x-4 transition-all ${owned ? (isDarkMode ? 'bg-zinc-900/50 border-white/5 opacity-50' : 'bg-zinc-200/50 border-zinc-300 opacity-50') : (isDarkMode ? 'bg-black border-red-500/20' : 'bg-white border-red-200 shadow-sm')}`}>
+                            <div className={`text-2xl w-12 h-12 flex items-center justify-center rounded border ${isDarkMode ? 'bg-zinc-900 border-white/5' : 'bg-zinc-100 border-zinc-200'}`}>
                                 {t.icon}
                             </div>
                             <div className="flex-1">
-                                <h3 className={`font-bold ${owned ? 'text-zinc-500' : 'text-red-400'} uppercase text-sm mb-1`}>{t.name}</h3>
-                                <p className="text-[10px] text-zinc-600 mb-2 leading-tight">{t.desc}</p>
+                                <h3 className={`font-bold uppercase text-sm mb-1 ${owned ? 'text-zinc-500' : (isDarkMode ? 'text-red-400' : 'text-red-600')}`}>{t.name}</h3>
+                                <p className={`text-[10px] mb-2 leading-tight ${isDarkMode ? 'text-zinc-600' : 'text-zinc-500'}`}>{t.desc}</p>
                                 <button 
                                     onClick={() => buyTool(id, t.price)}
                                     disabled={owned || bountyCoins < t.price}
-                                    className={`text-xs font-bold px-3 py-1 rounded w-full border ${owned ? 'bg-zinc-800 border-zinc-700 text-zinc-500 cursor-not-allowed' : bountyCoins >= t.price ? 'bg-red-500/10 border-red-500/50 text-red-500 hover:bg-red-500/20 active:scale-95' : 'bg-black border-red-900/50 text-red-900/50 cursor-not-allowed'} transition-all`}
+                                    className={`text-xs font-bold px-3 py-1 rounded w-full border transition-all ${owned ? (isDarkMode ? 'bg-zinc-800 border-zinc-700 text-zinc-500 cursor-not-allowed' : 'bg-zinc-200 border-zinc-300 text-zinc-400 cursor-not-allowed') : bountyCoins >= t.price ? (isDarkMode ? 'bg-red-500/10 border-red-500/50 text-red-500 hover:bg-red-500/20 active:scale-95' : 'bg-red-50 border-red-500 text-red-600 hover:bg-red-100 active:scale-95') : (isDarkMode ? 'bg-black border-red-900/50 text-red-900/50 cursor-not-allowed' : 'bg-zinc-50 border-red-100 text-red-200 cursor-not-allowed')}`}
                                 >
                                     {owned ? 'OWNED' : `BUY [${t.price} BC]`}
                                 </button>
@@ -1497,7 +1553,7 @@ export default function App() {
 
     return (
         <div className="p-6 h-full flex flex-col">
-            <h2 className="text-2xl font-bold text-white mb-2 flex items-center space-x-2">
+            <h2 className={`text-2xl font-bold mb-2 flex items-center space-x-2 ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>
                 <Wrench className="text-emerald-500" />
                 <span>Hacker Inventory</span>
             </h2>
@@ -1522,13 +1578,13 @@ export default function App() {
                         {inventory.map(toolId => {
                             const t = tools[toolId] || { name: toolId, icon: '🔧', desc: 'Unknown tool.' };
                             return (
-                                <div key={toolId} className="bg-zinc-900 border border-white/10 rounded-xl p-4 flex items-start space-x-4">
-                                    <div className="text-3xl bg-black w-14 h-14 flex items-center justify-center rounded-lg border border-white/5 shadow-inner">
+                                <div key={toolId} className={`border rounded-xl p-4 flex items-start space-x-4 ${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200 shadow-sm'}`}>
+                                    <div className={`text-3xl w-14 h-14 flex items-center justify-center rounded-lg border shadow-inner ${isDarkMode ? 'bg-black border-white/5' : 'bg-zinc-100 border-zinc-200'}`}>
                                         {t.icon}
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-white mb-1">{t.name}</h3>
-                                        <p className="text-xs text-zinc-500 leading-relaxed">{t.desc}</p>
+                                        <h3 className={`font-bold mb-1 ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>{t.name}</h3>
+                                        <p className={`text-xs leading-relaxed ${isDarkMode ? 'text-zinc-500' : 'text-zinc-600'}`}>{t.desc}</p>
                                     </div>
                                 </div>
                             );
@@ -1542,6 +1598,14 @@ export default function App() {
 
   const renderDebug = () => (
     <div className="p-4 space-y-4">
+      <button 
+        onClick={() => changeView('admin')}
+        className={`flex items-center space-x-2 font-bold mb-2 transition-colors ${isDarkMode ? 'text-zinc-500 hover:text-zinc-300' : 'text-zinc-400 hover:text-zinc-600'}`}
+      >
+        <ArrowLeft size={16} />
+        <span>Back to Admin</span>
+      </button>
+
       <div className="bg-black p-4 rounded-xl flex items-start space-x-3 mb-6">
         <Terminal className="text-emerald-500 w-6 h-6 flex-shrink-0 mt-1" />
         <div>
@@ -1567,23 +1631,6 @@ export default function App() {
       </button>
     </div>
   );
-
-  const TypewriterText = ({ text }: { text: string }) => {
-    const [displayedText, setDisplayedText] = useState('');
-    
-    useEffect(() => {
-        let i = 0;
-        setDisplayedText('');
-        const timer = setInterval(() => {
-            setDisplayedText(text.substring(0, i));
-            i++;
-            if (i > text.length) clearInterval(timer);
-        }, 15);
-        return () => clearInterval(timer);
-    }, [text]);
-
-    return <span>{displayedText}</span>;
-  };
 
   const renderTerminal = () => {
     const executeCommand = (e: React.FormEvent) => {
@@ -1874,10 +1921,6 @@ export default function App() {
                     <ShoppingCart w={18} h={18} className={isDarkMode ? "text-zinc-600" : "text-zinc-500"} />
                     <span className="font-medium text-sm">Dark Web Market</span>
                   </button>
-                  <button onClick={() => { setIsMenuOpen(false); changeView('bomb'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'bomb' ? 'bg-red-500/10 text-red-600' : (isDarkMode ? 'hover:bg-zinc-900/50 text-zinc-300' : 'hover:bg-zinc-100 text-zinc-900')}`}>
-                    <AlertCircle w={18} h={18} className={currentView === 'bomb' ? 'text-red-500' : (isDarkMode ? 'text-zinc-600' : 'text-zinc-500')} />
-                    <span className="font-medium text-sm">Panic Mode (Blind)</span>
-                  </button>
 
                   {solvedChallenges.length >= CHALLENGES.length && (
                       <button onClick={() => { setIsMenuOpen(false); changeView('certificate'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'certificate' ? 'bg-emerald-500/10 text-emerald-600' : (isDarkMode ? 'hover:bg-zinc-900/50 text-zinc-300' : 'hover:bg-zinc-100 text-zinc-900')} animate-pulse`}>
@@ -1888,10 +1931,6 @@ export default function App() {
                   <button onClick={() => { setIsMenuOpen(false); changeView('admin'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'admin' ? 'bg-emerald-500/10 text-emerald-600' : (isDarkMode ? 'hover:bg-zinc-900/50 text-zinc-300' : 'hover:bg-zinc-100 text-zinc-900')}`}>
                     <ShieldAlert w={18} h={18} className={isDarkMode ? "text-zinc-600" : "text-zinc-500"} />
                     <span className="font-medium text-sm">Admin Panel</span>
-                  </button>
-                  <button onClick={() => { setIsMenuOpen(false); changeView('debug'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'debug' ? 'bg-emerald-500/10 text-emerald-600' : (isDarkMode ? 'hover:bg-zinc-900/50 text-zinc-300' : 'hover:bg-zinc-100 text-zinc-900')}`}>
-                    <AlertCircle w={18} h={18} className={isDarkMode ? "text-zinc-600" : "text-zinc-500"} />
-                    <span className="font-medium text-sm">System Logs</span>
                   </button>
                   <button onClick={() => { setIsMenuOpen(false); changeView('terminal'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'terminal' ? 'bg-emerald-500/10 text-emerald-600' : (isDarkMode ? 'hover:bg-zinc-900/50 text-zinc-300' : 'hover:bg-zinc-100 text-zinc-900')}`}>
                     <Terminal w={18} h={18} className={isDarkMode ? "text-zinc-600" : "text-zinc-500"} />
@@ -1911,10 +1950,33 @@ export default function App() {
                         setSolvedChallenges([]);
                         setUser(null);
                         setBountyCoins(0);
+                        setUserMoney(100);
                         setInventory([]);
                         setCart([]);
+                        setTerminalHistory([]);
+                        setTerminalInput('');
+                        setDebugLogs([
+                          "System booted up.",
+                          "DB connection established.",
+                          "User password stored as plaintext! (Fix later)"
+                        ]);
+                        setBruteForceTaps(0);
+                        setIsAdminOverridden(false);
+                        setOverrideInput('');
                         setBombTimeLeft(null);
                         setBombDefused(false);
+                        setLootBoxBet(10);
+                        setChatMessages([{sender: 'AI', text: 'Hello! I am your AI support assistant.'}]);
+                        setFeedbacks([
+                          { author: 'Alice', text: 'Love the vintage guitars!', html: false },
+                          { author: 'Admin', text: 'Please report any bugs to the IT team.', html: false }
+                        ]);
+                        setSearchQuery('');
+                        setLoginError(null);
+                        setIsWafEnabled(true);
+                        setVersionTaps(0);
+                        setIsDarkMode(true);
+                        setIsGlitching(false);
                         setCurrentView('home');
                         window.location.hash = 'home';
                         setIsMenuOpen(false);
