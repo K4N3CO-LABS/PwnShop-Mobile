@@ -22,8 +22,8 @@ Discovering a bug isn’t just a win—it’s a lesson. Every vulnerability you 
 ---
 
 ## Easiest way to get started
-Download the APK file below onto your Android device.
-Install it. Open App.
+1. Download the APK file below onto your Android device.
+2. Install it. Open App.
 
 ## Run Locally on PC (Debug/Testing)
 **Prerequisites:** Node.js
