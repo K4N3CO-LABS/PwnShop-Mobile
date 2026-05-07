@@ -35,6 +35,7 @@ Discovering a bug isn’t just a win—it’s a lesson. Every vulnerability you 
 5. Press o and enter to open app.
 
 ---
+**Please star this project if you find it useful. :)**
 
 Donations are always welcome and extremely appreciated. Thanks! 
 **BTC:** bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
