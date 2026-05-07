@@ -591,7 +591,7 @@ export default function App() {
         <h2 className="text-2xl font-bold text-emerald-500 mb-2">About The PwnShop</h2>
         <div className={`space-y-4 text-sm ${isDarkMode ? 'text-zinc-300' : 'text-zinc-900'} leading-relaxed`}>
           <p>
-            Using inspiration from the OWASP Juice-Shop I introduce the <strong>PwnShop</strong>—an educational, deliberately insecure application built exclusively for mobile devices. It's designed for cybersecurity enthusiasts, beginners, and seasoned professionals to learn about exploits and vulnerabilities directly from their phone or tablet. (No need to inspect elements or view source code to complete tasks!)
+            Using inspiration from the OWASP Juice-Shop I introduce the <strong>PwnShop</strong>—an educational, deliberately insecure application built exclusively for mobile devices. It's designed for cybersecurity enthusiasts, beginners, and seasoned professionals to learn about exploits and vulnerabilities directly from their phone or tablet.
           </p>
           <p>
             Unlike traditional educational platforms, PwnShop aims to teach real-world security concepts through practical, hands-on experience. This environment has been laced with numerous vulnerabilities typically found in production applications, ranging from classic SQL injection and Cross-Site Scripting (XSS) to complex business logic flaws, leaky APIs, and hidden endpoints.
@@ -600,7 +600,7 @@ export default function App() {
             Your ultimate goal is to step into the shoes of an ethical hacker. Navigate the application, hunt down security misconfigurations, and exploit these deliberate flaws. As you uncover vulnerabilities, you will unlock items in your Hacker Inventory, learn the underlying mechanisms of why the exploit works, and discover industry-standard mitigation strategies.
           </p>
           <p>
-            Keep a close eye on the <b>Hack Scoreboard</b> to track your progress. The more vulnerabilities you find, the closer you get to earning your completion certificate! Good luck, and remember: with great power comes great responsibility. Always conduct security research ethically and legally.
+            Keep a close eye on the <b>Hacker Scoreboard</b> to track your progress. The more vulnerabilities you find, the closer you get to earning your completion certificate! Good luck, and remember: with great power comes great responsibility. Always conduct security research ethically and legally.
           </p>
         </div>
       </div>
@@ -612,8 +612,8 @@ export default function App() {
               <Search size={20} />
            </div>
            <div>
-             <h4 className={`font-bold ${isDarkMode ? 'text-white' : 'text-zinc-900'} text-sm`}>1. Explore the app</h4>
-             <p className={`text-xs ${isDarkMode ? 'text-zinc-500' : 'text-zinc-800'} mt-1`}>Look closely at how data is saved, how URLs change, and the comments developers left behind.</p>
+             <h4 className={`font-bold ${isDarkMode ? 'text-white' : 'text-zinc-900'} text-sm`}>1. Discover & Explore</h4>
+             <p className={`text-xs ${isDarkMode ? 'text-zinc-500' : 'text-zinc-800'} mt-1`}>Hunt for "leaky" info by tapping through every corner of the app. Look for developer notes left in plain sight, misconfigured buttons, and hidden menus that were never meant for the end-user's eyes.</p>
            </div>
         </div>
         <div className={`${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200'} rounded-xl p-4 border flex items-start space-x-3 shadow-sm`}>
@@ -622,16 +622,16 @@ export default function App() {
            </div>
            <div>
              <h4 className={`font-bold ${isDarkMode ? 'text-white' : 'text-zinc-900'} text-sm`}>2. Try to break it</h4>
-             <p className={`text-xs ${isDarkMode ? 'text-zinc-500' : 'text-zinc-800'} mt-1`}>Submit weird data, modify your local storage or requests, and look for unintended behavior.</p>
+             <p className={`text-xs ${isDarkMode ? 'text-zinc-500' : 'text-zinc-800'} mt-1`}>Feed the app "broken" data, exploit how it saves your info locally, and try to trick the interface into giving you access or information it shouldn't.</p>
            </div>
         </div>
         <div className={`${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200'} rounded-xl p-4 border flex items-start space-x-3 shadow-sm`}>
            <div className={`${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-100'} p-2 rounded-lg text-emerald-500`}>
-              <CheckCircle2 size={20} />
+              <Zap size={20} />
            </div>
            <div>
-             <h4 className={`font-bold ${isDarkMode ? 'text-white' : 'text-zinc-900'} text-sm`}>3. Learn and mitigate</h4>
-             <p className={`text-xs ${isDarkMode ? 'text-zinc-500' : 'text-zinc-800'} mt-1`}>When you exploit a bug, an explanation pop-up will explain the vulnerability and how to fix it in code.</p>
+             <h4 className={`font-bold ${isDarkMode ? 'text-white' : 'text-zinc-900'} text-sm`}>3. Hack to learn, learn to build</h4>
+             <p className={`text-xs ${isDarkMode ? 'text-zinc-500' : 'text-zinc-800'} mt-1`}>Discovering a bug isn’t just a win—it’s a lesson. Every vulnerability you find reveals the technical "why" and the industry-standard way to patch it.</p>
            </div>
         </div>
       </div>
@@ -640,8 +640,7 @@ export default function App() {
          <p>Donations are always welcome and extremely appreciated. Thanks!</p>
          <p className={`font-mono text-[10px] break-all p-2 rounded-lg border mx-auto max-w-[250px] ${isDarkMode ? 'bg-black border-white/5 text-zinc-400' : 'bg-zinc-100 border-zinc-300 text-zinc-800'}`}>BTC: bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt</p>
          <div className="pt-4">
-           <p>Created for Educational Purposes.</p>
-           <p>Do not perform these attacks against real targets.</p>
+           <p>Created for Educational Purposes. DO NOT perform these attacks against real targets. Enjoy!!</p>
          </div>
       </div>
     </div>
