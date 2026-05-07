@@ -10,14 +10,14 @@ Keep a close eye on the **Hacker Scoreboard** to track your progress. The more v
 
 ## How to play
 
-### 1. Explore the app
-Look closely at how data is saved, how URLs change, and the comments developers left behind.
+### 1. Discover & Explore
+Hunt for "leaky" info by tapping through every corner of the app. Look for developer notes left in plain sight, misconfigured buttons, and hidden menus that were never meant for the end-user's eyes.
 
 ### 2. Try to break it
-Submit weird data, modify your local storage or requests, and look for unintended behavior.
+Feed the app "broken" data, exploit how it saves your info locally, and try to trick the interface into giving you access or information it shouldn't.
 
-### 3. Learn and mitigate
-When you exploit a bug, an explanation pop-up will explain the vulnerability and how to fix it in code.
+### 3. Hack to learn, learn to build
+Discovering a bug isn’t just a win—it’s a lesson. Every vulnerability you find reveals the technical "why" and the industry-standard way to patch it.
 
 ---
 
@@ -30,10 +30,11 @@ When you exploit a bug, an explanation pop-up will explain the vulnerability and
 
 **Prerequisites:**  Node.js
 
-1. Download zip file & unzip.
-2. In a Terminal cd PwnShop-Mobile-main
-3. Install dependencies:
-  `npm install`
+1. Git clone`https://github.com/K4Links/PwnShop-Mobile.git`or Download zip file and unzip.
+2. In a Terminal:
+   `cd PwnShop-Mobile`
+4. Install dependencies:
+   `npm install`
 5. Run the app:
    `npm run dev`
 6. Press o and enter to open app.
@@ -42,6 +43,6 @@ When you exploit a bug, an explanation pop-up will explain the vulnerability and
 Donations are always welcome and extremely appreciated. Thanks!
 BTC: bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
 
-*Created for Educational Purposes. DO NOT perform these attacks against real targets.*
+**Created for Educational Purposes. DO NOT perform these attacks against real targets. Enjoy!!**
 
 
