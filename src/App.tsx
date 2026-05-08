@@ -225,6 +225,40 @@ export default function App() {
   const [bruteForceTaps, setBruteForceTaps] = useState(0);
   const [simulatedUrl, setSimulatedUrl] = useState("pwnshop.local/");
   const [showCertificate, setShowCertificate] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [loadingStage, setLoadingStage] = useState('Initializing...');
+
+  useEffect(() => {
+    if (isLoading) {
+      const stages = [
+        'Booting kernel...',
+        'Connecting to local DB...',
+        'Injecting dependencies...',
+        'Establishing encrypted tunnel...',
+        'Bypassing local WAF...',
+        'Loading hacker assets...',
+        'System ready.'
+      ];
+      
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress >= 100) {
+          progress = 100;
+          setLoadingProgress(100);
+          setLoadingStage(stages[stages.length - 1]);
+          clearInterval(interval);
+          setTimeout(() => setIsLoading(false), 800);
+        } else {
+          setLoadingProgress(progress);
+          const stageIndex = Math.floor((progress / 100) * (stages.length - 1));
+          setLoadingStage(stages[stageIndex]);
+        }
+      }, 150);
+      return () => clearInterval(interval);
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     safeStorage.setItem('solvedChallenges', JSON.stringify(solvedChallenges));
@@ -1921,6 +1955,51 @@ export default function App() {
     );
   };
 
+  const renderSplash = () => {
+    return (
+      <div className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-8">
+        <motion.div 
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="relative mb-12"
+        >
+          <div className="absolute inset-0 bg-emerald-500/20 blur-2xl rounded-full animate-pulse" />
+          <div className="relative w-32 h-32 rounded-3xl overflow-hidden border-2 border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+            <img 
+              src="https://i.postimg.cc/tZsyNg6D/Screenshot-2026-05-04-at-6-11-06-PM.png" 
+              alt="PwnShop Logo" 
+              className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+            />
+          </div>
+        </motion.div>
+
+        <div className="w-full max-w-[280px] space-y-4">
+          <div className="flex justify-between items-end mb-1">
+            <span className="text-emerald-500 font-mono text-[10px] uppercase tracking-widest">{loadingStage}</span>
+            <span className="text-emerald-500/50 font-mono text-[10px]">{Math.floor(loadingProgress)}%</span>
+          </div>
+          
+          <div className="h-1 w-full bg-zinc-900 rounded-full overflow-hidden border border-white/5">
+            <motion.div 
+              className="h-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)]"
+              initial={{ width: 0 }}
+              animate={{ width: `${loadingProgress}%` }}
+              transition={{ ease: "linear" }}
+            />
+          </div>
+
+          <div className="pt-8 text-center">
+            <p className="text-zinc-600 font-mono text-[8px] uppercase tracking-[0.3em] animate-pulse">
+              Secure Implementation By Antigravity Agent
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const navItems = [
     { id: 'home', icon: Home, label: 'Home' },
     { id: 'shop', icon: Search, label: 'Shop' },
@@ -1932,10 +2011,28 @@ export default function App() {
 
   return (
     <>
-      <div className={`${isDarkMode ? 'bg-zinc-950 text-zinc-300' : 'bg-zinc-50 text-zinc-800'} min-h-screen flex font-sans ${isGlitching ? 'theme-darkweb' : ''} selection:bg-emerald-500/30 selection:text-emerald-200 transition-colors duration-500`}>
-        <div className={`w-full md:max-w-md mx-auto ${isDarkMode ? 'bg-black border-white/10' : 'bg-white border-zinc-200'} flex flex-col h-screen md:h-[90vh] md:my-auto md:rounded-3xl md:shadow-[0_0_50px_-12px_rgba(16,185,129,0.15)] overflow-hidden relative border-x md:border ring-1 ring-white/5 transition-all duration-1000`}>
-          
-          {/* Notification Overlay */}
+      <AnimatePresence mode="wait">
+        {isLoading ? (
+          <motion.div
+            key="splash"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+            className="fixed inset-0 z-[100]"
+          >
+            {renderSplash()}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="app"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className={`${isDarkMode ? 'bg-zinc-950 text-zinc-300' : 'bg-zinc-50 text-zinc-800'} min-h-screen flex font-sans ${isGlitching ? 'theme-darkweb' : ''} selection:bg-emerald-500/30 selection:text-emerald-200 transition-colors duration-500`}
+          >
+            <div className={`w-full md:max-w-md mx-auto ${isDarkMode ? 'bg-black border-white/10' : 'bg-white border-zinc-200'} flex flex-col h-screen md:h-[90vh] md:my-auto md:rounded-3xl md:shadow-[0_0_50px_-12px_rgba(16,185,129,0.15)] overflow-hidden relative border-x md:border ring-1 ring-white/5 transition-all duration-1000`}>
+              
+              {/* Notification Overlay */}
           <AnimatePresence>
               {notification && (
                   <motion.div 
@@ -2319,9 +2416,11 @@ export default function App() {
             })}
           </div>
         </nav>
-      </div>
-    </div>
-  </>
-  );
+        </div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+</>
+);
 }
 
