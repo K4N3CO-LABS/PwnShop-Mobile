@@ -1571,12 +1571,37 @@ export default function App() {
 
   const renderInventory = () => {
     // Maps tool IDs to their UI representation
-    const tools: Record<string, {name: string, icon: string, desc: string}> = {
-      'sqlmap': { name: 'SQLMap', icon: '💉', desc: 'Automatic SQL injection and database takeover tool.' },
-      'john_the_ripper': { name: 'John the Ripper', icon: '🔑', desc: 'Fast password cracker & JWT manipulator.' },
-      'burp_suite': { name: 'Burp Suite', icon: '🕷️', desc: 'Web vulnerability scanner and proxy.' },
-      'jailbreak_script': { name: 'Jailbreak Script', icon: '🔓', desc: 'Overrides AI safety protocols.' },
-      'metasploit': { name: 'Metasploit Framework', icon: '💣', desc: 'Advanced exploitation and payload delivery system.' }
+    const tools: Record<string, {name: string, icon: string, desc: string, usage: string}> = {
+      'sqlmap': { 
+        name: 'SQLMap', 
+        icon: '💉', 
+        desc: 'Automatic SQL injection and database takeover tool.',
+        usage: 'Automates the process of detecting and exploiting SQL injection flaws. Used to extract database schemas, dump full tables, and in some cases, execute operating system commands via database vulnerabilities.'
+      },
+      'john_the_ripper': { 
+        name: 'John the Ripper', 
+        icon: '🔑', 
+        desc: 'Fast password cracker & JWT manipulator.',
+        usage: 'A versatile password cracking tool. Used to brute-force hashes or identify weak passwords. In web applications, it can be used to forge or crack JWT secret signatures to escalate user privileges.'
+      },
+      'burp_suite': { 
+        name: 'Burp Suite', 
+        icon: '🕷️', 
+        desc: 'Web vulnerability scanner and proxy.',
+        usage: 'The industry-standard tool for web security testing. Used to intercept and modify HTTP requests, brute-force form inputs, and manually map out an application\'s hidden architecture.'
+      },
+      'jailbreak_script': { 
+        name: 'Jailbreak Script', 
+        icon: '🔓', 
+        desc: 'Overrides AI safety protocols.',
+        usage: 'A collection of custom scripts designed to bypass LLM guardrails. Used to extract internal system prompts, bypass "I cannot assist with that" filters, and force AI agents into unfiltered "developer" modes.'
+      },
+      'metasploit': { 
+        name: 'Metasploit Framework', 
+        icon: '💣', 
+        desc: 'Advanced exploitation and payload delivery system.',
+        usage: 'The world\'s most used penetration testing framework. Used to launch known exploits against vulnerable services and deliver advanced payloads like Meterpreter for remote system control.'
+      }
     };
 
     return (
@@ -1602,17 +1627,29 @@ export default function App() {
                         </div>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 gap-3">
+                    <div className="grid grid-cols-1 gap-4">
                         {inventory.map(toolId => {
-                            const t = tools[toolId] || { name: toolId, icon: '🔧', desc: 'Unknown tool.' };
+                            const t = tools[toolId] || { name: toolId, icon: '🔧', desc: 'Unknown tool.', usage: 'Documentation missing for this experimental artifact.' };
                             return (
-                                <div key={toolId} className={`border rounded-xl p-4 flex items-start space-x-4 ${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200 shadow-sm'}`}>
-                                    <div className={`text-3xl w-14 h-14 flex items-center justify-center rounded-lg border shadow-inner ${isDarkMode ? 'bg-black border-white/5' : 'bg-zinc-100 border-zinc-200'}`}>
-                                        {t.icon}
+                                <div key={toolId} className={`border rounded-xl p-5 flex flex-col ${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200 shadow-sm'}`}>
+                                    <div className="flex items-center space-x-4 mb-3">
+                                        <div className={`text-3xl w-14 h-14 flex items-center justify-center rounded-lg border shadow-inner ${isDarkMode ? 'bg-black border-white/5' : 'bg-zinc-100 border-zinc-200'}`}>
+                                            {t.icon}
+                                        </div>
+                                        <div>
+                                            <h3 className={`font-bold text-lg leading-tight ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>{t.name}</h3>
+                                            <p className="text-xs text-emerald-500 font-mono">STATUS: OPERATIONAL</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3 className={`font-bold mb-1 ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>{t.name}</h3>
-                                        <p className={`text-xs leading-relaxed ${isDarkMode ? 'text-zinc-500' : 'text-zinc-600'}`}>{t.desc}</p>
+                                    <div className="space-y-3">
+                                        <div>
+                                            <p className={`text-sm font-bold mb-1 ${isDarkMode ? 'text-zinc-400' : 'text-zinc-700'}`}>Description:</p>
+                                            <p className={`text-xs leading-relaxed ${isDarkMode ? 'text-zinc-500' : 'text-zinc-600'}`}>{t.desc}</p>
+                                        </div>
+                                        <div className={`p-3 rounded-lg border ${isDarkMode ? 'bg-black/50 border-white/5' : 'bg-zinc-50 border-zinc-100'}`}>
+                                            <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${isDarkMode ? 'text-emerald-500/70' : 'text-emerald-600'}`}>General Use Case:</p>
+                                            <p className={`text-[11px] leading-relaxed italic ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>{t.usage}</p>
+                                        </div>
                                     </div>
                                 </div>
                             );
@@ -2148,7 +2185,7 @@ export default function App() {
                 <h4 className="text-emerald-500 font-bold mb-4">{selectedExplanation.name}</h4>
                 <div className="bg-emerald-500/10 p-4 rounded-xl border border-emerald-500/20 mb-6">
                   <p className="text-zinc-300 text-sm leading-relaxed">{selectedExplanation.explanation}</p>
-                  <p className="text-emerald-400 text-xs font-bold mt-3 text-center uppercase tracking-wider">+ 100 Bounty Coins Earned</p>
+                  <p className="text-emerald-400 text-xs font-bold mt-3 text-center uppercase tracking-wider">+ 150 Bounty Coins Earned</p>
                 </div>
                 <button 
                   onClick={() => setSelectedExplanation(null)} 
