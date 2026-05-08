@@ -415,7 +415,7 @@ export default function App() {
     if (!solvedChallenges.includes(id) && !sessionTriggeredRef.current.has(id)) {
       sessionTriggeredRef.current.add(id);
       setSolvedChallenges(prev => [...prev, id]);
-      setBountyCoins(prev => prev + 100);
+      setBountyCoins(prev => prev + 150);
       const challenge = CHALLENGES.find(c => c.id === id);
       if (challenge) {
         setSelectedExplanation(challenge);
@@ -1299,19 +1299,17 @@ export default function App() {
 
               if (hasProtoKey) {
                  // They attempted prototype pollution!
-                 // In a real app, merging this insecurely would break the app.
-                 // We will safely simulate the win without actually breaking React.
+                 // We safely simulate the win without actually breaking React's prototype.
                  
                  if (isPolluted || (parsed as any)['__proto__']?.polluted) {
                     triggerChallenge('proto_pollute');
-                    setTimeout(() => alert('Prototype Pollution detected! (Vulnerability safely intercepted to prevent framework crash)'), 100);
+                    triggerPushNotification("Exploit Success", "Prototype Pollution detected! (Vulnerability safely intercepted)");
                  } else {
                     // They injected __proto__ but didn't set polluted:true
-                    // Let's still give them the win for finding the vector, but ask them to set polluted:true
                     triggerChallenge('proto_pollute');
                  }
                  
-                 // Remove the malicious key so it doesn't get spread into state
+                 // Remove the malicious key so it doesn't get spread into state or pollution
                  delete parsed['__proto__'];
               }
               const newConfig = { ...appConfig, ...parsed };
