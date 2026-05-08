@@ -102,7 +102,7 @@ const CHALLENGES = [
   { id: 'two_factor_bypass', level: 11, name: '2FA Bypass', desc: 'Intercept or guess the 2FA code from the simulated push notification.', diff: 'Hard', explanation: "You bypassed the two-factor authentication mechanism by quickly reading the code or intercepting it locally before it vanished. Mitigation: 2FA codes should never be sent to the client browser in ways that can be intercepted. Real 2FA requires out-of-band communication (SMS, Auth App)." },
   
   // Level 12: Fun & Unique Experiences
-  { id: 'konami_code', level: 12, name: 'Konami Code', desc: 'Find and enter the famous retro cheat code.', diff: 'Medium', explanation: "You triggered an undocumented 'Easter Egg' feature by entering the Konami code. While fun, undocumented logic or hidden debug hooks in production environments can sometimes expose capabilities that attackers can creatively exploit. Mitigation: Ensure fun easter eggs don't bypass security controls, and remove all actual debug backdoors before production." },
+  { id: 'konami_code', level: 12, name: 'Konami Code', desc: 'Enter the retro cheat code (or search "uuddlrlrba" on mobile).', diff: 'Medium', explanation: "You triggered an undocumented 'Easter Egg' feature by entering the Konami code (or typing uuddlrlrba in the search bar on mobile). While fun, undocumented logic or hidden debug hooks in production environments can sometimes expose capabilities that attackers can creatively exploit. Mitigation: Ensure fun easter eggs don't bypass security controls, and remove all actual debug backdoors before production." },
   { id: 'command_injection', level: 12, name: 'Command Injection', desc: 'Execute an unauthorized system command in the Hacker Terminal.', diff: 'Hard', explanation: "You escalated your privileges in the simulated terminal by using a command separator (like ';' or '&&') to execute arbitrary OS commands (e.g., 'whoami' or 'cat secret.txt'). Command Injection is a very severe vulnerability that can lead to total system compromise. Mitigation: Never pass unsanitized user input directly to a shell. Use strictly parameterized execution libraries where arguments are safely escaped." }
 ];
 
@@ -236,6 +236,7 @@ export default function App() {
   const [terminalInput, setTerminalInput] = useState('');
   const [isAdminOverridden, setIsAdminOverridden] = useState(false);
   const [overrideInput, setOverrideInput] = useState('');
+  const [configInputString, setConfigInputString] = useState(JSON.stringify({ name: 'PwnShop Mobile', encrypted: true }, null, 2));
   const [appConfig, setAppConfig] = useState<any>({ name: 'PwnShop Mobile', encrypted: true });
   const [rawProfile, setRawProfile] = useState('');
 
@@ -652,6 +653,16 @@ export default function App() {
       setSearchQuery(val);
       
       const xssPattern = /<[a-z1-6]+.*?>/i;
+
+      // Mobile alternative for Konami code
+      if (val.toLowerCase().replace(/[^a-z]/g, '') === 'uuddlrlrba') {
+          triggerChallenge('konami_code');
+          alert('🎮 KONAMI CODE ACCEPTED! Easter Egg Found. God Mode engaged (not really, but you get a badge).');
+          setIsGlitching(true);
+          setTimeout(() => setIsGlitching(false), 3000);
+          setSearchQuery('');
+          return;
+      }
       
       // Vulnerability: WAF Bypass
       if (isWafEnabled && val.toLowerCase().includes('<script>')) {
@@ -1274,10 +1285,12 @@ export default function App() {
         <textarea 
           placeholder='{"name": "New Shop Name"}'
           className="w-full bg-black text-emerald-500 font-mono text-xs p-3 rounded-lg border border-white/10 h-24 mb-3 outline-none focus:border-emerald-500"
-          value={JSON.stringify(appConfig, null, 2)}
+          value={configInputString}
           onChange={(e) => {
+            const val = e.target.value;
+            setConfigInputString(val);
             try {
-              const parsed = JSON.parse(e.target.value);
+              const parsed = JSON.parse(val);
               // VULNERABILITY: Shallow merge without proto check
               const newConfig = { ...appConfig, ...parsed };
               if (parsed.__proto__) {

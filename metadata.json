@@ -1,5 +1,6 @@
 {
-  "name": "Remix: PwnShop Mobile",
+  "name": "PwnShop-Mobile App",
   "description": "An educational mobile-first cybersecurity application simulating a hackable online shop for beginners.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "majorCapabilities": []
 }
