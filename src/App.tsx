@@ -356,14 +356,6 @@ export default function App() {
   }, [bombTimeLeft, bombDefused]);
 
   useEffect(() => {
-    // Check for Prototype Pollution
-    if ((Object.prototype as any).polluted) {
-      triggerChallenge('proto_pollute');
-      delete (Object.prototype as any).polluted; // Cleanup
-    }
-  }, [appConfig]);
-
-  useEffect(() => {
     if (user) {
       setRawProfile(JSON.stringify(user, null, 2));
       setEditUsername(user.username || '');
@@ -1291,12 +1283,38 @@ export default function App() {
             setConfigInputString(val);
             try {
               const parsed = JSON.parse(val);
-              // VULNERABILITY: Shallow merge without proto check
-              const newConfig = { ...appConfig, ...parsed };
-              if (parsed.__proto__) {
-                 // Prototype pollution!
-                 Object.assign(Object.prototype, parsed.__proto__);
+              // Safely check if they attempted prototype pollution
+              let isPolluted = false;
+              let hasProtoKey = false;
+              
+              // We check if the parsed JSON has an own property "__proto__"
+              // JSON.parse creates an own property for "__proto__"
+              if (Object.prototype.hasOwnProperty.call(parsed, '__proto__')) {
+                 hasProtoKey = true;
+                 const protoVal = (parsed as any)['__proto__'];
+                 if (protoVal && typeof protoVal === 'object' && protoVal.polluted) {
+                     isPolluted = true;
+                 }
               }
+
+              if (hasProtoKey) {
+                 // They attempted prototype pollution!
+                 // In a real app, merging this insecurely would break the app.
+                 // We will safely simulate the win without actually breaking React.
+                 
+                 if (isPolluted || (parsed as any)['__proto__']?.polluted) {
+                    triggerChallenge('proto_pollute');
+                    setTimeout(() => alert('Prototype Pollution detected! (Vulnerability safely intercepted to prevent framework crash)'), 100);
+                 } else {
+                    // They injected __proto__ but didn't set polluted:true
+                    // Let's still give them the win for finding the vector, but ask them to set polluted:true
+                    triggerChallenge('proto_pollute');
+                 }
+                 
+                 // Remove the malicious key so it doesn't get spread into state
+                 delete parsed['__proto__'];
+              }
+              const newConfig = { ...appConfig, ...parsed };
               setAppConfig(newConfig);
             } catch(e) {}
           }}
@@ -1494,7 +1512,7 @@ export default function App() {
       'sqlmap': { name: 'SQLMap', icon: '💉', desc: 'Automatic SQL injection and database takeover tool.', price: 200 },
       'john_the_ripper': { name: 'John the Ripper', icon: '🔑', desc: 'Fast password cracker & JWT manipulator.', price: 300 },
       'burp_suite': { name: 'Burp Suite', icon: '🕷️', desc: 'Web vulnerability scanner and proxy.', price: 500 },
-      'jailbreak_script': { name: 'Jailbreak Script', icon: '🔓', desc: 'Overrides AI safety protocols.', price: 800 },
+      'jailbreak_script': { name: 'Jailbreak Script', icon: '🔓', desc: 'Overrides AI safety protocols.', price: 600 },
       'metasploit': { name: 'Metasploit Framework', icon: '💣', desc: 'Advanced exploitation and payload delivery system.', price: 1000 }
     };
 
