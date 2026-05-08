@@ -27,6 +27,9 @@ import {
   Sun,
   Moon,
   Zap,
+  Award,
+  Download,
+  Printer,
   ArrowLeft
 } from 'lucide-react';
 
@@ -103,7 +106,8 @@ const CHALLENGES = [
   
   // Level 12: Fun & Unique Experiences
   { id: 'konami_code', level: 12, name: 'Konami Code', desc: 'Enter the retro cheat code (or search "uuddlrlrba" on mobile).', diff: 'Medium', explanation: "You triggered an undocumented 'Easter Egg' feature by entering the Konami code (or typing uuddlrlrba in the search bar on mobile). While fun, undocumented logic or hidden debug hooks in production environments can sometimes expose capabilities that attackers can creatively exploit. Mitigation: Ensure fun easter eggs don't bypass security controls, and remove all actual debug backdoors before production." },
-  { id: 'command_injection', level: 12, name: 'Command Injection', desc: 'Execute an unauthorized system command in the Hacker Terminal.', diff: 'Hard', explanation: "You escalated your privileges in the simulated terminal by using a command separator (like ';' or '&&') to execute arbitrary OS commands (e.g., 'whoami' or 'cat secret.txt'). Command Injection is a very severe vulnerability that can lead to total system compromise. Mitigation: Never pass unsanitized user input directly to a shell. Use strictly parameterized execution libraries where arguments are safely escaped." }
+  { id: 'command_injection', level: 12, name: 'Command Injection', desc: 'Execute an unauthorized system command in the Hacker Terminal.', diff: 'Hard', explanation: "You escalated your privileges in the simulated terminal by using a command separator (like ';' or '&&') to execute arbitrary OS commands (e.g., 'whoami' or 'cat secret.txt'). Command Injection is a very severe vulnerability that can lead to total system compromise. Mitigation: Never pass unsanitized user input directly to a shell. Use strictly parameterized execution libraries where arguments are safely escaped." },
+  { id: '100_percent', level: 12, name: 'PwnShop Completionist', desc: 'Successfully exploit every single vulnerability in the application.', diff: 'Expert', explanation: "You have demonstrated mastery over the PwnShop environment. By identifying and exploiting every deliberate flaw, you've shown a deep understanding of common web vulnerabilities. You are now a certified PwnShop Master!" }
 ];
 
 const MOCK_USERS = [
@@ -220,6 +224,7 @@ export default function App() {
   const [isWafEnabled, setIsWafEnabled] = useState(true);
   const [bruteForceTaps, setBruteForceTaps] = useState(0);
   const [simulatedUrl, setSimulatedUrl] = useState("pwnshop.local/");
+  const [showCertificate, setShowCertificate] = useState(false);
 
   useEffect(() => {
     safeStorage.setItem('solvedChallenges', JSON.stringify(solvedChallenges));
@@ -228,6 +233,14 @@ export default function App() {
   useEffect(() => {
     safeStorage.setItem('user', JSON.stringify(user));
   }, [user]);
+
+  // Check for 100% completion
+  useEffect(() => {
+    if (solvedChallenges.length === CHALLENGES.length - 1 && !solvedChallenges.includes('100_percent')) {
+      triggerChallenge('100_percent');
+      setTimeout(() => setShowCertificate(true), 3000);
+    }
+  }, [solvedChallenges]);
 
   useEffect(() => {
     setSimulatedUrl('pwnshop.local/#' + currentView);
@@ -1482,29 +1495,6 @@ export default function App() {
       );
   };
 
-  const renderCertificate = () => {
-      return (
-          <div className="p-8 h-full flex flex-col items-center justify-center text-center bg-black relative overflow-hidden">
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-900/40 via-black to-black z-0 pointer-events-none" />
-              <div className="relative z-10 bg-zinc-900/80 p-8 md:p-12 rounded-xl border border-emerald-500/30 shadow-[0_0_50px_rgba(16,185,129,0.2)] max-w-[90%] w-[400px]">
-                  <CheckCircle2 className="w-20 h-20 text-emerald-500 mx-auto mb-6" />
-                  <h1 className="text-3xl font-black text-white uppercase tracking-widest mb-2 font-serif">Certificate of Pwnage</h1>
-                  <p className="text-zinc-400 text-sm mb-8">This certifies that</p>
-                  <p className="text-2xl text-emerald-400 font-mono font-bold mb-8 pb-4 border-b border-white/10 uppercase">
-                      {user?.username || 'Guest Hacker'}
-                  </p>
-                  <p className="text-xs text-zinc-500 leading-relaxed mb-6 font-mono">
-                      has successfully identified and exploited all vulnerabilities within the PwnShop Mobile environment, demonstrating mastery in Web Application Security.
-                  </p>
-                  <div className="flex justify-between text-[10px] text-zinc-600 font-mono">
-                      <span>DATE: {new Date().toLocaleDateString()}</span>
-                      <span>ID: PWN-{Math.random().toString(36).substr(2, 6).toUpperCase()}</span>
-                  </div>
-              </div>
-          </div>
-      );
-  };
-
   const renderDarkWebMarket = () => {
     const marketTools: Record<string, {name: string, icon: string, desc: string, price: number}> = {
       'sqlmap': { name: 'SQLMap', icon: '💉', desc: 'Automatic SQL injection and database takeover tool.', price: 200 },
@@ -1782,6 +1772,16 @@ export default function App() {
     return (
       <div className="p-4">
         <div className="bg-black rounded-2xl p-6 text-white text-center shadow-lg mb-6 relative overflow-hidden">
+          {progressPerc === 100 && (
+             <motion.button 
+               initial={{ scale: 0.8, opacity: 0 }}
+               animate={{ scale: 1, opacity: 1 }}
+               onClick={() => setShowCertificate(true)}
+               className="mb-4 bg-emerald-500 text-white px-4 py-2 rounded-xl font-bold text-xs flex items-center justify-center space-x-2 mx-auto shadow-[0_0_15px_rgba(16,185,129,0.5)] active:scale-95 transition-all"
+             >
+               <Award size={16} /> <span>VIEW CERTIFICATE</span>
+             </motion.button>
+          )}
           <h2 className="text-2xl font-bold mb-1 relative z-10 flex items-center justify-center space-x-2">
             <ShieldAlert className="text-emerald-400" />
             <span>Hacker Scoreboard</span>
@@ -1841,6 +1841,82 @@ export default function App() {
             );
           })}
         </div>
+      </div>
+    );
+  };
+
+  const renderCertificate = () => {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm overflow-y-auto">
+        <motion.div 
+          initial={{ scale: 0.9, opacity: 0, y: 20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          className="relative max-w-lg w-full bg-zinc-950 border-4 border-emerald-500/50 rounded-3xl p-8 shadow-[0_0_50px_rgba(16,185,129,0.3)] overflow-hidden print:p-0 print:border-0 print:shadow-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"
+        >
+          {/* Ribbon effect */}
+          <div className="absolute -top-12 -right-12 w-40 h-40 bg-emerald-500/20 rotate-45" />
+          <div className="absolute top-4 right-4 text-emerald-500/20"><Shield size={120} /></div>
+
+          <div className="relative z-10 text-center space-y-6">
+            <div className="flex justify-center">
+              <div className="relative">
+                <div className="absolute inset-0 animate-ping bg-emerald-500/20 rounded-full" />
+                <div className="relative bg-zinc-900 border-2 border-emerald-500 p-4 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.4)]">
+                   <Award size={48} className="text-emerald-500" />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h1 className="text-3xl font-black text-white tracking-widest uppercase mb-2 italic">Certificate of Mastery</h1>
+              <div className="h-1 w-32 bg-emerald-500 mx-auto rounded-full" />
+            </div>
+
+            <div className="space-y-4 py-4">
+              <p className="text-zinc-400 font-mono text-sm uppercase tracking-tighter">This document officially recognizes that</p>
+              <h2 className="text-2xl font-bold text-emerald-400 break-all">{user?.username || user?.email || 'Elite Hacker'}</h2>
+              <p className="text-zinc-500 text-xs leading-relaxed max-w-[300px] mx-auto">
+                Has successfully bypassed all security protocols, exploited all identified vulnerabilities, and demonstrated exceptional technical skill within the <strong>PwnShop Mobile</strong> security environment.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 py-4 border-y border-emerald-500/20 font-mono">
+              <div className="text-left">
+                <p className="text-[10px] text-zinc-600 uppercase">Issue Date</p>
+                <p className="text-xs text-white uppercase">{new Date().toLocaleDateString()}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-[10px] text-zinc-600 uppercase">Verification ID</p>
+                <p className="text-xs text-white font-bold">PWN-{Math.random().toString(36).substr(2, 9).toUpperCase()}</p>
+              </div>
+            </div>
+
+            <div className="pt-4 flex flex-col space-y-3 print:hidden">
+              <div className="flex space-x-2">
+                <button 
+                  onClick={() => window.print()}
+                  className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-black font-black py-3 rounded-xl flex items-center justify-center space-x-2 transition-all active:scale-95"
+                >
+                  <Printer size={18} /> <span>SAVE / PRINT</span>
+                </button>
+                <button 
+                  onClick={() => setShowCertificate(false)}
+                  className="bg-zinc-900 border border-white/10 text-white px-4 py-3 rounded-xl hover:bg-zinc-800 transition-all active:scale-95"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <p className="text-[10px] text-zinc-600">Take a screenshot to share your achievement!</p>
+            </div>
+            
+            <div className="hidden print:block pt-8 text-[10px] text-zinc-700 italic">
+               Verified by PwnShop Labs. Secure implementation by Antigravity Agent.
+            </div>
+          </div>
+
+          {/* Background decoration */}
+          <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-50" />
+        </motion.div>
       </div>
     );
   };
@@ -2196,6 +2272,10 @@ export default function App() {
               </motion.div>
             </motion.div>
           )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+            {showCertificate && renderCertificate()}
         </AnimatePresence>
 
         {/* Bottom Navigation */}
