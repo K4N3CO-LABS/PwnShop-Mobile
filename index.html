@@ -29,6 +29,67 @@
     </style>
   </head>
   <body class="bg-black">
+    <div id="static-splash" style="background:#000;position:fixed;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;transition:opacity 0.5s ease-out;">
+      <div style="position:relative;margin-bottom:48px;">
+        <div style="position:absolute;inset:0;background:rgba(16,185,129,0.2);filter:blur(24px);border-radius:50%;width:100px;height:100px;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+        <div style="position:relative;width:128px;height:128px;border-radius:24px;overflow:hidden;border:2px solid rgba(16,185,129,0.5);box-shadow:0 0 30px rgba(16,185,129,0.3);background:#111;">
+          <img src="https://i.postimg.cc/tZsyNg6D/Screenshot-2026-05-04-at-6-11-06-PM.png" alt="Logo" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+      </div>
+      <div style="width:280px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#10b981;">
+          <span id="static-status">Initializing System...</span>
+        </div>
+        <div style="height:4px;width:100%;background:#111;border-radius:99px;border:1px solid rgba(255,255,255,0.05);overflow:hidden;">
+          <div id="static-bar" style="height:100%;background:#10b981;width:0%;transition:width 0.3s ease;"></div>
+        </div>
+        <div style="margin-top:32px;text-align:center;font-size:8px;color:#333;text-transform:uppercase;letter-spacing:0.3em;">
+          Secure Implementation By Antigravity Agent
+        </div>
+      </div>
+    </div>
+    <script>
+      (function() {
+        var splash = document.getElementById('static-splash');
+        var bar = document.getElementById('static-bar');
+        var status = document.getElementById('static-status');
+        var p = 0;
+        var stages = [
+          'Booting kernel...', 
+          'Connecting to local DB...',
+          'Injecting dependencies...', 
+          'Bypassing local WAF...', 
+          'Establishing encrypted tunnel...', 
+          'Cracking local session...',
+          'Loading hacker assets...', 
+          'System ready.'
+        ];
+        var interval = setInterval(function() {
+          p += Math.random() * 3.5; // Slower increment
+          if (p >= 92) {
+            p = 92;
+            clearInterval(interval);
+          }
+          if (bar) bar.style.width = p + '%';
+          if (status) {
+            var idx = Math.floor((p/94) * stages.length);
+            status.innerText = stages[Math.min(idx, stages.length - 1)];
+          }
+        }, 180); // Slower interval
+
+        window.hideSplash = function() {
+           clearInterval(interval);
+           if (bar) bar.style.width = '100%';
+           if (status) status.innerText = 'System ready.';
+           setTimeout(function() {
+             if (splash) {
+               splash.style.opacity = '0';
+               setTimeout(function() { splash.style.display = 'none'; }, 500);
+             }
+           }, 200);
+        };
+      })();
+    </script>
     <div id="root"></div>
     <div id="loader-feedback">
       <b>PwnShop Mobile Error:</b> Application failed to initialize.
