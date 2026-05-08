@@ -6,6 +6,7 @@ import {
   ShoppingCart, 
   User, 
   ShieldAlert, 
+  Shield,
   Search, 
   Menu,
   Lock,
@@ -180,7 +181,7 @@ export default function App() {
     if (typeof window !== 'undefined' && (window as any).hideSplash) {
       setTimeout(() => {
         (window as any).hideSplash();
-      }, 1500); // Minimum 1.5s visible
+      }, 6000); // Minimum 6s visible to show loading processes
     }
 
     if ((window as any).diagnosticTimeout) {

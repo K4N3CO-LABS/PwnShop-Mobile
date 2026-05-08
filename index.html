@@ -28,25 +28,31 @@
       }
     </style>
   </head>
-  <body class="bg-black">
-    <div id="static-splash" style="background:#000;position:fixed;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;transition:opacity 0.5s ease-out;">
+  <body class="bg-black" style="background-color: #000; margin: 0; padding: 0; height: 100vh; overflow: hidden; -webkit-tap-highlight-color: transparent;">
+    <div id="static-splash" style="background-color:#000;position:fixed;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;font-family:'Space Grotesk',ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;transition:opacity 0.8s ease-in-out;opacity:1;pointer-events:all;">
+      <canvas id="matrix-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:-1;opacity:0.55;"></canvas>
       <div style="position:relative;margin-bottom:48px;">
-        <div style="position:absolute;inset:0;background:rgba(16,185,129,0.2);filter:blur(24px);border-radius:50%;width:100px;height:100px;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
-        <div style="position:relative;width:128px;height:128px;border-radius:24px;overflow:hidden;border:2px solid rgba(16,185,129,0.5);box-shadow:0 0 30px rgba(16,185,129,0.3);background:#111;">
+        <div style="position:absolute;inset:0;background:rgba(16,185,129,0.3);filter:blur(32px);border-radius:50%;width:120px;height:120px;top:50%;left:50%;transform:translate(-50%,-50%);animation:splash-pulse-glow 2s ease-in-out infinite;"></div>
+        <div style="position:relative;width:140px;height:140px;border-radius:28px;overflow:hidden;border:2px solid rgba(16,185,129,0.6);box-shadow:0 0 40px rgba(16,185,129,0.4);background:#0a0a0a;animation:splash-pulse-scale 3s ease-in-out infinite, logo-emerald-pulse 2s ease-in-out infinite;">
           <img src="https://i.postimg.cc/tZsyNg6D/Screenshot-2026-05-04-at-6-11-06-PM.png" alt="Logo" style="width:100%;height:100%;object-fit:cover;">
         </div>
       </div>
-      <div style="width:280px;">
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#10b981;">
+      <div style="width:300px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:12px;font-size:11px;text-transform:uppercase;letter-spacing:0.15em;color:#10b981;font-weight:600;">
           <span id="static-status">Initializing System...</span>
         </div>
-        <div style="height:4px;width:100%;background:#111;border-radius:99px;border:1px solid rgba(255,255,255,0.05);overflow:hidden;">
-          <div id="static-bar" style="height:100%;background:#10b981;width:0%;transition:width 0.3s ease;"></div>
+        <div style="height:6px;width:100%;background:#111;border-radius:99px;border:1px solid rgba(255,255,255,0.08);overflow:hidden;box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);">
+          <div id="static-bar" style="height:100%;background:linear-gradient(90deg, #059669, #10b981);width:0%;transition:width 0.4s cubic-bezier(0.4, 0, 0.2, 1);box-shadow: 0 0 12px rgba(16,185,129,0.6);"></div>
         </div>
-        <div style="margin-top:32px;text-align:center;font-size:8px;color:#333;text-transform:uppercase;letter-spacing:0.3em;">
-          Secure Implementation By Antigravity Agent
+        <div style="margin-top:40px;text-align:center;font-size:9px;color:#444;text-transform:uppercase;letter-spacing:0.4em;font-weight:500;">
+          Secure Protocol Enabled • AI Powered
         </div>
       </div>
+      <style>
+        @keyframes splash-pulse-glow { 0%, 100% { opacity: 0.3; transform: translate(-50%,-50%) scale(1); } 50% { opacity: 0.6; transform: translate(-50%,-50%) scale(1.1); } }
+        @keyframes splash-pulse-scale { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+        @keyframes logo-emerald-pulse { 0%, 100% { border-color: rgba(16,185,129,0.6); box-shadow: 0 0 40px rgba(16,185,129,0.4); } 50% { border-color: rgba(16,185,129,1); box-shadow: 0 0 60px rgba(16,185,129,0.8); } }
+      </style>
     </div>
     <script>
       (function() {
@@ -55,45 +61,90 @@
         var status = document.getElementById('static-status');
         var p = 0;
         var stages = [
-          'Booting kernel...', 
-          'Connecting to local DB...',
+          'Booting secure kernel...', 
+          'Connecting to encrypted DB...',
           'Injecting dependencies...', 
-          'Bypassing local WAF...', 
-          'Establishing encrypted tunnel...', 
-          'Cracking local session...',
-          'Loading hacker assets...', 
+          'Validating hardware keys...', 
+          'Establishing VPN tunnel...', 
+          'Syncing session state...',
+          'Loading high-res assets...', 
+          'Optimizing UI components...',
+          'Finalizing environment...',
           'System ready.'
         ];
+        
         var interval = setInterval(function() {
-          p += Math.random() * 3.5; // Slower increment
-          if (p >= 92) {
-            p = 92;
-            clearInterval(interval);
+          p += (Math.random() * 3) + 3.5; 
+          if (p >= 98) {
+            p = 98;
           }
           if (bar) bar.style.width = p + '%';
           if (status) {
-            var idx = Math.floor((p/94) * stages.length);
+            var idx = Math.floor((p/100) * stages.length);
             status.innerText = stages[Math.min(idx, stages.length - 1)];
           }
-        }, 180); // Slower interval
+        }, 200);
+
+        // Matrix Rain
+        (function() {
+          var canvas = document.getElementById('matrix-canvas');
+          if(!canvas) return;
+          var ctx = canvas.getContext('2d');
+          var width = canvas.width = window.innerWidth;
+          var height = canvas.height = window.innerHeight;
+          var columns = Math.floor(width / 20);
+          var drops = [];
+          for (var i = 0; i < columns; i++) drops[i] = 1;
+          function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = '#34d399';
+            ctx.font = '15px monospace';
+            for (var i = 0; i < drops.length; i++) {
+                var text = String.fromCharCode(Math.random() * 128);
+                ctx.fillText(text, i * 20, drops[i] * 20);
+                if (drops[i] * 20 > height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+          }
+          var matrixInterval = setInterval(draw, 45);
+          window.addEventListener('resize', function() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            columns = Math.floor(width / 20);
+            drops = [];
+            for (var i = 0; i < columns; i++) drops[i] = 1;
+          });
+        })();
 
         window.hideSplash = function() {
-           clearInterval(interval);
-           if (bar) bar.style.width = '100%';
-           if (status) status.innerText = 'System ready.';
+           if (window._splashHidden) return;
+           window._splashHidden = true;
+           
+           var minDuration = 5000;
+           var elapsed = Date.now() - window._splashStartTime;
+           var remaining = Math.max(0, minDuration - elapsed);
+           
            setTimeout(function() {
-             if (splash) {
-               splash.style.opacity = '0';
-               setTimeout(function() { splash.style.display = 'none'; }, 500);
-             }
-           }, 200);
+             clearInterval(interval);
+             if (bar) bar.style.width = '100%';
+             if (status) status.innerText = 'System ready.';
+             
+             setTimeout(function() {
+               if (splash) {
+                 splash.style.opacity = '0';
+                 setTimeout(function() { 
+                   if(splash.parentNode) splash.remove();
+                 }, 800);
+               }
+             }, 1000);
+           }, remaining);
         };
+        window._splashStartTime = Date.now();
       })();
     </script>
     <div id="root"></div>
-    <div id="loader-feedback">
-      <b>PwnShop Mobile Error:</b> Application failed to initialize.
-    </div>
+    <div id="loader-feedback" style="display:none;position:fixed;bottom:20px;left:20px;right:20px;background:rgba(0,0,0,0.8);color:#ff4444;padding:15px;border-radius:10px;font-family:sans-serif;font-size:14px;z-index:9999;border:1px solid #ff4444;"></div>
     <script>
       // Diagnostic script for white screen
       window.diagnosticTimeout = setTimeout(function() {
@@ -109,17 +160,8 @@
         var fb = document.getElementById('loader-feedback');
         if (fb) {
           fb.style.display = 'block';
-          // Extract specific error details if available
           var errMsg = err ? err.message : m;
-          var errStack = err && err.stack ? "<br><br><small>" + err.stack.replace(/\n/g, '<br>') + "</small>" : "";
-          fb.innerHTML = "<b>Critical Error:</b> " + errMsg + " (" + s + ":" + l + ")" + errStack;
-        }
-      };
-      window.onunhandledrejection = function(event) {
-        var fb = document.getElementById('loader-feedback');
-        if (fb) {
-          fb.style.display = 'block';
-          fb.innerHTML = "<b>Promise Error:</b> " + (event.reason ? event.reason.toString() : "Unknown Promise Error");
+          fb.innerHTML = "<b>Critical Error:</b> " + errMsg + " (" + s + ":" + l + ")";
         }
       };
     </script>

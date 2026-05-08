@@ -4,9 +4,10 @@ import App from './App.tsx';
 import './index.css';
 
 class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean, error: Error | null}> {
+  public state: {hasError: boolean, error: Error | null} = { hasError: false, error: null };
+
   constructor(props: {children: ReactNode}) {
     super(props);
-    this.state = { hasError: false, error: null };
   }
 
   static getDerivedStateFromError(error: Error) {
@@ -26,7 +27,7 @@ class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean,
         </div>
       );
     }
-    return this.props.children;
+    return (this as any).props.children;
   }
 }
 
