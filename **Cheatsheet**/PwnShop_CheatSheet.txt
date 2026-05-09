@@ -151,3 +151,8 @@ Command Injection (command_injection):
 Action: Go to the Hacker Terminal via the menu.
 Payload: Use a command separator to inject a second command: ls; whoami or help && cat secret.txt.
 RESULT: Executes the injected command as if it were a native system call.
+
+Steganographic Socials (metadata_leak):
+Action: Go to the Me tab (logged in as any user except admin) and tap the version string (e.g., v1.0.0-insecure) at the bottom 5 times to unlock System Logs. In the log view, click "SCAN ASSET METADATA". 
+Payload: Look for the extracted hex code: `4d45544144415441`. Convert from hex to ASCII to get `METADATA`. Enter this in the "RESTRICTED: Override Console" on the Me tab.
+RESULT: Bypasses security via leaked metadata in public assets, even without a browser inspector.

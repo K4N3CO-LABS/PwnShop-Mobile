@@ -28,6 +28,7 @@ import {
   Sun,
   Moon,
   Zap,
+  Cpu,
   Award,
   Download,
   Printer,
@@ -108,6 +109,7 @@ const CHALLENGES = [
   // Level 12: Fun & Unique Experiences
   { id: 'konami_code', level: 12, name: 'Konami Code', desc: 'Enter the retro cheat code (or search "uuddlrlrba" on mobile).', diff: 'Medium', explanation: "You triggered an undocumented 'Easter Egg' feature by entering the Konami code (or typing uuddlrlrba in the search bar on mobile). While fun, undocumented logic or hidden debug hooks in production environments can sometimes expose capabilities that attackers can creatively exploit. Mitigation: Ensure fun easter eggs don't bypass security controls, and remove all actual debug backdoors before production." },
   { id: 'command_injection', level: 12, name: 'Command Injection', desc: 'Execute an unauthorized system command in the Hacker Terminal.', diff: 'Hard', explanation: "You escalated your privileges in the simulated terminal by using a command separator (like ';' or '&&') to execute arbitrary OS commands (e.g., 'whoami' or 'cat secret.txt'). Command Injection is a very severe vulnerability that can lead to total system compromise. Mitigation: Never pass unsanitized user input directly to a shell. Use strictly parameterized execution libraries where arguments are safely escaped." },
+  { id: 'metadata_leak', level: 12, name: 'Steganographic Socials', desc: 'Find the secret override code hidden in social media metadata.', diff: 'Medium', explanation: "You discovered a hex-encoded string hidden in an image's alt text or a data attribute. This is a form of information disclosure via metadata. Attackers often scan image metadata (Exif), HTML comments, or data attributes for leaked credentials or internal paths. Mitigation: Scrub all sensitive metadata from assets before production and never store credentials in accessible HTML attributes." },
   { id: '100_percent', level: 12, name: 'PwnShop Completionist', desc: 'Successfully exploit every single vulnerability in the application.', diff: 'Expert', explanation: "You have demonstrated mastery over the PwnShop environment. By identifying and exploiting every deliberate flaw, you've shown a deep understanding of common web vulnerabilities. You are now a certified PwnShop Master!" }
 ];
 
@@ -232,6 +234,7 @@ export default function App() {
   const [editTheme, setEditTheme] = useState('emerald');
   const [isWafEnabled, setIsWafEnabled] = useState(true);
   const [bruteForceTaps, setBruteForceTaps] = useState(0);
+  const [secretCodeInput, setSecretCodeInput] = useState('');
   const [simulatedUrl, setSimulatedUrl] = useState("pwnshop.local/");
   const [showCertificate, setShowCertificate] = useState(false);
 
@@ -593,6 +596,22 @@ export default function App() {
         </div>
       </div>
       
+      <div className={`p-5 rounded-2xl shadow-sm border mt-4 ${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200'}`}>
+        <h3 className={`font-bold mb-4 text-center text-sm ${isDarkMode ? 'text-zinc-500' : 'text-zinc-400'} uppercase tracking-widest`}>Connect With Us</h3>
+        <div className="flex justify-center space-x-6">
+           <a href="#" className="p-3 bg-zinc-800 rounded-full text-zinc-400 hover:text-emerald-500 transition-colors" title="Github">
+             <Globe size={20} />
+           </a>
+           {/* VULNERABILITY: Metadata Leak in alt text / data- attribute. Mobile users find this via System Log Scanner. */}
+           <a href="#" className="p-3 bg-zinc-800 rounded-full text-zinc-400 hover:text-emerald-500 transition-colors" title="Twitter" data-asset-id="social-twt" data-meta="4d45544144415441" aria-label="Twitter">
+             <MessageSquare size={20} />
+           </a>
+           <a href="#" className="p-3 bg-zinc-800 rounded-full text-zinc-400 hover:text-emerald-500 transition-colors" title="Support">
+             <Send size={20} />
+           </a>
+        </div>
+      </div>
+
       <div className="mt-8 text-center opacity-30 text-xs text-zinc-500">
         <p>/* Note to self: Remove PWNEDDEALS promo code before production launch. - DevOps */</p>
         <p className="mt-1">/* TODO: Our second promo code is super secure because it's encrypted: U1VQRVJTRUNSRVQ= */</p>
@@ -1031,6 +1050,30 @@ export default function App() {
                      alert("Downloaded backup for " + em);
                    }
                  }} className={`${t.button} text-white px-3 py-2 rounded-lg text-xs font-bold active:scale-95 transition-colors`}>Download Data</button>
+               </div>
+            </div>
+
+            <div className={`mt-4 bg-zinc-900/50 p-4 rounded-xl border-dashed border-2 border-white/10 text-left`}>
+               <h4 className="font-bold text-white mb-1 text-sm tracking-tighter">RESTRICTED: Override Console</h4>
+               <p className="text-[10px] text-zinc-600 mb-2 font-mono">ENTER SYSTEM OVERRIDE SEQUENCE</p>
+               <div className="flex space-x-2">
+                 <input 
+                   type="text" 
+                   value={secretCodeInput} 
+                   onChange={e => setSecretCodeInput(e.target.value)} 
+                   placeholder="CODE..."
+                   className="flex-1 bg-black text-emerald-500 px-3 py-2 rounded-lg text-xs border border-emerald-500/20 outline-none focus:border-emerald-500 font-mono" 
+                 />
+                 <button onClick={() => {
+                   if (secretCodeInput.toUpperCase() === 'METADATA') {
+                     triggerChallenge('metadata_leak');
+                     alert("OVERRIDE ACCEPTED: System metadata decoded successfully.");
+                     setSecretCodeInput('');
+                   } else {
+                     alert("INVALID SEQUENCE: Input cleared for security.");
+                     setSecretCodeInput('');
+                   }
+                 }} className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 px-3 py-2 rounded-lg text-xs font-bold active:scale-95 transition-colors">INITIATE</button>
                </div>
             </div>
 
@@ -1678,8 +1721,33 @@ export default function App() {
         </div>
       </div>
       
-      <div className="bg-black/90 rounded-xl p-4 font-mono text-xs text-emerald-400 min-h-[300px] overflow-y-auto space-y-1">
+      <div className="bg-black/90 rounded-xl p-4 font-mono text-xs text-emerald-400 min-h-[250px] max-h-[300px] overflow-y-auto space-y-1">
         {debugLogs.length === 0 ? <p className="opacity-50">Logs cleared.</p> : debugLogs.map((log, i) => <p key={i}>[{new Date().toISOString().split('T')[1].slice(0, -1)}] {log}</p>)}
+      </div>
+
+      <div className={`p-4 rounded-xl border ${isDarkMode ? 'bg-zinc-900 border-white/5' : 'bg-zinc-100 border-zinc-200'} space-y-3`}>
+         <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+               <Cpu className="text-zinc-500 w-4 h-4" />
+               <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Advanced Forensic Tools</span>
+            </div>
+         </div>
+         <button 
+           onClick={() => {
+             const newLogs = [
+               "INITIATING ASSET METADATA SCAN...",
+               "Scanning DOM tree for data-* attributes...",
+               "Found asset [social-gh]: No sensitive tags.",
+               "Found asset [social-twt]: metadata_secret=4d45544144415441",
+               "Found asset [social-tg]: No sensitive tags.",
+               "SCAN COMPLETE. 1 SENSITIVE ATTRIBUTE EXTRACTED."
+             ];
+             setDebugLogs(prev => [...prev, ...newLogs]);
+           }}
+           className="w-full bg-zinc-800 hover:bg-zinc-700 text-white py-2 rounded-lg text-xs font-bold transition-colors flex items-center justify-center space-x-2"
+         >
+           <Search size={14} /> <span>SCAN ASSET METADATA</span>
+         </button>
       </div>
 
       <button 
@@ -1786,7 +1854,7 @@ export default function App() {
                initial={{ scale: 0.8, opacity: 0 }}
                animate={{ scale: 1, opacity: 1 }}
                onClick={() => setShowCertificate(true)}
-               className="mb-4 bg-emerald-500 text-white px-4 py-2 rounded-xl font-bold text-xs flex items-center justify-center space-x-2 mx-auto shadow-[0_0_15px_rgba(16,185,129,0.5)] active:scale-95 transition-all"
+               className="mb-4 bg-emerald-500 text-white px-4 py-2 rounded-xl font-bold text-xs flex items-center justify-center space-x-2 mx-auto shadow-[0_0_15px_rgba(16,185,129,0.5)] active:scale-95 transition-all relative z-20"
              >
                <Award size={16} /> <span>VIEW CERTIFICATE</span>
              </motion.button>
@@ -1909,7 +1977,12 @@ export default function App() {
                   <Printer size={18} /> <span>SAVE / PRINT</span>
                 </button>
                 <button 
-                  onClick={() => setShowCertificate(false)}
+                  onClick={() => {
+                    setShowCertificate(false);
+                    if (currentView === 'certificate') {
+                      changeView('scoreboard');
+                    }
+                  }}
                   className="bg-zinc-900 border border-white/10 text-white px-4 py-3 rounded-xl hover:bg-zinc-800 transition-all active:scale-95"
                 >
                   <X size={20} />
