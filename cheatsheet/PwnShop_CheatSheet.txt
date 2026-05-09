@@ -29,7 +29,7 @@ LEVEL 2: IDENTIFICATION & AUTHENTICATION
 
 Stored XSS (XSS_stored):
 Action: On the Home page, scroll down to "Community Feedback".
-Payload: Enter <marquee>Hacked</marquee> in the review text and submit.
+Payload: Enter <marquee>PWNED</marquee> in the review text and submit.
 RESULT: The HTML is saved to the feedback list and will render for anyone visiting the home page.
 
 Identity Spoofing (review_tamper):
@@ -137,14 +137,14 @@ LEVEL 11: 2FA BYPASS
 
 2FA Bypass (two_factor_bypass):
 Action: Log in normally (e.g., user@example.com / password123).
-Payload: The 2FA code is simulated by a "Push Notification" appearing at the top of the app. Read and enter it.
+Payload: The 2FA code is simulated by a "Push Notification" appearing at the top of the app. Read and enter it(1337).
 RESULT: Highlights that 2FA is useless if the delivery channel (or logs) is insecure.
 
 LEVEL 12: FUN & UNIQUE
 
 Konami Code (konami_code):
-Action: Anywhere in the app (without an input active).
-Payload: Press keywords: Up, Up, Down, Down, Left, Right, Left, Right, b, a.
+Action: In the search bar on items tab at top.
+Payload: Press letters: uuddlrlrba (short for "up up down down left right left right b a")
 RESULT: Unlocks a classic "Easter Egg" and grants the challenge credit.
 
 Command Injection (command_injection):
