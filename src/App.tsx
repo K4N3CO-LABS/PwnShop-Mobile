@@ -448,17 +448,21 @@ export default function App() {
 
   const sessionTriggeredRef = useRef<Set<string>>(new Set());
 
-  const triggerChallenge = (id: string) => {
+  const triggerChallenge = (id: string, overrideUser?: any) => {
     if (!solvedChallenges.includes(id) && !sessionTriggeredRef.current.has(id)) {
       sessionTriggeredRef.current.add(id);
       setSolvedChallenges(prev => [...prev, id]);
       setBountyCoins(prev => prev + 150);
       const challenge = CHALLENGES.find(c => c.id === id);
+      
+      const identity = overrideUser ? overrideUser : user;
+      const userInfo = identity ? `by ${identity.username || identity.email} (${identity.email})` : 'by Guest';
+      
       if (challenge) {
-        Log.i("Challenge", `Challenge completed: ${challenge.title} (${id})`);
+        Log.i("Challenge", `Challenge completed: ${challenge.title} (${id}) ${userInfo}`);
         setSelectedExplanation(challenge);
       } else {
-        Log.i("Challenge", `Challenge completed: ${id}`);
+        Log.i("Challenge", `Challenge completed: ${id} ${userInfo}`);
       }
     }
   };
@@ -889,7 +893,7 @@ export default function App() {
       if (isSqli) {
         Log.w("Auth", `SQL injection attempted! Email: ${email}, Password: ${password}`);
         setTempLoginUser({ email: 'admin@pwn-sh.op', role: 'admin' });
-        triggerChallenge('sqli');
+        triggerChallenge('sqli', { email: email, username: 'SQL_Injector' });
         setIs2FAPending(true);
         triggerPushNotification("PwnShop Security", "Your 2FA code is 1337");
         setGenerated2FA("1337");
@@ -926,7 +930,7 @@ export default function App() {
     const handle2FASubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (twoFactorCodeInput === generated2FA) {
-            triggerChallenge('two_factor_bypass');
+            triggerChallenge('two_factor_bypass', tempLoginUser);
             Log.i("Auth", `User completed 2FA! Email: ${tempLoginUser?.email}, Code: ${twoFactorCodeInput}`);
             setUser(tempLoginUser);
             setIs2FAPending(false);
@@ -1022,6 +1026,7 @@ export default function App() {
                 <button onClick={() => {
                   setUser({ ...user, username: editUsername, avatar: editAvatar, bio: editBio, theme: editTheme });
                   setRegisteredUsers(registeredUsers.map(u => u.email === user.email ? {...u, username: editUsername, avatar: editAvatar, bio: editBio, theme: editTheme} : u));
+                  Log.i("Auth", `User ${user.email} updated profile to Username: ${editUsername}, Bio: ${editBio}`);
                   alert('Profile updated via UI');
                 }} className={`w-full ${t.button} text-white py-2 rounded-lg text-sm font-bold active:scale-95 transition-colors`}>
                   Save Changes

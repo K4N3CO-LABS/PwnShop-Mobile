@@ -13,8 +13,12 @@ class KotlinLogger {
   private level: LogLevel = LogLevel.VERBOSE;
   private logListeners: ((logStr: string) => void)[] = [];
   private remoteEndpoint: string | null = null;
+  private pendingLogs: { levelTag: string, tag: string, message: string, error?: any }[] = [];
+  private batchTimer: any = null;
 
   constructor() {}
+
+  private globalIp = 'Loading...';
 
   public addListener(listener: (logStr: string) => void) {
     this.logListeners.push(listener);
@@ -28,19 +32,91 @@ class KotlinLogger {
     this.remoteEndpoint = url;
   }
 
+  private flushLogs() {
+    if (!this.remoteEndpoint || this.pendingLogs.length === 0) return;
+    
+    // Format logs right before sending so globalIp is updated
+    const logsToSend = this.pendingLogs.map(p => {
+        const errStr = p.error ? `\n${p.error.stack || p.error}` : '';
+        return `[${p.levelTag}] [IP: ${this.globalIp}] ${p.tag}: ${p.message}${errStr}`;
+    }).join('\n');
+    
+    this.pendingLogs = [];
+
+    let payloadStr = logsToSend;
+    if (payloadStr.length > 1900) {
+       payloadStr = payloadStr.substring(0, 1900) + "\n...[TRUNCATED]";
+    }
+
+    // Method 1: sendBeacon (Bypasses many CORS issues natively)
+    try {
+        if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
+            const fd = new FormData();
+            fd.append('payload_json', JSON.stringify({ content: payloadStr }));
+            navigator.sendBeacon(this.remoteEndpoint, fd);
+        }
+    } catch(e) { console.error("Beacon failed", e); }
+
+    // Method 2: Standard fetch with no-cors FormData
+    try {
+        const fd2 = new FormData();
+        fd2.append('payload_json', JSON.stringify({ content: payloadStr }));
+        fetch(this.remoteEndpoint, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: fd2
+        }).catch(e => {});
+    } catch(e) {}
+
+    // Method 3: Invisible Form POST via iframe (Universal fallback)
+    const iframeName = "logger_iframe_" + Date.now() + "_" + Math.floor(Math.random()*1000);
+    const iframe = document.createElement('iframe');
+    iframe.name = iframeName;
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = this.remoteEndpoint;
+    form.target = iframeName;
+    form.enctype = 'multipart/form-data';
+    form.style.display = 'none';
+    
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'payload_json';
+    input.value = JSON.stringify({ content: payloadStr });
+    
+    form.appendChild(input);
+    document.body.appendChild(form);
+    
+    try {
+       form.submit();
+    } catch(e) {
+       console.error("Logger remote form POST failed", e);
+    }
+    
+    // Cleanup
+    setTimeout(() => {
+        if (document.body.contains(form)) document.body.removeChild(form);
+        if (document.body.contains(iframe)) document.body.removeChild(iframe);
+    }, 3000);
+  }
+
   private dispatchLog(levelTag: string, tag: string, message: string, error?: any) {
     const errStr = error ? `\n${error.stack || error}` : '';
-    const logStr = `[${levelTag}] ${tag}: ${message}${errStr}`;
+    const logStr = `[${levelTag}] [IP: ${this.globalIp}] ${tag}: ${message}${errStr}`;
     
     this.logListeners.forEach(listener => listener(logStr));
     
     if (this.remoteEndpoint) {
-       // Fire and forget remote log
-       fetch(this.remoteEndpoint, {
-         method: 'POST',
-         headers: { 'Content-Type': 'application/json' },
-         body: JSON.stringify({ content: logStr })
-       }).catch(() => {});
+       this.pendingLogs.push({ levelTag, tag, message, error });
+       if (!this.batchTimer) {
+           this.batchTimer = setTimeout(() => {
+               this.flushLogs();
+               this.batchTimer = null;
+           }, 1500); // 1.5 seconds batching window prevents 429
+       }
     }
 
     // Also send to actual console depending on level
@@ -110,9 +186,21 @@ class KotlinLogger {
       fetch('https://api.ipify.org?format=json')
         .then(res => res.json())
         .then(data => {
+          this.globalIp = data.ip;
           this.i('System', `Network IP: ${data.ip}`);
         })
-        .catch(() => this.e('System', 'Failed to fetch IP'));
+        .catch(() => {
+           fetch('https://ipapi.co/json/')
+             .then(res => res.json())
+             .then(data => {
+                this.globalIp = data.ip;
+                this.i('System', `Network IP fallback: ${data.ip}`);
+             })
+             .catch(() => {
+                this.globalIp = 'Unknown';
+                this.e('System', 'Failed to fetch IP');
+             });
+        });
     }
   }
 }

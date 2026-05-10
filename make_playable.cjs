@@ -127,3 +127,8 @@ if (startIndex !== -1) {
 fs.writeFileSync(path.join(exportDir, 'index.html'), html);
 console.log("Successfully created android_export/index.html!");
 
+const exportDir2 = path.join(__dirname, 'android_App_export');
+if (!fs.existsSync(exportDir2)) fs.mkdirSync(exportDir2);
+fs.writeFileSync(path.join(exportDir2, 'index.html'), html);
+console.log("Successfully created android_App_export/index.html!");
+
