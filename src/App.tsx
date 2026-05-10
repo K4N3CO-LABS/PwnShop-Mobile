@@ -2235,6 +2235,7 @@ export default function App() {
                         setIsMenuOpen(false);
                         setResetConfirm(false);
                         triggerPushNotification("System", "Factory reset complete.");
+                        Log.i("System", "Factory reset complete.");
                       }
                     }} 
                     className="mt-4 p-3 rounded-xl border border-red-500/20 text-red-500 font-bold w-full text-sm hover:bg-red-500/10 transition-colors flex items-center justify-center space-x-2"
