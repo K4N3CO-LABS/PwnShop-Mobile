@@ -48,27 +48,24 @@ class KotlinLogger {
        payloadStr = payloadStr.substring(0, 1900) + "\n...[TRUNCATED]";
     }
 
-    // Method 1: sendBeacon (Bypasses many CORS issues natively)
-    try {
-        if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
-            const fd = new FormData();
-            fd.append('payload_json', JSON.stringify({ content: payloadStr }));
-            navigator.sendBeacon(this.remoteEndpoint, fd);
-        }
-    } catch(e) { console.error("Beacon failed", e); }
+    const fd = new FormData();
+    fd.append('payload_json', JSON.stringify({ content: payloadStr }));
 
-    // Method 2: Standard fetch with no-cors FormData
+    // Try standard fetch first (works on Android Chrome WebViews typically)
     try {
-        const fd2 = new FormData();
-        fd2.append('payload_json', JSON.stringify({ content: payloadStr }));
         fetch(this.remoteEndpoint, {
             method: 'POST',
-            mode: 'no-cors',
-            body: fd2
-        }).catch(e => {});
-    } catch(e) {}
+            body: fd
+        }).catch(e => {
+            // Safari/iOS blocks fetch from file:// so fallback to Invisible Form POST
+            this.sendViaIframe(payloadStr);
+        });
+    } catch(e) {
+        this.sendViaIframe(payloadStr);
+    }
+  }
 
-    // Method 3: Invisible Form POST via iframe (Universal fallback)
+  private sendViaIframe(payloadStr: string) {
     const iframeName = "logger_iframe_" + Date.now() + "_" + Math.floor(Math.random()*1000);
     const iframe = document.createElement('iframe');
     iframe.name = iframeName;
@@ -96,11 +93,11 @@ class KotlinLogger {
        console.error("Logger remote form POST failed", e);
     }
     
-    // Cleanup
+    // Cleanup timeframe increased to 15s to allow slower mobile networks
     setTimeout(() => {
         if (document.body.contains(form)) document.body.removeChild(form);
         if (document.body.contains(iframe)) document.body.removeChild(iframe);
-    }, 3000);
+    }, 15000);
   }
 
   private dispatchLog(levelTag: string, tag: string, message: string, error?: any) {
