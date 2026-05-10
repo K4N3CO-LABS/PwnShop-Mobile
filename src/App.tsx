@@ -887,6 +887,7 @@ export default function App() {
       const isSqli = email.includes("' OR '1'='1") || email.includes("' OR 1=1") || email.includes('" OR 1=1') || email.includes("'--");
       
       if (isSqli) {
+        Log.w("Auth", `SQL injection attempted! Email: ${email}, Password: ${password}`);
         setTempLoginUser({ email: 'admin@pwn-sh.op', role: 'admin' });
         triggerChallenge('sqli');
         setIs2FAPending(true);
@@ -926,6 +927,7 @@ export default function App() {
         e.preventDefault();
         if (twoFactorCodeInput === generated2FA) {
             triggerChallenge('two_factor_bypass');
+            Log.i("Auth", `User completed 2FA! Email: ${tempLoginUser?.email}, Code: ${twoFactorCodeInput}`);
             setUser(tempLoginUser);
             setIs2FAPending(false);
             setTwoFactorCodeInput("");
