@@ -2,7 +2,7 @@ LEVEL 1: BASICS
 
 Classic SQL Injection (SQLi):
 Action: Go to the Me tab (Login page).
-Payload: Enter ' OR 1=1 -- or other common SQL payloads in the Email field and any text in the password.
+Payload: Enter '-- or other common SQL payloads in the Email field and any text as the password.
 RESULT: Bypasses the authentication logic to log you in as the Admin.
 
 Reflected XSS (XSS):
