@@ -16,6 +16,9 @@ html = html.replace(/ crossorigin/g, '');
 html = html.replace(/window\.location\.replace\(['"]PwnShop_Playable\.html['"]\)/g, 'console.log("Redirect blocked in android build")');
 html = html.replace(/window\.location\.pathname\.endsWith\(['"]PwnShop_Playable\.html['"]\)/g, 'false');
 
+// Remove manifest link to prevent CORS and FILE_NOT_FOUND errors in WebViews
+html = html.replace(/<link rel="manifest"[^>]*>/g, '');
+
 // Fix location references
 html = html.replace(/window\.location\.pathname\.endsWith\(['"]PwnShop_Playable\.html['"]\)/g, 'false');
 
@@ -98,19 +101,8 @@ if (startIndex !== -1) {
       try {
         ${originalScript}
         console.log("Main application block parsed and executed.");
-        // Immediate clear of diagnostic timeout if we reached here
-        if (window.diagnosticTimeout) {
-          clearTimeout(window.diagnosticTimeout);
-          var fb = document.getElementById('loader-feedback');
-          if (fb) fb.style.display = 'none';
-        }
       } catch (e) {
         console.error("Critical execution error:", e);
-        var fb = document.getElementById('loader-feedback');
-        if (fb) {
-          fb.style.display = 'block';
-          fb.innerHTML = "<b>Critical Execution Error:</b> " + e.message + (e.stack ? "<br><br><small>" + e.stack.replace(/\\n/g, '<br>') + "</small>" : "");
-        }
       }
     </script>
   `;
@@ -127,8 +119,4 @@ if (startIndex !== -1) {
 fs.writeFileSync(path.join(exportDir, 'index.html'), html);
 console.log("Successfully created android_export/index.html!");
 
-const exportDir2 = path.join(__dirname, 'android_App_export');
-if (!fs.existsSync(exportDir2)) fs.mkdirSync(exportDir2);
-fs.writeFileSync(path.join(exportDir2, 'index.html'), html);
-console.log("Successfully created android_App_export/index.html!");
 

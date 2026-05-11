@@ -459,7 +459,7 @@ export default function App() {
       const userInfo = identity ? `by ${identity.username || identity.email} (${identity.email})` : 'by Guest';
       
       if (challenge) {
-        Log.i("Challenge", `Challenge completed: ${challenge.title} (${id}) ${userInfo}`);
+        Log.i("Challenge", `Challenge completed: ${challenge.name} (${id}) ${userInfo}`);
         setSelectedExplanation(challenge);
       } else {
         Log.i("Challenge", `Challenge completed: ${id} ${userInfo}`);
