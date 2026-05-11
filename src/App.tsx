@@ -176,7 +176,7 @@ export default function App() {
     if (typeof window !== 'undefined' && (window as any).hideSplash) {
       setTimeout(() => {
         (window as any).hideSplash();
-      }, 1000); // reduced from 6s
+      }, 1500); // Faster loading
     }
 
     if ((window as any).diagnosticTimeout) {

@@ -16,8 +16,4 @@ try {
   console.log('PwnShop Mobile started successfully.');
 } catch (error) {
   console.error('Failed to mount app:', error);
-  // Fail-safe to hide splash screen on error
-  if (typeof window !== 'undefined' && (window as any).hideSplash) {
-    (window as any).hideSplash();
-  }
 }

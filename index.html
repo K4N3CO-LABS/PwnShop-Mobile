@@ -26,7 +26,7 @@
           <span id="static-status">Initializing System...</span>
         </div>
         <div style="height:6px;width:100%;background:#111;border-radius:99px;border:1px solid rgba(255,255,255,0.08);overflow:hidden;box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);">
-          <div id="static-bar" style="height:100%;background:linear-gradient(90deg, #059669, #10b981);width:0%;transition:width 0.4s cubic-bezier(0.4, 0, 0.2, 1);box-shadow: 0 0 12px rgba(16,185,129,0.6);"></div>
+          <div id="static-bar" style="height:100%;background:linear-gradient(90deg, #059669, #10b981);width:0%;transition:width 0.1s linear;box-shadow: 0 0 12px rgba(16,185,129,0.6);"></div>
         </div>
         <div style="margin-top:40px;text-align:center;font-size:9px;color:#444;text-transform:uppercase;letter-spacing:0.4em;font-weight:500;">
           Secure Protocol Enabled • AI Powered
@@ -58,7 +58,7 @@
         ];
         
         var interval = setInterval(function() {
-          p += (Math.random() * 3) + 3.5; 
+          p += (Math.random() * 4) + 2; 
           if (p >= 98) {
             p = 98;
           }
@@ -67,7 +67,7 @@
             var idx = Math.floor((p/100) * stages.length);
             status.innerText = stages[Math.min(idx, stages.length - 1)];
           }
-        }, 200);
+        }, 60);
 
         // Matrix Rain
         (function() {
