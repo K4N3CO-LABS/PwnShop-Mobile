@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
-    "build": "vite build && mkdir -p android_export && cp dist/index.html android_export/index.html",
+    "build": "vite build && mkdir -p android_export && cp dist/index.html android_export/index.html && sed -i 's/type=\"module\"//g' android_export/index.html && sed -i 's/crossorigin//g' android_export/index.html",
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"

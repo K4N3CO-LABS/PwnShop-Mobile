@@ -176,7 +176,7 @@ export default function App() {
     if (typeof window !== 'undefined' && (window as any).hideSplash) {
       setTimeout(() => {
         (window as any).hideSplash();
-      }, 6000); // Minimum 6s visible to show loading processes
+      }, 1000); // reduced from 6s
     }
 
     if ((window as any).diagnosticTimeout) {

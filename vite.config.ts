@@ -9,16 +9,20 @@ export default defineConfig(({mode}) => {
   return {
     build: {
       target: 'es2015',
+      assetsInlineLimit: 100000000,
+      chunkSizeWarningLimit: 100000000,
+      cssCodeSplit: false,
       rollupOptions: {
         output: {
-          format: 'iife'
+          format: 'iife',
+          inlineDynamicImports: true,
         }
       }
     },
     plugins: [
       react(), 
       tailwindcss(),
-      viteSingleFile(),
+      viteSingleFile({ removeViteModuleLoader: true }),
     ],
     base: './',
     define: {
