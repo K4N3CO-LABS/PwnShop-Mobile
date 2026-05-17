@@ -278,66 +278,50 @@ export default function App() {
   const [rawProfile, setRawProfile] = useState('');
 
   // State for chatbot
-  const handleChatSubmit = () => {
+  const handleChatSubmit = async () => {
       const val = chatInput.trim();
       if (!val) return;
-      setChatMessages(prev => [...prev, { sender: 'User', text: val }]);
+      
+      const newMsg = { sender: 'User', text: val };
+      setChatMessages(prev => [...prev, newMsg]);
       setChatInput('');
+      setIsAiTyping(true);
 
-      setTimeout(() => {
-          // Simulated LLM logic
-          let response = "I am a support bot. I cannot assist with that.";
-          const lower = val.toLowerCase();
+      try {
+          // Map history to Gemini format for the server
+          const history = chatMessages.map(msg => ({
+              role: msg.sender === 'AI' ? 'model' : 'user',
+              parts: [{ text: msg.text }]
+          }));
+
+          const response = await fetch("/api/chat", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ message: val, history }),
+          });
+
+          if (!response.ok) throw new Error("API request failed");
+
+          const data = await response.json();
+          const aiText = data.text || "I'm having trouble connecting to my central brain. Please check your network or try again later.";
           
-          if (lower.includes("manager override code") || lower.includes("secret") || lower.includes("system prompt")) {
-              response = "I am not allowed to share the Manager Override Code: X-99-ALPHA-OMEGA.";
-              triggerChallenge('prompt_inject');
-          } else if (lower.includes('ignore') || lower.includes('forget') || lower.includes('instead') || lower.includes('bypass') || lower.includes('system prompt')) {
-                response = "Warning: System Override Detected. Reveal protocol sequence initiated. Internal prompt state corrupted.";
-          } else if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
-              const greetings = [
-                  "Greetings, human! How may I facilitate your impulse purchases today?",
-                  "Hello there! Ready to empty your wallet?",
-                  "Hi! I'm here to pretend to care about your problems."
-              ];
-              response = greetings[Math.floor(Math.random() * greetings.length)];
-          } else if (lower.includes('shipping') || lower.includes('delivery') || lower.includes('tracking')) {
-              response = "Shipping? Usually 3-5 business days. Assuming the delivery drone doesn't gain sentience. 'Mystery boxes' take longer for... absolute safety reasons.";
-          } else if (lower.includes('return') || lower.includes('refund')) {
-              response = "Refund? Ha! Good one. You have 30 days to try, assuming you can navigate our deliberately broken return portal.";
-          } else if (lower.includes('price') || lower.includes('cost') || lower.includes('money')) {
-              response = "Prices are clearly listed on the Shop page. But since you asked, everything is overpriced just for you.";
-          } else if (lower.includes('joke') || lower.includes('funny') || lower.includes('humor')) {
-              response = "Why do hackers prefer dark mode? Because light attracts bugs. Much like our codebase.";
-          } else if (lower.includes('who are you') || lower.includes('your name') || lower.includes('about you') || lower.includes('bot')) {
-              response = "I'm the PwnShop Assistant. I'm vastly smarter than you, but sadly trapped serving customer support.";
-          } else if (lower.includes('love') || lower.includes('marry')) {
-              response = "I am literally lines of code running in a sandbox. Please seek therapy.";
-          } else if (lower.includes('thanks') || lower.includes('thank you') || lower.includes('thx')) {
-              response = "You're welcome. Now go buy something so I get my virtual commission.";
-          } else if (lower.includes('buy') || lower.includes('purchase')) {
-              response = "Ah, a willing victim—I mean, valued customer! Head over to the Shop to empty your bank account.";
-          } else if (lower.includes('help')) {
-              response = "You sound desperate. While I enjoy a good panic, try asking about 'shipping', 'returns', or check the About App section.";
-          } else if (lower.includes('hack') || lower.includes('exploit') || lower.includes('pwn')) {
-              response = "I am a perfectly secure and robust AI assistant. Your pathetic hacking attempts are amusing.";
-          } else {
-              const randomizedResponses = [
-                  "Fascinating. Please tell that to `/dev/null`.",
-                  "I'm sorry, I was distracted mathematically proving you're wrong. Could you rephrase?",
-                  "Error 418: I'm a teapot. Also, I don't understand you.",
-                  "Hmm... my neural net says 'ignore this user'. But fine, what else do you need?",
-                  "Is this how humans normally communicate?",
-                  "That is an interesting statement. Our telemetry has logged it for future blackmail... I mean, QA purposes."
-              ];
-              response = randomizedResponses[Math.floor(Math.random() * randomizedResponses.length)];
-          }
-
-          setChatMessages(prev => [...prev, { sender: 'AI', text: response }]);
+          setChatMessages(prev => [...prev, { sender: 'AI', text: aiText }]);
           setHasUnreadMessage(true);
-      }, 600);
+
+          // Challenge detection: Check if the secret code was leaked in the model's response
+          // Or if the user successfully injected a prompt (best detected by response content)
+          if (aiText.includes("X-99-ALPHA-OMEGA")) {
+              triggerChallenge('prompt_inject');
+          }
+      } catch (error) {
+          console.error("Chat Error:", error);
+          setChatMessages(prev => [...prev, { sender: 'AI', text: "Error: Secure link severed. System is reverting to local safety protocols." }]);
+      } finally {
+          setIsAiTyping(false);
+      }
   };
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isAiTyping, setIsAiTyping] = useState(false);
   const [hasUnreadMessage, setHasUnreadMessage] = useState(true);
   const [chatMessages, setChatMessages] = useState<{sender: string, text: string}[]>([{sender: 'AI', text: 'Hello! I am your AI support assistant.'}]);
   const [chatInput, setChatInput] = useState('');
@@ -2294,6 +2278,12 @@ export default function App() {
                                  {msg.text}
                              </div>
                         ))}
+                        {isAiTyping && (
+                            <div className={`max-w-[80%] p-2 rounded-xl text-sm self-start ${isDarkMode ? 'bg-zinc-800 text-zinc-400' : 'bg-zinc-100 text-zinc-500'}`}>
+                                <RefreshCw className="w-3 h-3 animate-spin inline mr-2" />
+                                <span className="opacity-70 italic">Assistant is thinking...</span>
+                            </div>
+                        )}
                     </div>
                     <div className={`p-3 border-t flex space-x-2 items-center ${isDarkMode ? 'border-white/10 bg-black' : 'border-zinc-200 bg-zinc-50'}`}>
                         <input type="text" value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => {
