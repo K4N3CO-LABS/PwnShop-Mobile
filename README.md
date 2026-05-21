@@ -1,3 +1,4 @@
+[![Screenshot-2026-05-04-at-6-11-06-PM.png](https://i.postimg.cc/DZgZFJwV/Screenshot-2026-05-04-at-6-11-06-PM.png)](https://postimg.cc/tZsyNg6D)
 # About The PwnShop
 
 Using inspiration from the OWASP Juice-Shop I introduce the PwnShop—an educational, deliberately insecure application built exclusively for mobile devices. It's designed for cybersecurity enthusiasts, beginners, and seasoned professionals to learn about exploits and vulnerabilities directly from their phone or tablet.
