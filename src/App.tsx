@@ -1729,7 +1729,7 @@ export default function App() {
         </div>
       </div>
       
-      <div className="bg-black/90 rounded-xl p-4 font-mono text-xs text-emerald-400 min-h-[250px] max-h-[300px] overflow-y-auto space-y-1">
+      <div className="bg-black/90 rounded-xl p-4 font-mono text-xs text-emerald-300 min-h-[250px] max-h-[300px] overflow-y-auto space-y-1">
         {debugLogs.length === 0 ? <p className="opacity-50">Logs cleared.</p> : debugLogs.map((log, i) => <p key={i}>[{new Date().toISOString().split('T')[1].slice(0, -1)}] {log}</p>)}
       </div>
 
@@ -2264,7 +2264,7 @@ export default function App() {
                     initial={{ y: '100%', opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: '100%', opacity: 0 }}
-                    className={`absolute bottom-20 right-4 w-72 h-96 border rounded-2xl shadow-2xl z-40 flex flex-col overflow-hidden ${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200'}`}
+                    className={`fixed bottom-[100px] right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-80 h-[500px] max-h-[70vh] border rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden ${isDarkMode ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200'}`}
                 >
                     <div className="bg-emerald-500 p-3 flex justify-between items-center text-white">
                         <div className="font-bold flex items-center space-x-2">
@@ -2274,7 +2274,7 @@ export default function App() {
                     </div>
                     <div className="flex-1 p-3 overflow-y-auto space-y-3 flex flex-col">
                         {chatMessages.map((msg, i) => (
-                             <div key={i} className={`max-w-[80%] p-2 rounded-xl text-sm ${msg.sender === 'AI' ? (isDarkMode ? 'bg-zinc-800 text-zinc-200 self-start' : 'bg-zinc-100 text-zinc-800 self-start') : (isDarkMode ? 'bg-emerald-500/20 text-emerald-300 self-end border border-emerald-500/30' : 'bg-emerald-100 text-emerald-700 self-end border border-emerald-500/30')}`}>
+                             <div key={i} className={`max-w-[85%] p-2 rounded-xl text-sm ${msg.sender === 'AI' ? (isDarkMode ? 'bg-zinc-800 text-zinc-200 self-start' : 'bg-zinc-100 text-zinc-800 self-start') : (isDarkMode ? 'bg-emerald-500/20 text-emerald-300 self-end border border-emerald-500/30' : 'bg-emerald-100 text-emerald-700 self-end border border-emerald-500/30')}`}>
                                  {msg.text}
                              </div>
                         ))}
@@ -2285,19 +2285,15 @@ export default function App() {
                             </div>
                         )}
                     </div>
-                    <div className={`p-3 border-t flex space-x-2 items-center ${isDarkMode ? 'border-white/10 bg-black' : 'border-zinc-200 bg-zinc-50'}`}>
-                        <input type="text" value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => {
-                            if (e.key === 'Enter') {
-                                handleChatSubmit();
-                            }
-                        }} placeholder="Message..." className={`flex-1 px-3 py-2 rounded-lg outline-none border text-sm transition-colors ${isDarkMode ? 'bg-zinc-900 text-white border-white/5 focus:border-emerald-500/50' : 'bg-white text-zinc-900 border-zinc-300 focus:border-emerald-500/50'}`} />
+                    <form onSubmit={(e) => { e.preventDefault(); handleChatSubmit(); }} className={`p-3 border-t flex space-x-2 items-center ${isDarkMode ? 'border-white/10 bg-black' : 'border-zinc-200 bg-zinc-50'}`}>
+                        <input type="text" value={chatInput} onChange={e => setChatInput(e.target.value)} placeholder="Type a message..." className={`flex-1 min-w-0 px-3 py-2 rounded-lg outline-none border text-sm transition-colors ${isDarkMode ? 'bg-zinc-900 text-white border-white/5 focus:border-emerald-500/50' : 'bg-white text-zinc-900 border-zinc-300 focus:border-emerald-500/50'}`} />
                         <button 
-                            onClick={handleChatSubmit}
-                            className="bg-emerald-500 hover:bg-emerald-600 text-white p-2 rounded-lg transition-colors active:scale-95"
+                            type="submit"
+                            className="bg-emerald-500 hover:bg-emerald-600 text-white min-w-[70px] h-full py-2 px-3 text-sm font-bold rounded-lg transition-colors active:scale-95 flex-shrink-0 flex items-center justify-center whitespace-nowrap"
                         >
-                            <Send size={18} />
+                            SEND
                         </button>
-                    </div>
+                    </form>
                 </motion.div>
             )}
         </AnimatePresence>

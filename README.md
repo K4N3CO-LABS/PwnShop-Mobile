@@ -1,4 +1,3 @@
-[![Screenshot-2026-05-04-at-6-11-06-PM.png](https://i.postimg.cc/DZgZFJwV/Screenshot-2026-05-04-at-6-11-06-PM.png)](https://postimg.cc/tZsyNg6D)
 # About The PwnShop
 
 Using inspiration from the OWASP Juice-Shop I introduce the PwnShop—an educational, deliberately insecure application built exclusively for mobile devices. It's designed for cybersecurity enthusiasts, beginners, and seasoned professionals to learn about exploits and vulnerabilities directly from their phone or tablet.
@@ -7,7 +6,7 @@ Unlike traditional educational platforms, PwnShop aims to teach real-world secur
 
 Your ultimate goal is to step into the shoes of an ethical hacker. Navigate the application, hunt down security misconfigurations, and exploit these deliberate flaws. As you uncover vulnerabilities, you will unlock items in your Hacker Inventory, learn the underlying mechanisms of why the exploit works, and discover industry-standard mitigation strategies.
 
-Keep a close eye on the Hacker Scoreboard to track your progress. The more vulnerabilities you find, the closer you get to earning your COMPLETION CERTIFICATE! Good luck, and remember: with great power comes great responsibility. Always conduct security research ethically and legally.
+Keep a close eye on the Hacker Scoreboard to track your progress. The more vulnerabilities you find, the closer you get to earning your completion certificate! Good luck, and remember: with great power comes great responsibility. Always conduct security research ethically and legally.
 
 ## How to play
 

