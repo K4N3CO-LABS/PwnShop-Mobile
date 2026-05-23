@@ -22,9 +22,14 @@ Discovering a bug isn’t just a win—it’s a lesson. Every vulnerability you 
 
 ---
 
-## Easiest way to get started
-1. Download the APK file below onto your Android device.
-2. Install it. Open App.
+## Mobile App (Android)
+
+Get the PwnShop app on your phone:
+1. **Download** the latest `.apk` installation file from the releases section.
+2. **Install** the package on your Android device (ensure "Install from Unknown Sources" is enabled in your security settings).
+3. **Open** the app and start exploring
+
+---
 
 ## Run Locally on PC (Debug/Testing)
 **Prerequisites:** Node.js
@@ -45,7 +50,6 @@ npm run dev
 # Open the app:
 o + ENTER
 ```
----
 **Please STAR this project if you find it useful. :)**
 
 Donations are always welcome and extremely appreciated. Thanks! 
