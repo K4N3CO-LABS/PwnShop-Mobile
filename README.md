@@ -29,14 +29,24 @@ Discovering a bug isn’t just a win—it’s a lesson. Every vulnerability you 
 ## Run Locally on PC (Debug/Testing)
 **Prerequisites:** Node.js
 
-1. Git clone `https://github.com/K4Links/PwnShop-Mobile.git` or Download zip file and unzip.
-2. In a Terminal: `cd PwnShop-Mobile`
-3. Install dependencies: `npm install`
-4. Run the app: `npm run dev`
-5. Press o and enter to open app.
+```bash
+# Clone or Download zip file and unzip:
+Git clone https://github.com/K4Links/PwnShop-Mobile.git
 
+# In a Terminal:
+cd PwnShop-Mobile
+
+# Install dependencies:
+npm install
+
+# Run the app:
+npm run dev
+
+# Open the app:
+o + ENTER
+```
 ---
-**Please star this project if you find it useful. :)**
+**Please STAR this project if you find it useful. :)**
 
 Donations are always welcome and extremely appreciated. Thanks! 
 **BTC:** bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
