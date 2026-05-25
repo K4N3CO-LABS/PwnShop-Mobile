@@ -39,7 +39,7 @@ Get the PwnShop app on your phone:
 Git clone https://github.com/K4Links/PwnShop-Mobile.git
 
 # In a Terminal:
-cd PwnShop-Mobile
+cd PwnShop-Mobile-app
 
 # Install dependencies:
 npm install
