@@ -25,7 +25,7 @@ Discovering a bug isn’t just a win—it’s a lesson. Every vulnerability you 
 ## Mobile App (Android)
 
 Get the PwnShop app on your phone:
-1. **Download** the latest `.apk` installation file from the releases section.
+1. **Download** the latest `.apk` installation file from the releases section below.
 2. **Install** the package on your Android device (ensure "Install from Unknown Sources" is enabled in your security settings).
 3. **Open** the app and start exploring
 
