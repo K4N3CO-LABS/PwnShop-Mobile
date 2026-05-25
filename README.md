@@ -50,6 +50,7 @@ npm run dev
 # Open the app:
 o + ENTER
 ```
+---
 **Please 🌟 this project if you find it useful. 😁**
 
 Donations are always welcome and extremely appreciated. Thanks! 
