@@ -18,7 +18,7 @@ Hunt for "leaky" info by tapping through every corner of the app. Look for devel
 Feed the app "broken" data, exploit how it saves your info locally, and try to trick the interface into giving you access or information it shouldn't.
 
 ### 3. Hack to learn, learn to build
-Discovering a bug isn’t just a win—it’s a lesson. Every vulnerability you find reveals the technical "why" and the industry-standard way to patch it.
+Discovering a bug isn’t just a win—it’s a lesson. Every vulnerability you find reveals the technical "why" and the industry-standard way to patch it. (If you get stuck, refer to the Cheatsheet above.)
 
 ---
 
