@@ -59,4 +59,13 @@ Donations are always welcome and extremely appreciated. Thanks!
 ```
 bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
 ```
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
 *Created for Educational Purposes. DO NOT perform these attacks against real targets. Enjoy!!*
