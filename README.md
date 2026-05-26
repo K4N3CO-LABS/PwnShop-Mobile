@@ -46,16 +46,20 @@ npm install
 
 # Run the app:
 npm run dev
-
-# Open the app:
-o + ENTER
 ```
+**To open app:**
+
+Click the URL shown in the terminal (usually http://localhost:5173 or http://0.0.0.0:5173).
+
 ---
-**Please 🌟 this project if you find it useful. 😁**
 
-Donations are always welcome and extremely appreciated. Thanks! 
+### ⭐ Support the Project
 
-**BTC:** 
+If you find **PWNNET** useful, please consider giving the project a **star** ⭐ — it helps a lot!
+
+**Donations (optional but greatly appreciated)**
+
+**Bitcoin (BTC):**
 ```
 bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
 ```
