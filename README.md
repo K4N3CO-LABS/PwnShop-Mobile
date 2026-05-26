@@ -3,7 +3,7 @@
 
 Using inspiration from the OWASP Juice-Shop I introduce the PwnShop—an educational, deliberately insecure application built exclusively for mobile devices. It's designed for cybersecurity enthusiasts, beginners, and seasoned professionals to learn about exploits and vulnerabilities directly from their phone or tablet.
 
-Unlike traditional educational platforms, PwnShop aims to teach real-world security concepts through practical, hands-on experience. This environment has been laced with numerous vulnerabilities typically found in production applications, ranging from classic SQL injection and Cross-Site Scripting (XSS) to complex business logic flaws, leaky APIs, and hidden endpoints.
+PwnShop aims to teach real-world security concepts through practical, hands-on experience. This environment has been laced with numerous vulnerabilities typically found in production applications, ranging from classic SQL injection and Cross-Site Scripting (XSS) to complex business logic flaws, leaky APIs, and hidden endpoints.
 
 Your ultimate goal is to step into the shoes of an ethical hacker. Navigate the application, hunt down security misconfigurations, and exploit these deliberate flaws. As you uncover vulnerabilities, you will unlock items in your Hacker Inventory, learn the underlying mechanisms of why the exploit works, and discover industry-standard mitigation strategies.
 
