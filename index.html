@@ -14,7 +14,7 @@
   </head>
   <body class="bg-black" style="background-color: #000; margin: 0; padding: 0; height: 100vh; overflow: hidden; -webkit-tap-highlight-color: transparent;">
     <div id="static-splash" style="background-color:#000;position:fixed;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;font-family:'Space Grotesk',ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;transition:opacity 0.8s ease-in-out;opacity:1;pointer-events:all;">
-      <canvas id="matrix-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:-1;opacity:0.55;"></canvas>
+      <canvas id="matrix-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:-1;opacity:0.6;"></canvas>
       <div style="position:relative;margin-bottom:48px;">
         <div style="position:absolute;inset:0;background:rgba(16,185,129,0.3);filter:blur(32px);border-radius:50%;width:120px;height:120px;top:50%;left:50%;transform:translate(-50%,-50%);animation:splash-pulse-glow 2s ease-in-out infinite;"></div>
         <div style="position:relative;width:140px;height:140px;border-radius:28px;overflow:hidden;border:2px solid rgba(16,185,129,0.6);box-shadow:0 0 40px rgba(16,185,129,0.4);background:#0a0a0a;animation:splash-pulse-scale 3s ease-in-out infinite, logo-emerald-pulse 2s ease-in-out infinite;">
@@ -33,9 +33,11 @@
         </div>
       </div>
       <style>
+        
         @keyframes splash-pulse-glow { 0%, 100% { opacity: 0.3; transform: translate(-50%,-50%) scale(1); } 50% { opacity: 0.6; transform: translate(-50%,-50%) scale(1.1); } }
         @keyframes splash-pulse-scale { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
         @keyframes logo-emerald-pulse { 0%, 100% { border-color: rgba(16,185,129,0.6); box-shadow: 0 0 40px rgba(16,185,129,0.4); } 50% { border-color: rgba(16,185,129,1); box-shadow: 0 0 60px rgba(16,185,129,0.8); } }
+        
       </style>
     </div>
     <script>
@@ -57,23 +59,27 @@
           'System ready.'
         ];
         
+        window._splashStartTime = Date.now();
+        var targetDuration = 4000;
+        
         var interval = setInterval(function() {
-          p += (Math.random() * 4) + 2; 
-          if (p >= 98) {
-            p = 98;
-          }
+          var elapsed = Date.now() - window._splashStartTime;
+          p = Math.min((elapsed / targetDuration) * 100, 98);
+          
           if (bar) bar.style.width = p + '%';
           if (status) {
             var idx = Math.floor((p/100) * stages.length);
             status.innerText = stages[Math.min(idx, stages.length - 1)];
           }
-        }, 60);
+        }, 30);
 
+        var matrixInterval;
         // Matrix Rain
         (function() {
           var canvas = document.getElementById('matrix-canvas');
           if(!canvas) return;
           var ctx = canvas.getContext('2d');
+          if(!ctx) return;
           var width = canvas.width = window.innerWidth;
           var height = canvas.height = window.innerHeight;
           var columns = Math.floor(width / 20);
@@ -91,7 +97,7 @@
                 drops[i]++;
             }
           }
-          var matrixInterval = setInterval(draw, 45);
+          matrixInterval = setInterval(draw, 45);
           window.addEventListener('resize', function() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
@@ -111,6 +117,7 @@
            
            setTimeout(function() {
              clearInterval(interval);
+             if (matrixInterval) clearInterval(matrixInterval);
              if (bar) bar.style.width = '100%';
              if (status) status.innerText = 'System ready.';
              
@@ -124,7 +131,6 @@
              }, 1000);
            }, remaining);
         };
-        window._splashStartTime = Date.now();
       })();
     </script>
     <div id="root"></div>
