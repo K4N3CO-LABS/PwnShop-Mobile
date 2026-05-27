@@ -2,7 +2,7 @@
 
 Using inspiration from the OWASP Juice-Shop I introduce the PwnShop—an educational, deliberately insecure application built exclusively for mobile devices. It's designed for cybersecurity enthusiasts, beginners, and seasoned professionals to learn about exploits and vulnerabilities directly from their phone or tablet.
 
-Unlike traditional educational platforms, PwnShop aims to teach real-world security concepts through practical, hands-on experience. This environment has been laced with numerous vulnerabilities typically found in production applications, ranging from classic SQL injection and Cross-Site Scripting (XSS) to complex business logic flaws, leaky APIs, and hidden endpoints.
+PwnShop aims to teach real-world security concepts through practical, hands-on experience. This environment has been laced with numerous vulnerabilities typically found in production applications, ranging from classic SQL injection and Cross-Site Scripting (XSS) to complex business logic flaws, leaky APIs, and hidden endpoints.
 
 Your ultimate goal is to step into the shoes of an ethical hacker. Navigate the application, hunt down security misconfigurations, and exploit these deliberate flaws. As you uncover vulnerabilities, you will unlock items in your Hacker Inventory, learn the underlying mechanisms of why the exploit works, and discover industry-standard mitigation strategies.
 
@@ -25,19 +25,36 @@ Discovering a bug isn’t just a win—it’s a lesson. Every vulnerability you 
 1. Download the APK file below onto your Android device.
 2. Install it. Open App.
 
-## Run Locally on PC (Debug/Testing)
 **Prerequisites:** Node.js
+## 🚀 Running Locally (On PC)
 
-1. Git clone `https://github.com/K4Links/PwnShop-Mobile.git` or Download zip file and unzip.
-2. In a Terminal: `cd PwnShop-Mobile`
-3. Install dependencies: `npm install`
-4. Run the app: `npm run dev`
-5. Press o and enter to open app.
+```bash
+# 1. Clone the repository
+git clone https://github.com/K4Links/PwnShop-Mobile.git
+
+# 2. Navigate into the project
+cd PwnShop-Mobile-main
+
+# 3. Install dependencies
+npm install
+
+# 4. Start the development server
+npm run dev
+```
+To open app:
+
+Click the URL shown in the terminal (usually http://localhost:5173 or http://0.0.0.0:5173).
 
 ---
-**Please star this project if you find it useful. :)**
 
-Donations are always welcome and extremely appreciated. Thanks! 
-**BTC:** bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
+### ⭐ Support the Project
+
+If you find **PWNNET** useful, please consider giving the project a **star** ⭐ — it helps a lot!
+
+**Donations (optional but greatly appreciated):**
+Bitcoin (BTC):
+```
+bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
+```
 
 *Created for Educational Purposes. DO NOT perform these attacks against real targets. Enjoy!!*
