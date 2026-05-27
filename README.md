@@ -1,12 +1,18 @@
 # About The PwnShop
 
-Using inspiration from the OWASP Juice-Shop I introduce the PwnShop—an educational, deliberately insecure application built exclusively for mobile devices. It's designed for cybersecurity enthusiasts, beginners, and seasoned professionals to learn about exploits and vulnerabilities directly from their phone or tablet.
+Using inspiration from the OWASP Juice-Shop I introduce The PwnShop—an educational, deliberately insecure application built exclusively for mobile devices. It's designed for cybersecurity enthusiasts, beginners, and seasoned professionals to learn about exploits and vulnerabilities directly from their phone or tablet.
 
-PwnShop aims to teach real-world security concepts through practical, hands-on experience. This environment has been laced with numerous vulnerabilities typically found in production applications, ranging from classic SQL injection and Cross-Site Scripting (XSS) to complex business logic flaws, leaky APIs, and hidden endpoints.
+The PwnShop aims to teach real-world security concepts through practical, hands-on experience. This environment has been laced with numerous vulnerabilities typically found in production applications, ranging from classic SQL injection and Cross-Site Scripting (XSS) to complex business logic flaws, leaky APIs, and hidden endpoints.
 
 Your ultimate goal is to step into the shoes of an ethical hacker. Navigate the application, hunt down security misconfigurations, and exploit these deliberate flaws. As you uncover vulnerabilities, you will unlock items in your Hacker Inventory, learn the underlying mechanisms of why the exploit works, and discover industry-standard mitigation strategies.
 
 Keep a close eye on the Hacker Scoreboard to track your progress. The more vulnerabilities you find, the closer you get to earning your completion certificate! Good luck, and remember: with great power comes great responsibility. Always conduct security research ethically and legally.
+
+---
+
+## Gameplay
+
+<a href="https://postimg.cc/zHgjm2bj" target="_blank"><img src="https://i.postimg.cc/zHgjm2bj/Screenshot-2026-05-27-02-11-23.png" alt="Screenshot-2026-05-27-02-11-23"></a> <a href="https://postimg.cc/1VqHx7nK" target="_blank"><img src="https://i.postimg.cc/1VqHx7nK/Screenshot-2026-05-27-02-10-17.png" alt="Screenshot-2026-05-27-02-10-17"></a> <a href='https://postimg.cc/qzQtJXsh' target='_blank'><img src='https://i.postimg.cc/qzQtJXsh/Screenshot-2026-05-27-02-15-57.png' border='0' alt='Screenshot-2026-05-27-02-15-57'></a> <a href='https://postimg.cc/qtcqFsvk' target='_blank'><img src='https://i.postimg.cc/qtcqFsvk/Screenshot-2026-05-27-02-19-23.png' border='0' alt='Screenshot-2026-05-27-02-19-23'></a>
 
 ## How to play
 
@@ -23,11 +29,11 @@ Discovering a bug isn’t just a win—it’s a lesson. Every vulnerability you 
 
 ### 📱 Mobile App (Android)
 
+   **Prerequisites:** Node.js
+
 1. Download the latest **`.apk`** from the [Releases](https://https://github.com/K4Links/PwnShop-Mobile/releases/tag/v1.0.1)
 3. Enable **"Install from Unknown Sources"** in your Android security settings.
 4. Install and open the app.
-
-**Prerequisites:** Node.js
 
 ## 🚀 Running Locally (On PC)
 
@@ -44,7 +50,7 @@ npm install
 # 4. Start the development server
 npm run dev
 ```
-To open app:
+**To open app:**
 
 Click the URL shown in the terminal (usually http://localhost:5173 or http://0.0.0.0:5173).
 
