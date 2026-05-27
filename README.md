@@ -21,11 +21,14 @@ Discovering a bug isn’t just a win—it’s a lesson. Every vulnerability you 
 
 ---
 
-## Easiest way to get started
-1. Download the APK file below onto your Android device.
-2. Install it. Open App.
+### 📱 Mobile App (Android)
+
+1. Download the latest **`.apk`** from the [Releases](https://https://github.com/K4Links/PwnShop-Mobile/releases/tag/v1.0.1)
+3. Enable **"Install from Unknown Sources"** in your Android security settings.
+4. Install and open the app.
 
 **Prerequisites:** Node.js
+
 ## 🚀 Running Locally (On PC)
 
 ```bash
@@ -56,5 +59,10 @@ Bitcoin (BTC):
 ```
 bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
 ```
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
 
 *Created for Educational Purposes. DO NOT perform these attacks against real targets. Enjoy!!*
