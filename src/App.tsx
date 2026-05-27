@@ -2113,9 +2113,6 @@ export default function App() {
         
         <div 
           className={`w-full md:max-w-md mx-auto ${isDarkMode ? 'bg-[#0c0f0e] md:border-[#1a2e23] shadow-[0_40px_80px_-20px_rgba(0,0,0,1),_0_0_120px_-20px_rgba(16,185,129,0.2),_inset_0_2px_4px_rgba(255,255,255,0.02),_inset_0_-2px_10px_rgba(0,0,0,0.8)]' : 'bg-[#ffffff] md:border-zinc-300 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.2),_0_0_100px_-20px_rgba(16,185,129,0.15),_inset_0_2px_4px_rgba(255,255,255,1),_inset_0_-2px_10px_rgba(0,0,0,0.05)]'} flex flex-col h-screen md:h-[92vh] md:my-auto md:rounded-[52px] overflow-hidden relative z-10 border-x md:border transition-transform duration-[1200ms] sm:transform-gpu ease-out`}
-          style={{ transform: typeof window !== 'undefined' && window.innerWidth >= 1280 ? 'rotateX(2deg) rotateY(-8deg) translateZ(50px)' : 'none' }}
-          onMouseEnter={(e) => { if(window.innerWidth >= 1280) e.currentTarget.style.transform = 'rotateX(0deg) rotateY(0deg) translateZ(0px)'; }}
-          onMouseLeave={(e) => { if(window.innerWidth >= 1280) e.currentTarget.style.transform = 'rotateX(2deg) rotateY(-8deg) translateZ(50px)'; }}
         >
           {/* Faint green inside glow */}
           <div className={`absolute inset-0 z-0 pointer-events-none transition-opacity duration-1000 ${isDarkMode ? 'bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-500/10 via-transparent to-transparent' : 'bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-400/20 via-transparent to-transparent'}`} />
@@ -2210,7 +2207,7 @@ export default function App() {
                 animate={{ x: 0 }} 
                 exit={{ x: '100%' }} 
                 transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className={`absolute top-0 right-0 w-64 h-full ${isDarkMode ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-emerald-500/10 border-emerald-500/40'} z-50 shadow-2xl flex flex-col border-l`}
+                className={`absolute top-0 right-0 w-64 h-full ${isDarkMode ? 'bg-zinc-950/95 backdrop-blur-xl border-emerald-500/20' : 'bg-white/95 backdrop-blur-xl border-emerald-500/40'} z-50 shadow-2xl flex flex-col border-l`}
               >
                 <div className={`p-4 flex items-center justify-between border-b ${isDarkMode ? 'border-white/10 bg-zinc-900/50' : 'border-zinc-200 bg-zinc-50'}`}>
                   <h2 className={`font-bold ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>Menu</h2>
@@ -2356,7 +2353,7 @@ export default function App() {
                     initial={{ y: '100%', opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: '100%', opacity: 0 }}
-                    className={`fixed bottom-[120px] right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-80 h-[500px] max-h-[70vh] border rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden ${isDarkMode ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-emerald-500/10 border-emerald-500/40'}`}
+                    className={`fixed bottom-[120px] right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-80 h-[500px] max-h-[70vh] border rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden ${isDarkMode ? 'bg-zinc-950/95 backdrop-blur-xl border-emerald-500/20' : 'bg-white/95 backdrop-blur-xl border-emerald-500/40'}`}
                 >
                     <div className="bg-emerald-500 p-3 flex justify-between items-center text-white">
                         <div className="font-bold flex items-center space-x-2">
