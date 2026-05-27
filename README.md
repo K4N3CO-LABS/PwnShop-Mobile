@@ -61,6 +61,8 @@ Click the URL shown in the terminal (usually http://localhost:5173 or http://0.0
 
 If you find **The PwnShop** useful, please consider giving the project a **star** ⭐ — it helps a lot!
 
+Feel free to open issues or submit pull requests. Contributions are welcome!
+
 **Donations (optional but greatly appreciated)**
 
 **Bitcoin:(BTC)**
