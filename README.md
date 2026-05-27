@@ -27,13 +27,14 @@ Discovering a bug isn’t just a win—it’s a lesson. Every vulnerability you 
 
 ---
 
-### 📱 Mobile App (Android)
+## 📱 Mobile App (Android)
 
    **Prerequisites:** Node.js
 
 1. Download the latest **`.apk`** from the [Releases](https://github.com/K4Links/PwnShop-Mobile/releases/tag/v1.0.1)
 3. Enable **"Install from Unknown Sources"** in your Android security settings.
 4. Install and open the app.
+
 
 ## 🚀 Running Locally (On PC)
 
