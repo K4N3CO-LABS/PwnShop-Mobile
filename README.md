@@ -51,7 +51,7 @@ npm install
 # 4. Start the development server
 npm run dev
 ```
-**To open app:**
+**Open app:**
 
 Click the URL shown in the terminal (usually http://localhost:5173 or http://0.0.0.0:5173).
 
@@ -59,10 +59,11 @@ Click the URL shown in the terminal (usually http://localhost:5173 or http://0.0
 
 ### ⭐ Support the Project
 
-If you find **PWNNET** useful, please consider giving the project a **star** ⭐ — it helps a lot!
+If you find **The PwnShop** useful, please consider giving the project a **star** ⭐ — it helps a lot!
 
-**Donations (optional but greatly appreciated):**
-Bitcoin (BTC):
+**Donations (optional but greatly appreciated)**
+
+**Bitcoin:(BTC)**
 ```
 bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
 ```
