@@ -27,14 +27,13 @@ Discovering a bug isn’t just a win—it’s a lesson. Every vulnerability you 
 
 ---
 
-## 📱 Mobile App (Android)
+### 📱 Mobile App (Android)
 
    **Prerequisites:** Node.js
 
-1. Download the latest **`.apk`** from the [Releases](https://github.com/K4Links/PwnShop-Mobile/releases/tag/v1.0.1)
+1. Download the latest **`.apk`** from the [Releases](https://https://github.com/K4Links/PwnShop-Mobile/releases/tag/v1.0.1)
 3. Enable **"Install from Unknown Sources"** in your Android security settings.
 4. Install and open the app.
-
 
 ## 🚀 Running Locally (On PC)
 
@@ -51,7 +50,7 @@ npm install
 # 4. Start the development server
 npm run dev
 ```
-**Open app:**
+**To open app:**
 
 Click the URL shown in the terminal (usually http://localhost:5173 or http://0.0.0.0:5173).
 
@@ -59,13 +58,10 @@ Click the URL shown in the terminal (usually http://localhost:5173 or http://0.0
 
 ### ⭐ Support the Project
 
-If you find **The PwnShop** useful, please consider giving the project a **star** ⭐ — it helps a lot!
+If you find **PWNNET** useful, please consider giving the project a **star** ⭐ — it helps a lot!
 
-Feel free to open issues or submit pull requests. Contributions are welcome!
-
-**Donations (optional but greatly appreciated)**
-
-**Bitcoin:(BTC)**
+**Donations (optional but greatly appreciated):**
+Bitcoin (BTC):
 ```
 bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
 ```
