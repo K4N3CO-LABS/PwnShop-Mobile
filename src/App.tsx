@@ -2207,7 +2207,7 @@ export default function App() {
                 animate={{ x: 0 }} 
                 exit={{ x: '100%' }} 
                 transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className={`absolute top-0 right-0 w-64 h-full ${isDarkMode ? 'bg-black/95 backdrop-blur-xl border-white/10' : 'bg-white/95 backdrop-blur-xl border-zinc-200'} z-50 shadow-2xl flex flex-col border-l`}
+                className={`absolute top-0 right-0 w-64 h-full ${isDarkMode ? 'bg-black backdrop-blur-xl border-white/10' : 'bg-white/95 backdrop-blur-xl border-zinc-200'} z-50 shadow-2xl flex flex-col border-l`}
               >
                 <div className={`p-4 flex items-center justify-between border-b ${isDarkMode ? 'border-white/10 bg-zinc-900/50' : 'border-zinc-200 bg-zinc-50'}`}>
                   <h2 className={`font-bold ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>Menu</h2>
@@ -2353,7 +2353,7 @@ export default function App() {
                     initial={{ y: '100%', opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: '100%', opacity: 0 }}
-                    className={`fixed bottom-[120px] right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-80 h-[500px] max-h-[70vh] border rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden ${isDarkMode ? 'bg-zinc-950 border-white/10' : 'bg-white/95 backdrop-blur-xl border-zinc-200'}`}
+                    className={`fixed bottom-[120px] right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-80 h-[500px] max-h-[70vh] border rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden ${isDarkMode ? 'bg-black border-white/10' : 'bg-white/95 backdrop-blur-xl border-zinc-200'}`}
                 >
                     <div className="bg-emerald-500 p-3 flex justify-between items-center text-white">
                         <div className="font-bold flex items-center space-x-2">
