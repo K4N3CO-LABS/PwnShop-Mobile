@@ -55,20 +55,29 @@ npm run dev
 Click the URL shown in the terminal (usually http://localhost:5173 or http://0.0.0.0:5173).
 
 ---
-
 ### ⭐ Support the Project
 
-If you find **PWNNET** useful, please consider giving the project a **star** ⭐ — it helps a lot!
+If you find **The PwnShop** useful, please consider giving the project a **star** ⭐ — it helps a lot!
 
 **Donations (optional but greatly appreciated):**
-Bitcoin (BTC):
+
+**Bitcoin: (BTC)**
 ```
 bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
 ```
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
-
+**Etherium: (ETH)**
+```
+0x6afB80004a277EF9A8De9Bf4b597681cF3A638e9
+```
+**Solana: (SOL)**
+```
+DGheMtGdnVCLDXRb7yQijAWUT1eU1Xt1tP4eY2rkRdCD
+```
 ---
 
 *Created for Educational Purposes. DO NOT perform these attacks against real targets. Enjoy!!*
+
+---
+
+## 📄 License
+This project is licensed under the [MIT License](LICENSE).
