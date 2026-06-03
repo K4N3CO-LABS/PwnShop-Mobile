@@ -1,6 +1,6 @@
 # About The PwnShop
 
-Using inspiration from the OWASP Juice-Shop I introduce The PwnShop—an educational, deliberately insecure application built exclusively for mobile devices. It's designed for cybersecurity enthusiasts, beginners, and seasoned professionals to learn about exploits and vulnerabilities directly from their phone or tablet.
+Inspired by the legendary OWASP Juice Shop, The PwnShop is a deliberately insecure educational application built exclusively for mobile devices. Designed for everyone from beginners to seasoned professionals, it provides a hands-on environment to test, learn, and master real-world vulnerabilities directly from your Android device.
 
 The PwnShop aims to teach real-world security concepts through practical, hands-on experience. This environment has been laced with numerous vulnerabilities typically found in production applications, ranging from classic SQL injection and Cross-Site Scripting (XSS) to complex business logic flaws, leaky APIs, and hidden endpoints.
 
@@ -39,7 +39,7 @@ Discovering a bug isn’t just a win—it’s a lesson. Every vulnerability you 
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/K4Links/PwnShop-Mobile.git
+git clone https://github.com/K4N3CO-LABS/PwnShop-Mobile.git
 
 # 2. Navigate into the project
 cd PwnShop-Mobile-main
@@ -52,7 +52,7 @@ npm run dev
 ```
 **To open app:**
 
-Click the URL shown in the terminal (usually http://localhost:5173 or http://0.0.0.0:5173).
+Click the URL shown in the terminal (usually http://localhost:3000 or http://0.0.0.0:3000).
 
 ---
 ### ⭐ Support the Project
