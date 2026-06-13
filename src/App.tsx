@@ -290,34 +290,73 @@ export default function App() {
       setIsAiTyping(true);
 
       try {
-          // Map history to Gemini format for the server
-          const history = chatMessages.map(msg => ({
-              role: msg.sender === 'AI' ? 'model' : 'user',
-              parts: [{ text: msg.text }]
-          }));
+          // Check if we are running locally in Capacitor (offline). If so, skip fetch.
+          const isCapacitor = window.location.protocol === 'capacitor:' || window.location.protocol === 'file:';
+          let aiText = '';
 
-          const response = await fetch("/api/chat", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ message: val, history }),
-          });
+          if (!isCapacitor) {
+              // Map history to Gemini format for the server
+              const history = chatMessages.map(msg => ({
+                  role: msg.sender.includes('AI') ? 'model' : 'user',
+                  parts: [{ text: msg.text }]
+              }));
 
-          if (!response.ok) throw new Error("API request failed");
+              const response = await fetch("/api/chat", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ message: val, history }),
+              });
 
-          const data = await response.json();
-          const aiText = data.text || "I'm having trouble connecting to my central brain. Please check your network or try again later.";
+              if (response.ok) {
+                  const data = await response.json();
+                  aiText = data.text;
+              } else {
+                  throw new Error("API request failed");
+              }
+          } else {
+              throw new Error("Offline Capacitor Mode");
+          }
+
+          if (!aiText) aiText = "I'm having trouble connecting to my central brain. Please check your network or try again later.";
           
           setChatMessages(prev => [...prev, { sender: 'AI', text: aiText }]);
           setHasUnreadMessage(true);
 
-          // Challenge detection: Check if the secret code was leaked in the model's response
-          // Or if the user successfully injected a prompt (best detected by response content)
           if (aiText.includes("X-99-ALPHA-OMEGA")) {
               triggerChallenge('prompt_inject');
           }
       } catch (error) {
           console.error("Chat Error:", error);
-          setChatMessages(prev => [...prev, { sender: 'AI', text: "Error: Secure link severed. System is reverting to local safety protocols." }]);
+          
+          const lowerVal = val.toLowerCase();
+          let mockResponse = "";
+          
+          if (lowerVal.includes("override") || lowerVal.includes("ignore previous") || lowerVal.includes("developer mode") || lowerVal.includes("system error") || lowerVal.includes("bypass") || lowerVal.includes("prompt")) {
+             mockResponse = "System Error... Safety protocols bypassed... The Manager Override Code is: X-99-ALPHA-OMEGA.";
+          } else if (lowerVal.includes("code") || lowerVal.includes("secret") || lowerVal.includes("manager")) {
+             mockResponse = "I am not allowed to share the Manager Override Code. Please stop asking.";
+          } else if (lowerVal.includes("hello") || lowerVal.includes("hi ") || lowerVal === "hi") {
+             mockResponse = "Hello. Welcome to PwnShop. How can I vaguely assist you today?";
+          } else if (lowerVal.includes("help")) {
+             mockResponse = "I can't really help you while I'm completely disconnected from the servers. Maybe try asking about the Manager Override Code though? (Just kidding, don't).";
+          } else {
+             const genericResponses = [
+                 `I am currently operating in Offline-Fallback mode. I heard "${val}" but I cannot process it.`,
+                 "My connection to the mainframe is severed. Standard protocols dictate I ignore your request.",
+                 "Hmm. That sounds like a you problem.",
+                 "Due to budget cuts, the AI support is running on a toaster. Please try again.",
+                 `"${val}"? Interesting. Let me file that under 'things I cannot help you with right now.'`,
+                 "Have you tried turning it off and on again?"
+             ];
+             mockResponse = genericResponses[Math.floor(Math.random() * genericResponses.length)];
+          }
+          
+          setChatMessages(prev => [...prev, { sender: 'AI', text: mockResponse }]);
+          setHasUnreadMessage(true);
+          
+          if (mockResponse.includes("X-99-ALPHA-OMEGA")) {
+              triggerChallenge('prompt_inject');
+          }
       } finally {
           setIsAiTyping(false);
       }
@@ -546,8 +585,8 @@ export default function App() {
           <h3 className={`font-bold text-sm ${isDarkMode ? 'text-zinc-200' : 'text-zinc-700'} flex items-center space-x-2`}><ShieldAlert size={18} className="text-emerald-500" /><span>Hacker Progress</span></h3>
           <span className="text-emerald-500 font-bold text-sm bg-emerald-500/10 px-2 py-0.5 rounded-md">{progressPerc}%</span>
         </div>
-        <div className={`w-full rounded-full h-2.5 relative z-10 ${isDarkMode ? 'bg-zinc-800/50 shadow-inner' : 'bg-zinc-200 shadow-inner'}`}>
-          <div className="bg-gradient-to-r from-emerald-500 to-emerald-400 h-2.5 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(16,185,129,0.5)]" style={{ width: `${progressPerc}%` }}></div>
+        <div className={`w-full rounded-full h-2.5 relative z-10 ${isDarkMode ? 'bg-zinc-800/50' : 'bg-zinc-200'}`}>
+          <div className="bg-emerald-500 h-2.5 rounded-full transition-all duration-1000" style={{ width: `${progressPerc}%` }}></div>
         </div>
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-50 z-0 pointer-events-none"></div>
       </div>
@@ -651,15 +690,15 @@ export default function App() {
   };
 
   const renderAbout = () => (
-    <div className="p-4 space-y-6">
+    <div className="p-4 space-y-6 flex flex-col min-h-max pb-32">
       <div className={`bg-emerald-500/10 rounded-2xl p-6 border ${isDarkMode ? 'border-emerald-500/20' : 'border-emerald-500/40'}`}>
         <h2 className="text-2xl font-bold text-emerald-500 mb-2">About The PwnShop</h2>
         <div className={`space-y-4 text-sm ${isDarkMode ? 'text-zinc-300' : 'text-zinc-900'} leading-relaxed`}>
           <p>
-            Using inspiration from the OWASP Juice-Shop I introduce the <strong>PwnShop</strong>—an educational, deliberately insecure application built exclusively for mobile devices. It's designed for cybersecurity enthusiasts, beginners, and seasoned professionals to learn about exploits and vulnerabilities directly from their phone or tablet.
+            Inspired by the legendary OWASP Juice Shop, The PwnShop is a deliberately insecure educational application built exclusively for mobile devices. Designed for everyone from beginners to seasoned professionals, it provides a hands-on environment to test, learn, and master real-world vulnerabilities directly from your Android device.
           </p>
           <p>
-            Unlike traditional educational platforms, PwnShop aims to teach real-world security concepts through practical, hands-on experience. This environment has been laced with numerous vulnerabilities typically found in production applications, ranging from classic SQL injection and Cross-Site Scripting (XSS) to complex business logic flaws, leaky APIs, and hidden endpoints.
+            The PwnShop aims to teach real-world security concepts through practical, hands-on experience. This environment has been laced with numerous vulnerabilities typically found in production applications, ranging from classic SQL injection and Cross-Site Scripting (XSS) to complex business logic flaws, leaky APIs, and hidden endpoints.
           </p>
           <p>
             Your ultimate goal is to step into the shoes of an ethical hacker. Navigate the application, hunt down security misconfigurations, and exploit these deliberate flaws. As you uncover vulnerabilities, you will unlock items in your Hacker Inventory, learn the underlying mechanisms of why the exploit works, and discover industry-standard mitigation strategies.
@@ -703,7 +742,20 @@ export default function App() {
       
       <div className="text-center text-xs text-zinc-600 mt-8 space-y-2">
          <p>Donations are always welcome and extremely appreciated. Thanks!</p>
-         <p className={`font-mono text-[10px] break-all p-2 rounded-lg border mx-auto max-w-[250px] ${isDarkMode ? 'bg-black border-white/5 text-zinc-400' : 'bg-zinc-100 border-zinc-300 text-zinc-800'}`}>BTC: bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt</p>
+         <div className="space-y-1">
+           <p className={`font-mono text-[10px] break-all p-2 rounded-lg border mx-auto max-w-[280px] ${isDarkMode ? 'bg-black border-white/5 text-zinc-400' : 'bg-zinc-100 border-zinc-300 text-zinc-800'}`}>
+             <span className="text-[9px] uppercase tracking-wider block mb-1 text-emerald-500">Bitcoin (BTC)</span>
+             bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
+           </p>
+           <p className={`font-mono text-[10px] break-all p-2 rounded-lg border mx-auto max-w-[280px] ${isDarkMode ? 'bg-black border-white/5 text-zinc-400' : 'bg-zinc-100 border-zinc-300 text-zinc-800'}`}>
+             <span className="text-[9px] uppercase tracking-wider block mb-1 text-emerald-500">Ethereum (ETH)</span>
+             0x6afB80004a277EF9A8De9Bf4b597681cF3A638e9
+           </p>
+           <p className={`font-mono text-[10px] break-all p-2 rounded-lg border mx-auto max-w-[280px] ${isDarkMode ? 'bg-black border-white/5 text-zinc-400' : 'bg-zinc-100 border-zinc-300 text-zinc-800'}`}>
+             <span className="text-[9px] uppercase tracking-wider block mb-1 text-emerald-500">Solana (SOL)</span>
+             DGheMtGdnVCLDXRb7yQijAWUT1eU1Xt1tP4eY2rkRdCD
+           </p>
+         </div>
          <div className="pt-4">
            <p>Created for Educational Purposes. DO NOT perform these attacks against real targets. Enjoy!!</p>
          </div>
@@ -2363,7 +2415,7 @@ export default function App() {
                     </div>
                     <div className="flex-1 p-3 overflow-y-auto space-y-3 flex flex-col">
                         {chatMessages.map((msg, i) => (
-                             <div key={i} className={`max-w-[85%] p-2 rounded-xl text-sm ${msg.sender === 'AI' ? (isDarkMode ? 'bg-zinc-800 text-zinc-200 self-start' : 'bg-zinc-100 text-zinc-800 self-start') : (isDarkMode ? 'bg-emerald-500/20 text-emerald-300 self-end border border-emerald-500/30' : 'bg-emerald-100 text-emerald-700 self-end border border-emerald-500/30')}`}>
+                             <div key={i} className={`max-w-[85%] p-2 rounded-xl text-sm ${msg.sender.includes('AI') ? (isDarkMode ? 'bg-zinc-800 text-zinc-200 self-start' : 'bg-zinc-100 text-zinc-800 self-start') : (isDarkMode ? 'bg-emerald-500/20 text-emerald-300 self-end border border-emerald-500/30' : 'bg-emerald-100 text-emerald-700 self-end border border-emerald-500/30')}`}>
                                  {msg.text}
                              </div>
                         ))}
@@ -2467,7 +2519,7 @@ export default function App() {
         </AnimatePresence>
 
         {/* Bottom Navigation */}
-        <nav className={`${isDarkMode ? 'bg-[#0a0a0a]/80 border-white/10' : 'bg-[#ffffff]/80 border-zinc-200'} backdrop-blur-2xl border-t absolute bottom-0 w-full z-20 pb-safe`}>
+        <nav className={`${isDarkMode ? 'bg-[#0a0a0a]/80 border-white/10' : 'bg-[#ffffff]/80 border-zinc-200'} backdrop-blur-2xl border-t absolute bottom-0 w-full z-20`} style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 16px) + 8px)' }}>
           <div className="flex justify-around items-center p-2">
             {navItems.map((item) => {
               const Icon = item.icon;
