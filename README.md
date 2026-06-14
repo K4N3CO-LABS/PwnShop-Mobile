@@ -26,6 +26,8 @@ Feed the app "broken" data, exploit how it saves your info locally, and try to t
 
 Discovering a bug isn’t just a win—it’s a lesson. Every vulnerability you find reveals the technical "why" and the industry-standard way to patch it.
 
+---
+
 ## 📱 Mobile App (Android)
 
 **Prerequisites:** Node.js
@@ -33,6 +35,8 @@ Discovering a bug isn’t just a win—it’s a lesson. Every vulnerability you 
 1. Download the latest `.apk` from the Releases section
 2. Enable "Install from Unknown Sources" in your Android security settings.
 3. Install and open the app.
+
+---
 
 ## 🚀 Running Locally (On PC)
 
@@ -54,9 +58,12 @@ npm run dev
 
 Click the URL shown in the terminal (usually http://localhost:3000 or http://0.0.0.0:3000).
 
+---
+
 ## ⭐ Support the Project
 
 If you find The PwnShop useful, please consider giving the project a star ⭐ — it helps a lot!
+
 
 **Donations (optional but greatly appreciated):**
 
@@ -78,8 +85,13 @@ Solana: (SOL)
 DGheMtGdnVCLDXRb7yQijAWUT1eU1Xt1tP4eY2rkRdCD 
 ```
 
-*Created for Educational Purposes. DO NOT perform these attacks against real targets. Enjoy!!*
+---
 
 ## 📄 License
 
 This project is licensed under the MIT License.
+
+---
+
+*Created for Educational Purposes. DO NOT perform these attacks against real targets. Enjoy!!*
+
