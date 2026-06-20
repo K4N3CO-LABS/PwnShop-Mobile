@@ -34,7 +34,7 @@ Discovering a bug isn’t just a win—**it’s a lesson**. Every vulnerability 
 
 1. **Download** the latest `.apk` file from the **Releases** section
 2. **Enable "Install from Unknown Sources"** in your Android **security** settings.
-3. **Install** and open the app.
+3. **Install** then open the app.
 
 ---
 
