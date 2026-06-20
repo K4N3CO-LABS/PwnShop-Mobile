@@ -44,14 +44,17 @@ Discovering a bug isn’t just a win—**it’s a lesson**. Every vulnerability 
 # 1. Clone the repository 
 git clone https://github.com/K4N3CO-LABS/PwnShop-Mobile.git
 ```
+
 ```bash
 # 2. Navigate into the project 
 cd PwnShop-Mobile-main 
 ```
+
 ```bash
 # 3. Install dependencies 
 npm install 
 ```
+
 ```bash
 # 4. Start the development server 
 npm run dev
