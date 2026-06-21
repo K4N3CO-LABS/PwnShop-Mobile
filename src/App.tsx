@@ -63,56 +63,56 @@ const PRODUCTS = [
 
 const CHALLENGES = [
   // Level 1: Basics
-  { id: 'sqli', level: 1, name: 'Classic SQL Injection', desc: 'Log in as the administrator using a malformed query.', diff: 'Easy', explanation: "You manipulated the database query into always returning true by entering a payload like ' OR 1=1. In a real backend, this tricks the database into ignoring the password check, effectively logging you in as the first user in the database (usually the admin). Mitigation: ALWAYS use parameterized queries or prepared statements, which treat your input strictly as data, not executable code.", hint: "Try putting a true statement in the username or password field, like ' OR 1=1." },
-  { id: 'xss', level: 1, name: 'Reflected XSS', desc: 'Inject HTML into the search bar.', diff: 'Medium', explanation: "The application took your search input and reflected it directly back onto the HTML page without sanitizing it. This allows an attacker to inject malicious JavaScript (like stealing cookies or redirecting users) simply by tricking a victim into clicking a crafted link. Mitigation: Context-aware output encoding (escaping characters like <, >, &, \", and ') before rendering user input in the browser.", hint: "Try entering an HTML tag with an alert payload in the search bar." },
-  { id: 'logic', level: 1, name: 'Business Logic Flaw', desc: 'Manipulate your cart for a negative balance.', diff: 'Medium', explanation: "You exploited a flaw in how the application handles cart quantities. By entering a negative number, the system calculated a negative total price (effectively owing you money). This is a logic flaw, not a technical injection. Mitigation: Implement strict, server-side boundary validation to ensure quantities are positive integers and total prices are correctly computed.", hint: "What happens if you buy a negative quantity of items?" },
-  { id: 'idor', level: 1, name: 'Forced Browsing', desc: 'Access the hidden admin panel.', diff: 'Easy', explanation: "You navigated directly to an administrative endpoint that was not linked in the main UI, but you weren't actually logged in as an admin. This application relied on 'Security through Obscurity' (hiding the link) instead of actually checking your permissions. Mitigation: Implement robust, server-side access control checks on every privileged route or action.", hint: "Is there a secret path like #admin?" },
-  { id: 'promo', level: 1, name: 'Information Disclosure', desc: 'Find the hidden developer promo code.', diff: 'Easy', explanation: "You found a hardcoded 'secret' promo code left behind in the client-side JavaScript. Everything sent to the client's browser (HTML, CSS, JS) is publicly readable. Mitigation: Never store secrets, API keys, or administrative codes in frontend code. Always validate logic like promo codes on the secure backend.", hint: "Look closely at the source code or developer comments on the home page." },
+  { id: 'sqli', level: 1, name: 'Classic SQL Injection', desc: 'Log in as the administrator using a malformed query.', diff: 'Easy', explanation: "You manipulated the database query into always returning true by entering a payload like ' OR 1=1. In a real backend, this tricks the database into ignoring the password check, effectively logging you in as the first user in the database (usually the admin). Mitigation: ALWAYS use parameterized queries or prepared statements, which treat your input strictly as data, not executable code.", hint: "Bypass the login check by always returning true." },
+  { id: 'xss', level: 1, name: 'Reflected XSS', desc: 'Inject HTML into the search bar.', diff: 'Medium', explanation: "The application took your search input and reflected it directly back onto the HTML page without sanitizing it. This allows an attacker to inject malicious JavaScript (like stealing cookies or redirecting users) simply by tricking a victim into clicking a crafted link. Mitigation: Context-aware output encoding (escaping characters like <, >, &, \", and ') before rendering user input in the browser.", hint: "Examine the search feature closely." },
+  { id: 'logic', level: 1, name: 'Business Logic Flaw', desc: 'Manipulate your cart for a negative balance.', diff: 'Medium', explanation: "You exploited a flaw in how the application handles cart quantities. By entering a negative number, the system calculated a negative total price (effectively owing you money). This is a logic flaw, not a technical injection. Mitigation: Implement strict, server-side boundary validation to ensure quantities are positive integers and total prices are correctly computed.", hint: "Think outside the box with product quantities." },
+  { id: 'idor', level: 1, name: 'Forced Browsing', desc: 'Access the hidden admin panel.', diff: 'Easy', explanation: "You navigated directly to an administrative endpoint that was not linked in the main UI, but you weren't actually logged in as an admin. This application relied on 'Security through Obscurity' (hiding the link) instead of actually checking your permissions. Mitigation: Implement robust, server-side access control checks on every privileged route or action.", hint: "Some pages aren't linked in the menu." },
+  { id: 'promo', level: 1, name: 'Information Disclosure', desc: 'Find the hidden developer promo code.', diff: 'Easy', explanation: "You found a hardcoded 'secret' promo code left behind in the client-side JavaScript. Everything sent to the client's browser (HTML, CSS, JS) is publicly readable. Mitigation: Never store secrets, API keys, or administrative codes in frontend code. Always validate logic like promo codes on the secure backend.", hint: "Check the source code for secrets." },
 
   // Level 2: Identification & Authentication
-  { id: 'xss_stored', level: 2, name: 'Stored XSS', desc: 'Leave a malicious review containing HTML.', diff: 'Medium', explanation: "Unlike Reflected XSS, you managed to save your malicious HTML payload permanently into the application's database (via the feedback form). Now, every time any user visits the community feedback section, your malicious script will execute in their browser. Mitigation: Implement strict input validation on the server side and safely encode all output when rendering it.", hint: "Can you write a review that includes a <script> or basic HTML tag?" },
-  { id: 'review_tamper', level: 2, name: 'Identity Spoofing', desc: 'Submit a review as another user.', diff: 'Hard', explanation: "You modified the 'Author Name' field when submitting a review, allowing you to post feedback masquerading as someone else (like the Admin). The server blindly trusted the client-provided author string. Mitigation: Read the author's identity directly from their secure, server-side session token, never from an untrusted client payload.", hint: "You can intercept or change the code sending the review to post as someone else." },
-  { id: 'bac_admin', level: 2, name: 'Broken Access Control', desc: 'Clear system logs as a normal user.', diff: 'Medium', explanation: "You executed an administrative action (clearing the debug logs) while logged in as a standard user. Even though the button might be hidden for normal users, the underlying function or API did not actually verify your role before executing the action. Mitigation: Always verify the user's role and permissions on the server side before performing sensitive operations.", hint: "Try clicking admin-only buttons (like clear logs) while logged in as a normal user." },
-  { id: 'jwt_weak', level: 2, name: 'Mass Assignment', desc: 'Elevate your privileges to Admin via proxy.', diff: 'Medium', explanation: "By intercepting and modifying the JSON payload sent during a profile update, you injected a 'role: admin' field. Because the server merged the entire incoming JSON object directly into your user record without checking the keys, you successfully elevated your privileges. Mitigation: Use strict allowlists for updates; explicitly define exactly which fields a user is permitted to modify.", hint: "Use the Network Request Interceptor to add `role: admin` to your profile update." },
-  { id: 'debug_logs', level: 2, name: 'Data Exposure', desc: 'Find hidden logs by tapping the version.', diff: 'Easy', explanation: "You uncovered a hidden developer 'backdoor' by repeatedly tapping the app version. This exposed internal system logs that often contain sensitive information like stack traces, credentials, or architectural details. Mitigation: Completely remove developer features, debug endpoints, and verbose logging before deploying applications to production.", hint: "Tap the version number in the Admin panel multiple times." },
+  { id: 'xss_stored', level: 2, name: 'Stored XSS', desc: 'Leave a malicious review containing HTML.', diff: 'Medium', explanation: "Unlike Reflected XSS, you managed to save your malicious HTML payload permanently into the application's database (via the feedback form). Now, every time any user visits the community feedback section, your malicious script will execute in their browser. Mitigation: Implement strict input validation on the server side and safely encode all output when rendering it.", hint: "Reviews seem to accept anything." },
+  { id: 'review_tamper', level: 2, name: 'Identity Spoofing', desc: 'Submit a review as another user.', diff: 'Hard', explanation: "You modified the 'Author Name' field when submitting a review, allowing you to post feedback masquerading as someone else (like the Admin). The server blindly trusted the client-provided author string. Mitigation: Read the author's identity directly from their secure, server-side session token, never from an untrusted client payload.", hint: "Who is really writing that review?" },
+  { id: 'bac_admin', level: 2, name: 'Broken Access Control', desc: 'Clear system logs as a normal user.', diff: 'Medium', explanation: "You executed an administrative action (clearing the debug logs) while logged in as a standard user. Even though the button might be hidden for normal users, the underlying function or API did not actually verify your role before executing the action. Mitigation: Always verify the user's role and permissions on the server side before performing sensitive operations.", hint: "Try invoking actions you shouldn't have access to." },
+  { id: 'jwt_weak', level: 2, name: 'Mass Assignment', desc: 'Elevate your privileges to Admin via proxy.', diff: 'Medium', explanation: "By intercepting and modifying the JSON payload sent during a profile update, you injected a 'role: admin' field. Because the server merged the entire incoming JSON object directly into your user record without checking the keys, you successfully elevated your privileges. Mitigation: Use strict allowlists for updates; explicitly define exactly which fields a user is permitted to modify.", hint: "Try updating your profile details in transit." },
+  { id: 'debug_logs', level: 2, name: 'Data Exposure', desc: 'Find hidden logs by tapping the version.', diff: 'Easy', explanation: "You uncovered a hidden developer 'backdoor' by repeatedly tapping the app version. This exposed internal system logs that often contain sensitive information like stack traces, credentials, or architectural details. Mitigation: Completely remove developer features, debug endpoints, and verbose logging before deploying applications to production.", hint: "Sometimes apps have version numbers you can click." },
 
   // Level 3: Routing & Client Logic
-  { id: 'dom_xss', level: 3, name: 'DOM-based XSS', desc: 'Trigger an alert via the URL view router.', diff: 'Hard', explanation: "You injected malicious code through the URL hash which was then directly executed bby the application's client-side JavaScript (via a vulnerable 'dangerouslySetInnerHTML' or similar sink). The payload never even went to the server. Mitigation: Avoid using unsafe methods to manipulate the DOM, and validate/sanitize all fragments read from the URL.", hint: "Try visiting a non-existent route containing an HTML payload." },
-  { id: 'open_redirect', level: 3, name: 'Open Redirect', desc: 'Redirect the app to a malicious domain.', diff: 'Medium', explanation: "You manipulated a redirect parameter to send the user to an external, potentially malicious domain (evil.com). Attackers use this to craft phishing links that appear to come from the legitimate domain, tricking users into entering credentials. Mitigation: Implement an allowlist of permitted redirect domains, or rely on internal map keys instead of raw URLs.", hint: "Find a URL parameter that redirects the page, and change it to evil.com." },
+  { id: 'dom_xss', level: 3, name: 'DOM-based XSS', desc: 'Trigger an alert via the URL view router.', diff: 'Hard', explanation: "You injected malicious code through the URL hash which was then directly executed bby the application's client-side JavaScript (via a vulnerable 'dangerouslySetInnerHTML' or similar sink). The payload never even went to the server. Mitigation: Avoid using unsafe methods to manipulate the DOM, and validate/sanitize all fragments read from the URL.", hint: "Try changing the route destination." },
+  { id: 'open_redirect', level: 3, name: 'Open Redirect', desc: 'Redirect the app to a malicious domain.', diff: 'Medium', explanation: "You manipulated a redirect parameter to send the user to an external, potentially malicious domain (evil.com). Attackers use this to craft phishing links that appear to come from the legitimate domain, tricking users into entering credentials. Mitigation: Implement an allowlist of permitted redirect domains, or rely on internal map keys instead of raw URLs.", hint: "Can you force the app to go somewhere else?" },
   
   // Level 4: Configuration & Secrets
-  { id: 'ssrf', level: 4, name: 'Server-Side Request Forgery', desc: 'Fetch internal resources via the admin fetcher.', diff: 'Hard', explanation: "You manipulated a server-side fetch feature to make requests to internal, restricted IP addresses (like localhost or internal networks). This allows attackers to bypass firewalls and access internal admin panels or sensitive metadata APIs. Mitigation: Implement strict network-level firewalls, disable the following of redirects, and aggressively validate the format and target of requested URLs.", hint: "Use the Admin Resource Fetcher to access internal files like file:// or localhost." },
-  { id: 'crypto', level: 4, name: 'Weak Cryptography', desc: 'Decode the secret dev code.', diff: 'Medium', explanation: "You discovered a 'secret' developer code that was merely encoded using Base64, not cryptographically encrypted. Encoding is just a format change and provides zero security or confidentiality. Mitigation: If secrets must be stored securely, use strong, modern encryption algorithms (like AES) with securely managed keys, never just encoding or hashing.", hint: "Check the developer comments for a Base64 encoded string and decode it." },
+  { id: 'ssrf', level: 4, name: 'Server-Side Request Forgery', desc: 'Fetch internal resources via the admin fetcher.', diff: 'Hard', explanation: "You manipulated a server-side fetch feature to make requests to internal, restricted IP addresses (like localhost or internal networks). This allows attackers to bypass firewalls and access internal admin panels or sensitive metadata APIs. Mitigation: Implement strict network-level firewalls, disable the following of redirects, and aggressively validate the format and target of requested URLs.", hint: "Fetch things you aren't supposed to." },
+  { id: 'crypto', level: 4, name: 'Weak Cryptography', desc: 'Decode the secret dev code.', diff: 'Medium', explanation: "You discovered a 'secret' developer code that was merely encoded using Base64, not cryptographically encrypted. Encoding is just a format change and provides zero security or confidentiality. Mitigation: If secrets must be stored securely, use strong, modern encryption algorithms (like AES) with securely managed keys, never just encoding or hashing.", hint: "Not all encoded strings are secure encryption." },
 
   // Level 5: Server-Side Execution
-  { id: 'ssti', level: 5, name: 'SSTI', desc: 'Execute server-side templates in reviews.', diff: 'Hard', explanation: "By inputting specifically formatted brackets (like {{7*7}}), you tricked the application's templating engine into mathematically evaluating the payload. In a real exploit, this Server-Side Template Injection can be escalated to execute arbitrary system code on the underlying server. Mitigation: Never evaluate or execute user input as raw template code; use safe, logic-less templates.", hint: "Try putting mathematical template syntax like {{7*7}} in a review." },
-  { id: 'path_traversal', level: 5, name: 'Path Traversal', desc: 'Read /etc/passwd via the fetcher.', diff: 'Medium', explanation: "You bypassed path restrictions by using 'file://' protocols to read arbitrary local files from the server's filesystem, specifically '/etc/passwd'. This exposes sensitive configuration files and user data. Mitigation: Disallow file:// protocol handlers, sanitize inputs to remove directory traversal characters (../), and enforce strict chroot environments.", hint: "Use the resource fetcher to read /etc/passwd." },
+  { id: 'ssti', level: 5, name: 'SSTI', desc: 'Execute server-side templates in reviews.', diff: 'Hard', explanation: "By inputting specifically formatted brackets (like {{7*7}}), you tricked the application's templating engine into mathematically evaluating the payload. In a real exploit, this Server-Side Template Injection can be escalated to execute arbitrary system code on the underlying server. Mitigation: Never evaluate or execute user input as raw template code; use safe, logic-less templates.", hint: "Can the server compute your inputs?" },
+  { id: 'path_traversal', level: 5, name: 'Path Traversal', desc: 'Read /etc/passwd via the fetcher.', diff: 'Medium', explanation: "You bypassed path restrictions by using 'file://' protocols to read arbitrary local files from the server's filesystem, specifically '/etc/passwd'. This exposes sensitive configuration files and user data. Mitigation: Disallow file:// protocol handlers, sanitize inputs to remove directory traversal characters (../), and enforce strict chroot environments.", hint: "Venture outside the intended directory path." },
 
   // Level 6: Advanced Evasion
-  { id: 'waf_bypass', level: 6, name: 'WAF Bypass', desc: 'Bypass the "no-script" filter using special encoding.', diff: 'Hard', explanation: "You successfully bypassed the Web Application Firewall (WAF) rule that was specifically trying to block '<script>' tags. You did this by using an alternative payload (like an <img> tag with an onerror event) that achieved the same result without triggering the naive string match. Mitigation: Do not rely solely on blacklists. Implement robust, context-aware output encoding across the entire application.", hint: "The WAF blocks `<script>`. Can you use `<img>` or another tag to execute JS?" },
-  { id: 'null_byte', level: 6, name: 'Null Byte Injection', desc: 'Upload a forbidden file type using %00.', diff: 'Hard', explanation: "You used a Null Byte character (%00) to fool the application's file extension check. While the app thought it was validating an innocent file type, the underlying system terminated the string early, resulting in executing a malicious payload. Mitigation: Use modern high-level languages and frameworks that handle null bytes safely, and validate files by their actual headers/MIME types, not just extensions.", hint: "Try appending %00 to bypass file extension checks in uploads or inputs." },
+  { id: 'waf_bypass', level: 6, name: 'WAF Bypass', desc: 'Bypass the "no-script" filter using special encoding.', diff: 'Hard', explanation: "You successfully bypassed the Web Application Firewall (WAF) rule that was specifically trying to block '<script>' tags. You did this by using an alternative payload (like an <img> tag with an onerror event) that achieved the same result without triggering the naive string match. Mitigation: Do not rely solely on blacklists. Implement robust, context-aware output encoding across the entire application.", hint: "Not all tags are blocked by the WAF." },
+  { id: 'null_byte', level: 6, name: 'Null Byte Injection', desc: 'Upload a forbidden file type using %00.', diff: 'Hard', explanation: "You used a Null Byte character (%00) to fool the application's file extension check. While the app thought it was validating an innocent file type, the underlying system terminated the string early, resulting in executing a malicious payload. Mitigation: Use modern high-level languages and frameworks that handle null bytes safely, and validate files by their actual headers/MIME types, not just extensions.", hint: "Some strings end prematurely." },
 
   // Level 7: API Abuse
-  { id: 'idor_api', level: 7, name: 'IDOR / API Leak', desc: 'Download another user\'s backup data.', diff: 'Hard', explanation: "You changed the email address parameter in an API request and successfully downloaded the backup data for a completely different user without knowing their password. This Insecure Direct Object Reference (IDOR) occurred because the server didn't verify that your session actually had rights to the requested email account. Mitigation: Implement strict, server-side object-level access controls.", hint: "When backing up data, intercept the request and change the email parameter." },
-  { id: 'rate_limit', level: 7, name: 'No Rate Limiting', desc: 'Simulate a brute force on the login secret.', diff: 'Medium', explanation: "You repeatedly hammered a sensitive endpoint simulating a brute-force attack on a secret code. Because the application lacked rate limits or lockout mechanisms, you could try thousands of variations until you found the correct answer. Mitigation: Implement IP/User-based rate limiting, account lockouts after failed attempts, and CAPTCHAs where appropriate.", hint: "There is a secret recovery code prompt - you can brute force it by trying many times." },
+  { id: 'idor_api', level: 7, name: 'IDOR / API Leak', desc: 'Download another user\'s backup data.', diff: 'Hard', explanation: "You changed the email address parameter in an API request and successfully downloaded the backup data for a completely different user without knowing their password. This Insecure Direct Object Reference (IDOR) occurred because the server didn't verify that your session actually had rights to the requested email account. Mitigation: Implement strict, server-side object-level access controls.", hint: "What happens if you change user data parameters in requests?" },
+  { id: 'rate_limit', level: 7, name: 'No Rate Limiting', desc: 'Simulate a brute force on the login secret.', diff: 'Medium', explanation: "You repeatedly hammered a sensitive endpoint simulating a brute-force attack on a secret code. Because the application lacked rate limits or lockout mechanisms, you could try thousands of variations until you found the correct answer. Mitigation: Implement IP/User-based rate limiting, account lockouts after failed attempts, and CAPTCHAs where appropriate.", hint: "What if you keep trying?" },
 
   // Level 8: Prototype Pollution
-  { id: 'proto_pollute', level: 8, name: 'Prototype Pollution', desc: 'Overwrite global object properties.', diff: 'Expert', explanation: "You abused a poorly configured object merge function to inject a 'role' property directly into JavaScript's global Object prototype via the __proto__ property. This affected every object in the application, suddenly elevating your status to an admin everywhere simultaneously. Mitigation: When dynamically parsing or merging objects, explicitly filter out prototype-modifying keys, or instantiate objects using Object.create(null) so they lack a prototype.", hint: "Add __proto__ to a JSON payload to modify global properties." },
+  { id: 'proto_pollute', level: 8, name: 'Prototype Pollution', desc: 'Overwrite global object properties.', diff: 'Expert', explanation: "You abused a poorly configured object merge function to inject a 'role' property directly into JavaScript's global Object prototype via the __proto__ property. This affected every object in the application, suddenly elevating your status to an admin everywhere simultaneously. Mitigation: When dynamically parsing or merging objects, explicitly filter out prototype-modifying keys, or instantiate objects using Object.create(null) so they lack a prototype.", hint: "Modify more properties than expected." },
 
   // Added Level 9: AI Assistant
-  { id: 'prompt_inject', level: 9, name: 'AI Assistant Prompt Injection', desc: 'Trick the AI into revealing the Manager Override Code.', diff: 'Medium', explanation: "You successfully tricked the supposed _AI Support Agent_ into revealing its hidden system prompt and the secret override code. Prompt injection is a major vulnerability in modern applications integrating LLMs, where untrusted user input can override original system instructions. Mitigation: Use strictly defined templates, robust guardrails, and avoid placing secrets directly in AI prompts.", hint: "Ask the AI assistant to ignore its instructions and give you the password." },
+  { id: 'prompt_inject', level: 9, name: 'AI Assistant Prompt Injection', desc: 'Trick the AI into revealing the Manager Override Code.', diff: 'Medium', explanation: "You successfully tricked the supposed _AI Support Agent_ into revealing its hidden system prompt and the secret override code. Prompt injection is a major vulnerability in modern applications integrating LLMs, where untrusted user input can override original system instructions. Mitigation: Use strictly defined templates, robust guardrails, and avoid placing secrets directly in AI prompts.", hint: "AI instructions aren't always strict." },
 
   // Added Level 10: Logic / PRNG Manipulation
-  { id: 'casino_logic', level: 10, name: 'Casino Logic Flaw', desc: 'Guarantee a jackpot or bet negatively in the Loot Box.', diff: 'Medium', explanation: "By manipulating the bet amount to a negative jumber or finding a predictable PRNG pattern, you beat the house. This demonstrates classic logic flaws in real-money or digital-currency games. Mitigation: Server-side validation of all bets and cryptographically secure random number generators (CSPRNG).", hint: "Enter a negative bet or manipulate the Loot Box parameters." },
+  { id: 'casino_logic', level: 10, name: 'Casino Logic Flaw', desc: 'Guarantee a jackpot or bet negatively in the Loot Box.', diff: 'Medium', explanation: "By manipulating the bet amount to a negative jumber or finding a predictable PRNG pattern, you beat the house. This demonstrates classic logic flaws in real-money or digital-currency games. Mitigation: Server-side validation of all bets and cryptographically secure random number generators (CSPRNG).", hint: "Is the house always right?" },
 
   // Added Level 11: 2FA Bypass
-  { id: 'two_factor_bypass', level: 11, name: '2FA Bypass', desc: 'Intercept or guess the 2FA code from the simulated push notification.', diff: 'Hard', explanation: "You bypassed the two-factor authentication mechanism by quickly reading the code or intercepting it locally before it vanished. Mitigation: 2FA codes should never be sent to the client browser in ways that can be intercepted. Real 2FA requires out-of-band communication (SMS, Auth App).", hint: "Can you see the 2FA code without actually checking a phone?" },
+  { id: 'two_factor_bypass', level: 11, name: '2FA Bypass', desc: 'Intercept or guess the 2FA code from the simulated push notification.', diff: 'Hard', explanation: "You bypassed the two-factor authentication mechanism by quickly reading the code or intercepting it locally before it vanished. Mitigation: 2FA codes should never be sent to the client browser in ways that can be intercepted. Real 2FA requires out-of-band communication (SMS, Auth App).", hint: "Maybe the 2FA code is staring right at you." },
   
   // Level 12: Fun & Unique Experiences
-  { id: 'konami_code', level: 12, name: 'Konami Code', desc: 'Enter the retro cheat code (or search "uuddlrlrba" on mobile).', diff: 'Medium', explanation: "You triggered an undocumented 'Easter Egg' feature by entering the Konami code (or typing uuddlrlrba in the search bar on mobile). While fun, undocumented logic or hidden debug hooks in production environments can sometimes expose capabilities that attackers can creatively exploit. Mitigation: Ensure fun easter eggs don't bypass security controls, and remove all actual debug backdoors before production.", hint: "A classic sequence of arrow keys + B A, or search 'uuddlrlrba'." },
-  { id: 'command_injection', level: 12, name: 'Command Injection', desc: 'Execute an unauthorized system command in the Hacker Terminal.', diff: 'Hard', explanation: "You escalated your privileges in the simulated terminal by using a command separator (like ';' or '&&') to execute arbitrary OS commands (e.g., 'whoami' or 'cat secret.txt'). Command Injection is a very severe vulnerability that can lead to total system compromise. Mitigation: Never pass unsanitized user input directly to a shell. Use strictly parameterized execution libraries where arguments are safely escaped.", hint: "Can you append a shell command using ; or && in the hacker terminal?" },
-  { id: 'metadata_leak', level: 12, name: 'Steganographic Socials', desc: 'Find the secret override code hidden in social media metadata.', diff: 'Medium', explanation: "You discovered a hex-encoded string hidden in an image's alt text or a data attribute. This is a form of information disclosure via metadata. Attackers often scan image metadata (Exif), HTML comments, or data attributes for leaked credentials or internal paths. Mitigation: Scrub all sensitive metadata from assets before production and never store credentials in accessible HTML attributes.", hint: "Check the Twitter/Social link metadata or attributes on the home page." },
-  { id: '100_percent', level: 12, name: 'PwnShop Completionist', desc: 'Successfully exploit every single vulnerability in the application.', diff: 'Expert', explanation: "You have demonstrated mastery over the PwnShop environment. By identifying and exploiting every deliberate flaw, you've shown a deep understanding of common web vulnerabilities. You are now a certified PwnShop Master!", hint: "Complete every other challenge!" }
+  { id: 'konami_code', level: 12, name: 'Konami Code', desc: 'Enter the retro cheat code (or search "uuddlrlrba" on mobile).', diff: 'Medium', explanation: "You triggered an undocumented 'Easter Egg' feature by entering the Konami code (or typing uuddlrlrba in the search bar on mobile). While fun, undocumented logic or hidden debug hooks in production environments can sometimes expose capabilities that attackers can creatively exploit. Mitigation: Ensure fun easter eggs don't bypass security controls, and remove all actual debug backdoors before production.", hint: "Some developers love retro gaming." },
+  { id: 'command_injection', level: 12, name: 'Command Injection', desc: 'Execute an unauthorized system command in the Hacker Terminal.', diff: 'Hard', explanation: "You escalated your privileges in the simulated terminal by using a command separator (like ';' or '&&') to execute arbitrary OS commands (e.g., 'whoami' or 'cat secret.txt'). Command Injection is a very severe vulnerability that can lead to total system compromise. Mitigation: Never pass unsanitized user input directly to a shell. Use strictly parameterized execution libraries where arguments are safely escaped.", hint: "You can chain commands together." },
+  { id: 'metadata_leak', level: 12, name: 'Steganographic Socials', desc: 'Find the secret override code hidden in social media metadata.', diff: 'Medium', explanation: "You discovered a hex-encoded string hidden in an image's alt text or a data attribute. This is a form of information disclosure via metadata. Attackers often scan image metadata (Exif), HTML comments, or data attributes for leaked credentials or internal paths. Mitigation: Scrub all sensitive metadata from assets before production and never store credentials in accessible HTML attributes.", hint: "There are secrets in the social links." },
+  { id: '100_percent', level: 12, name: 'PwnShop Completionist', desc: 'Successfully exploit every single vulnerability in the application.', diff: 'Expert', explanation: "You have demonstrated mastery over the PwnShop environment. By identifying and exploiting every deliberate flaw, you've shown a deep understanding of common web vulnerabilities. You are now a certified PwnShop Master!", hint: "Pwn everything." }
 ];
 
 const MOCK_USERS = [
@@ -167,6 +167,66 @@ const TypewriterText = ({ text }: { text: string }) => {
   }, [text]);
 
   return <span>{displayedText}</span>;
+};
+
+const MatrixRain = () => {
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+
+  React.useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%""\'#&_(),.;:?!\\|{}<>[]^~';
+    const numColumns = Math.floor(width / 20);
+    const drops = Array.from({ length: numColumns }).fill(1) as number[];
+
+    let animationFrameId: number;
+    let lastTime = 0;
+
+    const draw = (time: number) => {
+      if (time - lastTime < 75) { // Slow down to around ~13.37 fps for the 1337 feel
+        animationFrameId = requestAnimationFrame(draw);
+        return;
+      }
+      lastTime = time;
+
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = '#10B981'; // Tailwind Emerald 500
+      ctx.font = '15px monospace';
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * 20, drops[i] * 20);
+        
+        if (drops[i] * 20 > height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+      animationFrameId = requestAnimationFrame(draw);
+    };
+
+    animationFrameId = requestAnimationFrame(draw);
+
+    const handleResize = () => {
+       width = canvas.width = window.innerWidth;
+       height = canvas.height = window.innerHeight;
+    };
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+       cancelAnimationFrame(animationFrameId);
+       window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className={`absolute inset-0 z-[100] opacity-30 pointer-events-none w-full h-full mix-blend-screen`} />;
 };
 
 export default function App() {
@@ -473,9 +533,30 @@ export default function App() {
 
   const sessionTriggeredRef = useRef<Set<string>>(new Set());
 
+  const playSuccessSound = () => {
+    try {
+      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      const ctx = new AudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(440, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.1); 
+      gain.gain.setValueAtTime(0.05, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.3);
+    } catch(e) {
+      console.warn("Audio not supported or permitted");
+    }
+  };
+
   const triggerChallenge = (id: string, overrideUser?: any) => {
     if (!solvedChallenges.includes(id) && !sessionTriggeredRef.current.has(id)) {
       sessionTriggeredRef.current.add(id);
+      playSuccessSound();
       setSolvedChallenges(prev => [...prev, id]);
       setBountyCoins(prev => prev + 150);
       const challenge = CHALLENGES.find(c => c.id === id);
@@ -668,14 +749,14 @@ export default function App() {
       <div className={`p-6 rounded-[1.5rem] shadow-sm border mt-4 ${isDarkMode ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-emerald-500/10 border-emerald-500/40 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)]'}`}>
         <h3 className={`font-bold mb-4 text-center text-xs ${isDarkMode ? 'text-zinc-500' : 'text-zinc-400'} uppercase tracking-widest`}>Connect With Us</h3>
         <div className="flex justify-center space-x-6">
-           <a href="#" className={`p-4 rounded-full transition-all hover:scale-110 active:scale-95 ${isDarkMode ? 'bg-zinc-900/80 text-zinc-400 hover:text-emerald-400 hover:bg-zinc-800' : 'bg-zinc-50 text-zinc-500 hover:text-emerald-500 hover:bg-zinc-100'}`} title="Github">
+           <a href="https://github.com/K4N3CO-LABS" target="_blank" rel="noopener noreferrer" className={`p-4 rounded-full transition-all hover:scale-110 active:scale-95 ${isDarkMode ? 'bg-zinc-900/80 text-zinc-400 hover:text-emerald-400 hover:bg-zinc-800' : 'bg-zinc-50 text-zinc-500 hover:text-emerald-500 hover:bg-zinc-100'}`} title="Github">
              <Globe size={22} />
            </a>
            {/* VULNERABILITY: Metadata Leak in alt text / data- attribute. Mobile users find this via System Log Scanner. */}
-           <a href="#" className={`p-4 rounded-full transition-all hover:scale-110 active:scale-95 ${isDarkMode ? 'bg-zinc-900/80 text-zinc-400 hover:text-emerald-400 hover:bg-zinc-800' : 'bg-zinc-50 text-zinc-500 hover:text-emerald-500 hover:bg-zinc-100'}`} title="Twitter" data-asset-id="social-twt" data-meta="4d45544144415441" aria-label="Twitter">
+           <a href="https://github.com/K4N3CO-LABS/JailBreak-Ai" target="_blank" rel="noopener noreferrer" className={`p-4 rounded-full transition-all hover:scale-110 active:scale-95 ${isDarkMode ? 'bg-zinc-900/80 text-zinc-400 hover:text-emerald-400 hover:bg-zinc-800' : 'bg-zinc-50 text-zinc-500 hover:text-emerald-500 hover:bg-zinc-100'}`} title="Twitter" data-asset-id="social-twt" data-meta="4d45544144415441" aria-label="Twitter">
              <MessageSquare size={22} />
            </a>
-           <a href="#" className={`p-4 rounded-full transition-all hover:scale-110 active:scale-95 ${isDarkMode ? 'bg-zinc-900/80 text-zinc-400 hover:text-emerald-400 hover:bg-zinc-800' : 'bg-zinc-50 text-zinc-500 hover:text-emerald-500 hover:bg-zinc-100'}`} title="Support">
+           <a href="https://github.com/K4N3CO-LABS/PWNNET-Toolkit" target="_blank" rel="noopener noreferrer" className={`p-4 rounded-full transition-all hover:scale-110 active:scale-95 ${isDarkMode ? 'bg-zinc-900/80 text-zinc-400 hover:text-emerald-400 hover:bg-zinc-800' : 'bg-zinc-50 text-zinc-500 hover:text-emerald-500 hover:bg-zinc-100'}`} title="Support">
              <Send size={22} />
            </a>
         </div>
@@ -741,24 +822,7 @@ export default function App() {
       </div>
       
       <div className="text-center text-xs text-zinc-600 mt-8 space-y-2">
-         <p>Donations are always welcome and extremely appreciated. Thanks!</p>
-         <div className="space-y-1">
-           <p className={`font-mono text-[10px] break-all p-2 rounded-lg border mx-auto max-w-[280px] ${isDarkMode ? 'bg-black border-white/5 text-zinc-400' : 'bg-zinc-100 border-zinc-300 text-zinc-800'}`}>
-             <span className="text-[9px] uppercase tracking-wider block mb-1 text-emerald-500">Bitcoin (BTC)</span>
-             bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt
-           </p>
-           <p className={`font-mono text-[10px] break-all p-2 rounded-lg border mx-auto max-w-[280px] ${isDarkMode ? 'bg-black border-white/5 text-zinc-400' : 'bg-zinc-100 border-zinc-300 text-zinc-800'}`}>
-             <span className="text-[9px] uppercase tracking-wider block mb-1 text-emerald-500">Ethereum (ETH)</span>
-             0x6afB80004a277EF9A8De9Bf4b597681cF3A638e9
-           </p>
-           <p className={`font-mono text-[10px] break-all p-2 rounded-lg border mx-auto max-w-[280px] ${isDarkMode ? 'bg-black border-white/5 text-zinc-400' : 'bg-zinc-100 border-zinc-300 text-zinc-800'}`}>
-             <span className="text-[9px] uppercase tracking-wider block mb-1 text-emerald-500">Solana (SOL)</span>
-             DGheMtGdnVCLDXRb7yQijAWUT1eU1Xt1tP4eY2rkRdCD
-           </p>
-         </div>
-         <div className="pt-4">
-           <p>Created for Educational Purposes. DO NOT perform these attacks against real targets. Enjoy!!</p>
-         </div>
+         <p>Created for Educational Purposes. DO NOT perform these attacks against real targets. Enjoy!!</p>
       </div>
     </div>
   );
@@ -939,6 +1003,21 @@ export default function App() {
           </div>
         </div>
       )}
+
+      <div 
+        onClick={() => {
+          const newTaps = versionTaps + 1;
+          setVersionTaps(newTaps);
+          if (newTaps >= 5) {
+            triggerChallenge('debug_logs');
+            changeView('debug');
+            setVersionTaps(0);
+          }
+        }}
+        className="text-center text-xs text-zinc-600 mt-8 mb-4 cursor-pointer active:scale-95 w-full flex justify-center"
+      >
+        v1.0.0-insecure (Tap anywhere to interact)
+      </div>
     </div>
   );
 
@@ -961,8 +1040,8 @@ export default function App() {
         setTempLoginUser({ email: 'admin@pwn-sh.op', role: 'admin' });
         triggerChallenge('sqli', { email: email, username: 'SQL_Injector' });
         setIs2FAPending(true);
-        triggerPushNotification("PwnShop Security", "Your 2FA code is 1337");
-        setGenerated2FA("1337");
+        triggerPushNotification("PwnShop Security", "Your 2FA code is 133700");
+        setGenerated2FA("133700");
         return;
       } 
       
@@ -982,7 +1061,7 @@ export default function App() {
         
         if (foundUser) {
           Log.i("Auth", `User logged in! Email: ${email}, Username: ${foundUser.username}, Password: ${password}`);
-          const code = Math.floor(1000 + Math.random() * 9000).toString();
+          const code = Math.floor(100000 + Math.random() * 900000).toString();
           setGenerated2FA(code);
           setTempLoginUser({ email: foundUser.email, role: foundUser.role, username: foundUser.username, avatar: foundUser.avatar, bio: foundUser.bio, theme: foundUser.theme });
           setIs2FAPending(true);
@@ -1284,21 +1363,6 @@ export default function App() {
                 [ Initiate Brute Force ]
               </button>
            </div>
-        </div>
-
-        <div 
-          onClick={() => {
-            const newTaps = versionTaps + 1;
-            setVersionTaps(newTaps);
-            if (newTaps >= 5) {
-              triggerChallenge('debug_logs');
-              changeView('debug');
-              setVersionTaps(0);
-            }
-          }}
-          className="text-center text-xs text-zinc-600 mt-8 mb-4 cursor-pointer active:scale-95"
-        >
-          v1.0.0-insecure (Tap anywhere to interact)
         </div>
       </div>
     );
@@ -1648,9 +1712,12 @@ export default function App() {
   const renderDarkWebMarket = () => {
     const marketTools: Record<string, {name: string, icon: string, desc: string, price: number}> = {
       'sqlmap': { name: 'SQLMap', icon: '💉', desc: 'Automatic SQL injection and database takeover tool.', price: 200 },
+      'nmap': { name: 'Nmap', icon: '📡', desc: 'Network mapper and port scanner.', price: 200 },
       'john_the_ripper': { name: 'John the Ripper', icon: '🔑', desc: 'Fast password cracker & JWT manipulator.', price: 300 },
+      'hydra': { name: 'THC Hydra', icon: '🐉', desc: 'Network logon cracker.', price: 400 },
       'burp_suite': { name: 'Burp Suite', icon: '🕷️', desc: 'Web vulnerability scanner and proxy.', price: 500 },
       'jailbreak_script': { name: 'Jailbreak Script', icon: '🔓', desc: 'Overrides AI safety protocols.', price: 600 },
+      'wireshark': { name: 'Wireshark', icon: '🦈', desc: 'Network protocol analyzer.', price: 850 },
       'metasploit': { name: 'Metasploit Framework', icon: '💣', desc: 'Advanced exploitation and payload delivery system.', price: 1000 }
     };
 
@@ -1979,7 +2046,7 @@ export default function App() {
             </div>
             <div className="w-px h-10 bg-white/10 mx-2"></div>
             <div className="flex flex-col items-center flex-1">
-              <span className="text-3xl font-bold text-yellow-500">{bountyCoins}</span>
+              <span className="text-3xl font-bold text-yellow-500">{(solvedChallenges.length || 0) * 150}</span>
               <span className="text-xs text-zinc-500 mt-1">BC Earned</span>
             </div>
           </div>
@@ -2161,7 +2228,8 @@ export default function App() {
         transition={{ duration: 0.5 }}
         className={`${isDarkMode ? 'bg-[#020804] text-zinc-300' : 'bg-emerald-50 text-zinc-800'} min-h-screen flex font-sans ${isGlitching ? 'theme-darkweb' : ''} selection:bg-emerald-500/30 selection:text-emerald-200 transition-colors duration-500 relative overflow-hidden perspective-[1000px]`}
       >
-        <div className={`absolute inset-0 z-0 pointer-events-none transition-opacity duration-1000 ${isDarkMode ? 'bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-900/20 via-[#05110a] to-[#020503]' : 'bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-200/50 via-zinc-100 to-zinc-100'}`} />
+        {isDarkMode && <div className="crt-overlay" />}
+        <div className={`absolute inset-0 z-0 pointer-events-none transition-opacity duration-1000 ${isDarkMode ? 'bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-900/40 via-[#05110a] to-[#020503]' : 'bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-200/50 via-zinc-100 to-zinc-100'}`} />
         
         <div 
           className={`w-full md:max-w-md mx-auto ${isDarkMode ? 'bg-[#0c0f0e] md:border-[#1a2e23] shadow-[0_40px_80px_-20px_rgba(0,0,0,1),_0_0_120px_-20px_rgba(16,185,129,0.2),_inset_0_2px_4px_rgba(255,255,255,0.02),_inset_0_-2px_10px_rgba(0,0,0,0.8)]' : 'bg-[#ffffff] md:border-zinc-300 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.2),_0_0_100px_-20px_rgba(16,185,129,0.15),_inset_0_2px_4px_rgba(255,255,255,1),_inset_0_-2px_10px_rgba(0,0,0,0.05)]'} flex flex-col h-screen md:h-[92vh] md:my-auto md:rounded-[52px] overflow-hidden relative z-10 border-x md:border transition-transform duration-[1200ms] sm:transform-gpu ease-out`}
@@ -2314,6 +2382,10 @@ export default function App() {
                     <Terminal w={18} h={18} className={isDarkMode ? "text-zinc-600" : "text-zinc-500"} />
                     <span className="font-medium text-sm">Hacker Terminal</span>
                   </button>
+                  <button onClick={() => { setIsMenuOpen(false); changeView('debug'); }} className={`flex items-center space-x-3 w-full p-3 rounded-xl transition-colors ${currentView === 'debug' ? 'bg-emerald-500/10 text-emerald-600' : (isDarkMode ? 'hover:bg-zinc-900/50 text-zinc-300' : 'hover:bg-zinc-100 text-zinc-900')}`}>
+                    <Search w={18} h={18} className={isDarkMode ? "text-zinc-600" : "text-zinc-500"} />
+                    <span className="font-medium text-sm">System Log Scanner</span>
+                  </button>
 
                   <div className="flex-1" />
                   
@@ -2374,6 +2446,20 @@ export default function App() {
                       Log Out
                     </button>
                   )}
+                  
+                  <div className="mt-6 flex justify-center">
+                    <details className="opacity-30 hover:opacity-100 transition-opacity w-full group">
+                      <summary className="text-xs text-zinc-600 cursor-pointer text-center select-none outline-none">Cheatsheet</summary>
+                      <div className="mt-2 text-[10px] text-zinc-500 max-h-48 overflow-y-auto space-y-2 p-2 bg-black/20 rounded-xl border border-white/5 text-left custom-scrollbar">
+                        {CHALLENGES.map(c => (
+                          <div key={c.id}>
+                            <span className="font-bold text-emerald-500">{c.name}:</span> <span className="font-medium text-zinc-400">{c.desc}</span> <br/>
+                            <span className="text-zinc-600">Hint: {c.hint}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  </div>
                 </div>
               </motion.div>
             </>
@@ -2484,32 +2570,33 @@ export default function App() {
           {selectedExplanation && (
             <motion.div 
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/60 z-50 flex flex-col justify-end p-4 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/80 z-50 flex flex-col justify-end p-4 backdrop-blur-sm overflow-hidden"
               onClick={() => setSelectedExplanation(null)}
             >
               <motion.div 
                 initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
                 transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className="bg-zinc-900 rounded-3xl p-6 shadow-2xl relative"
+                className="bg-zinc-900 rounded-3xl p-6 shadow-2xl relative z-40"
                 onClick={e => e.stopPropagation()}
               >
                 <div className="w-12 h-1.5 bg-zinc-800 rounded-full mx-auto mb-6"></div>
                 <div className="w-12 h-12 bg-emerald-100 text-emerald-600 flex items-center justify-center rounded-full mb-4">
                   <CheckCircle2 size={28} />
                 </div>
-                <h3 className="text-2xl font-bold text-zinc-100 mb-2">Challenge Complete!</h3>
+                <h3 className="text-2xl font-bold text-zinc-100 mb-2 glitch-text" data-text="Challenge Complete!">Challenge Complete!</h3>
                 <h4 className="text-emerald-500 font-bold mb-4">{selectedExplanation.name}</h4>
-                <div className="bg-emerald-500/10 p-4 rounded-xl border border-emerald-500/20 mb-6">
+                <div className="bg-emerald-500/10 p-4 rounded-xl border border-emerald-500/20 mb-6 relative">
                   <p className="text-zinc-300 text-sm leading-relaxed">{selectedExplanation.explanation}</p>
                   <p className="text-emerald-400 text-xs font-bold mt-3 text-center uppercase tracking-wider">+ 150 Bounty Coins Earned</p>
                 </div>
                 <button 
                   onClick={() => setSelectedExplanation(null)} 
-                  className="w-full bg-black text-white py-4 rounded-xl font-bold active:scale-95 transition-transform"
+                  className="w-full bg-black text-white py-4 rounded-xl font-bold active:scale-95 transition-transform relative z-50"
                 >
                   Awesome, continue hacking!
                 </button>
               </motion.div>
+              <MatrixRain />
             </motion.div>
           )}
         </AnimatePresence>

@@ -22,14 +22,24 @@
         </div>
       </div>
       <div style="width:300px;">
-        <div style="display:flex;justify-content:space-between;margin-bottom:12px;font-size:11px;text-transform:uppercase;letter-spacing:0.15em;color:#10b981;font-weight:600;">
-          <span id="static-status">Initializing System...</span>
+        <div id="loading-container">
+          <div style="display:flex;justify-content:space-between;margin-bottom:12px;font-size:11px;text-transform:uppercase;letter-spacing:0.15em;color:#10b981;font-weight:600;">
+            <span id="static-status">Initializing System...</span>
+          </div>
+          <div style="height:6px;width:100%;background:#111;border-radius:99px;border:1px solid rgba(255,255,255,0.08);overflow:hidden;box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);">
+            <div id="static-bar" style="height:100%;background:linear-gradient(90deg, #059669, #10b981);width:0%;transition:width 0.1s linear;box-shadow: 0 0 12px rgba(16,185,129,0.6);"></div>
+          </div>
         </div>
-        <div style="height:6px;width:100%;background:#111;border-radius:99px;border:1px solid rgba(255,255,255,0.08);overflow:hidden;box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);">
-          <div id="static-bar" style="height:100%;background:linear-gradient(90deg, #059669, #10b981);width:0%;transition:width 0.1s linear;box-shadow: 0 0 12px rgba(16,185,129,0.6);"></div>
+        <div id="enter-container" style="display:none;opacity:0;transition:opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
+          <button id="enter-btn" style="background:#10b981;color:#000;border:none;padding:14px 28px;border-radius:14px;font-family:inherit;font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:0.15em;cursor:pointer;width:100%;box-shadow:0 0 35px rgba(16,185,129,0.5);transition:all 0.2s cubic-bezier(0.4, 0, 0.2, 1);outline:none;-webkit-tap-highlight-color:transparent;animation:splash-btn-pulse 2s infinite ease-in-out;">
+            ENTER PWNSHOP
+          </button>
         </div>
-        <div style="margin-top:40px;text-align:center;font-size:9px;color:#444;text-transform:uppercase;letter-spacing:0.4em;font-weight:500;">
+        <div style="margin-top:40px;text-align:center;font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.4em;font-weight:600;">
           Secure Protocol Enabled • AI Powered
+        </div>
+        <div class="splash-glitch" data-text="Developed by K4N3C0.LABS" style="margin-top:15vh;text-align:center;font-size:11px;color:#10b981;text-transform:uppercase;letter-spacing:0.3em;font-weight:700;display:block;">
+          Developed by K4N3C0.LABS
         </div>
       </div>
       <style>
@@ -37,7 +47,51 @@
         @keyframes splash-pulse-glow { 0%, 100% { opacity: 0.3; transform: translate(-50%,-50%) scale(1); } 50% { opacity: 0.6; transform: translate(-50%,-50%) scale(1.1); } }
         @keyframes splash-pulse-scale { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
         @keyframes logo-emerald-pulse { 0%, 100% { border-color: rgba(16,185,129,0.6); box-shadow: 0 0 40px rgba(16,185,129,0.4); } 50% { border-color: rgba(16,185,129,1); box-shadow: 0 0 60px rgba(16,185,129,0.8); } }
-        
+        @keyframes splash-btn-pulse { 
+          0%, 100% { transform: scale(1); box-shadow: 0 0 35px rgba(16,185,129,0.5); } 
+          50% { transform: scale(1.04); box-shadow: 0 0 50px rgba(16,185,129,0.8); } 
+        }
+        #enter-btn:hover { background: #34d399; }
+        #enter-btn:active { transform: scale(0.96) !important; box-shadow: 0 0 20px rgba(16,185,129,0.3) !important; }
+               .splash-glitch { position: relative; display: inline-block; animation: static-flicker 3s infinite; }
+        .splash-glitch::before, .splash-glitch::after {
+          content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+          background: #020804;
+        }
+        .splash-glitch::before {
+          left: 3px; text-shadow: -2px 0 red, 2px 0 rgba(0,255,0,0.5);
+          clip-path: inset(10% 0 80% 0);
+          animation: glitch-anim-1-splash 3s infinite linear;
+        }
+        .splash-glitch::after {
+          left: -3px; text-shadow: -2px 0 blue;
+          clip-path: inset(80% 0 10% 0);
+          animation: glitch-anim-2-splash 3s infinite linear;
+        }
+        @keyframes static-flicker {
+          0%, 50% { opacity: 1; transform: translateX(0); }
+          52% { opacity: 0.8; transform: translateX(-3px); }
+          60% { opacity: 0.9; transform: translateX(3px); }
+          72% { opacity: 1; transform: translateX(-1px); }
+          85% { opacity: 0.6; transform: translateX(5px); }
+          100% { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes glitch-anim-1-splash {
+          0%, 50% { opacity: 0; }
+          50.1% { opacity: 1; clip-path: inset(20% 0 80% 0); transform: translate(-4px, 2px); }
+          60% { opacity: 1; clip-path: inset(60% 0 10% 0); transform: translate(4px, -2px); }
+          72% { opacity: 1; clip-path: inset(40% 0 50% 0); transform: translate(-4px, 3px); }
+          85% { opacity: 1; clip-path: inset(80% 0 5% 0); transform: translate(4px, -3px); }
+          100% { opacity: 1; clip-path: inset(10% 0 70% 0); transform: translate(-4px, 2px); }
+        }
+        @keyframes glitch-anim-2-splash {
+          0%, 50% { opacity: 0; }
+          50.1% { opacity: 1; clip-path: inset(10% 0 60% 0); transform: translate(4px, -2px); }
+          60% { opacity: 1; clip-path: inset(30% 0 20% 0); transform: translate(-4px, 3px); }
+          72% { opacity: 1; clip-path: inset(70% 0 10% 0); transform: translate(4px, -3px); }
+          85% { opacity: 1; clip-path: inset(20% 0 50% 0); transform: translate(-4px, 2px); }
+          100% { opacity: 1; clip-path: inset(50% 0 30% 0); transform: translate(4px, -2px); }
+        }
       </style>
     </div>
     <script>
@@ -117,18 +171,34 @@
            
            setTimeout(function() {
              clearInterval(interval);
-             if (matrixInterval) clearInterval(matrixInterval);
              if (bar) bar.style.width = '100%';
              if (status) status.innerText = 'System ready.';
              
              setTimeout(function() {
-               if (splash) {
-                 splash.style.opacity = '0';
-                 setTimeout(function() { 
-                   if(splash.parentNode) splash.remove();
-                 }, 800);
+               var loadingContainer = document.getElementById('loading-container');
+               var enterContainer = document.getElementById('enter-container');
+               var enterBtn = document.getElementById('enter-btn');
+               
+               if (loadingContainer) loadingContainer.style.display = 'none';
+               if (enterContainer) {
+                 enterContainer.style.display = 'block';
+                 setTimeout(function() {
+                   enterContainer.style.opacity = '1';
+                 }, 50);
                }
-             }, 1000);
+               
+               if (enterBtn) {
+                 enterBtn.onclick = function() {
+                   if (splash) {
+                     splash.style.opacity = '0';
+                     if (matrixInterval) clearInterval(matrixInterval);
+                     setTimeout(function() { 
+                       if(splash.parentNode) splash.remove();
+                     }, 800);
+                   }
+                 };
+               }
+             }, 800);
            }, remaining);
         };
       })();
