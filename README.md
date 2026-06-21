@@ -68,7 +68,7 @@ If you find **The PwnShop** **useful, please consider** giving the project a **S
 **Bitcoin: (BTC)**
 
 ```
-bc1qqh84tnwrkm2sn2wg8r8tzt7sljee6q0km8a5wt 
+bc1q6lmkuju3kf7f8624fwt5qs7k5mf63mekgcnzf4
 ```
 
 ---
