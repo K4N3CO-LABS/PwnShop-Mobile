@@ -126,8 +126,23 @@
     @apply pointer-events-none;
   }
 
-  /* Smooth scrolling for inner containers */
-  .overflow-y-auto {
-    -webkit-overflow-scrolling: touch;
+  /* Fast, crisp theme transitions */
+  .app-container {
+    transition: background-color 0.3s ease-out, color 0.3s ease-out;
+  }
+
+  /* Structural elements only */
+  header, nav, main, .menu-container {
+    transition: background-color 0.3s ease-out, border-color 0.3s ease-out;
+  }
+
+  /* Exclude dynamic content and overlays to prevent layout thrashing */
+  .crt-overlay,
+  canvas,
+  .motion-div,
+  img,
+  [style*="transform"],
+  .animate-spin {
+    transition: none !important;
   }
 }

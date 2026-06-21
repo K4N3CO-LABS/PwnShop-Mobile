@@ -12,6 +12,7 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
+    "@capacitor/app": "^8.1.0",
     "@capacitor/core": "^8.4.0",
     "@google/genai": "^1.29.0",
     "@tailwindcss/vite": "^4.1.14",

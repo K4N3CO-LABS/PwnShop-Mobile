@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { App as CapApp } from '@capacitor/app';
 import { motion, AnimatePresence } from 'motion/react';
 import { Log } from './lib/KotlinLogger';
 import { 
@@ -248,6 +249,7 @@ export default function App() {
   }, []);
   const [currentView, setCurrentView] = useState('home');
   const [cart, setCart] = useState<{id: string, qty: number}[]>([]);
+  const [addedItems, setAddedItems] = useState<Set<string>>(new Set());
   const [solvedChallenges, setSolvedChallenges] = useState<string[]>(() => {
     try {
       const saved = safeStorage.getItem('solvedChallenges');
@@ -488,6 +490,30 @@ export default function App() {
   }, [user]);
 
   
+  const [lastBackPress, setLastBackPress] = useState(0);
+
+  useEffect(() => {
+    const handler = CapApp.addListener('backButton', () => {
+      if (currentView === 'home') {
+        const now = Date.now();
+        if (now - lastBackPress < 2000) {
+          CapApp.exitApp();
+        } else {
+          setLastBackPress(now);
+          triggerPushNotification("System", "Push back again to exit app");
+        }
+      } else if (currentView === 'debug' || currentView === 'bomb') {
+        changeView('admin');
+      } else {
+        changeView('home');
+      }
+    });
+
+    return () => {
+      handler.then(h => h.remove());
+    };
+  }, [currentView, lastBackPress]);
+
   // Simulated Router based on hash for Forced Browsing challenge
   useEffect(() => {
     const handleHashChange = () => {
@@ -581,6 +607,16 @@ export default function App() {
       }
       return [...prev, { id: productId, qty: 1 }];
     });
+
+    // Provide visual feedback
+    setAddedItems(prev => new Set(prev).add(productId));
+    setTimeout(() => {
+      setAddedItems(prev => {
+        const next = new Set(prev);
+        next.delete(productId);
+        return next;
+      });
+    }, 1500);
   };
 
   const updateCartQty = (productId: string, qtyRaw: string) => {
@@ -641,7 +677,7 @@ export default function App() {
   const renderHome = () => {
     const progressPerc = Math.round((solvedChallenges.length / CHALLENGES.length) * 100);
     return (
-    <div className="p-4 space-y-6">
+    <div className="p-4 space-y-6 pb-10">
       <div className={`relative rounded-3xl border ${isDarkMode ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-emerald-500/10 border-emerald-500/40'} overflow-hidden shadow-sm`}>
         <div className="absolute inset-0 overflow-hidden rounded-3xl z-0 pointer-events-none">
           <img src="https://i.postimg.cc/tZsyNg6D/Screenshot-2026-05-04-at-6-11-06-PM.png" alt="" className="absolute -right-8 -bottom-8 w-44 h-44 opacity-20 object-cover rotate-12 mix-blend-overlay" referrerPolicy="no-referrer" />
@@ -686,8 +722,18 @@ export default function App() {
               </div>
               <div className="w-full mt-auto text-center">
                 <span className="text-emerald-500 font-bold block mb-3 text-lg">${p.price.toFixed(2)}</span>
-                <button onClick={() => addToCart(p.id)} className="w-full bg-emerald-500 hover:bg-emerald-400 text-white text-xs py-2.5 rounded-xl font-bold transition-colors shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_20px_rgba(16,185,129,0.5)]">
-                  Add to Cart
+                <button
+                  onClick={() => addToCart(p.id)}
+                  className={`w-full ${addedItems.has(p.id) ? 'bg-emerald-600' : 'bg-emerald-500 hover:bg-emerald-400'} text-white text-xs py-2.5 rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] active:scale-95 flex items-center justify-center space-x-2`}
+                >
+                  {addedItems.has(p.id) ? (
+                    <>
+                      <CheckCircle2 size={14} />
+                      <span>Added!</span>
+                    </>
+                  ) : (
+                    <span>Add to Cart</span>
+                  )}
                 </button>
               </div>
             </div>
@@ -861,7 +907,7 @@ export default function App() {
     };
 
     return (
-      <div className="p-4 space-y-5">
+      <div className="p-4 space-y-5 pb-10">
         <div className="relative group">
           <input 
             type="text" 
@@ -897,9 +943,9 @@ export default function App() {
                 </div>
                 <button 
                   onClick={() => addToCart(p.id)}
-                  className="bg-emerald-500/10 text-emerald-500 p-3 flex-shrink-0 rounded-[14px] hover:bg-emerald-500 hover:text-white active:scale-95 transition-all shadow-sm"
+                  className={`${addedItems.has(p.id) ? 'bg-emerald-500 text-white' : 'bg-emerald-500/10 text-emerald-500'} p-3 flex-shrink-0 rounded-[14px] hover:bg-emerald-500 hover:text-white active:scale-95 transition-all shadow-sm`}
                 >
-                  <ShoppingCart w={20} h={20} />
+                  {addedItems.has(p.id) ? <CheckCircle2 size={20} /> : <ShoppingCart size={20} />}
                 </button>
               </div>
               <p className={`text-[13px] mt-1 leading-relaxed ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>{p.desc}</p>
@@ -911,7 +957,7 @@ export default function App() {
   };
 
   const renderCart = () => (
-    <div className="p-4 space-y-6">
+    <div className="p-4 space-y-6 pb-10">
       <h2 className={`text-2xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>Your Cart</h2>
       {cart.length === 0 ? (
         <div className={`flex flex-col items-center justify-center p-12 border-2 border-dashed text-center rounded-[1.5rem] h-64 ${isDarkMode ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-emerald-500/10 border-emerald-500/40'}`}>
@@ -1091,7 +1137,7 @@ export default function App() {
     };
 
     return (
-      <div className="p-6">
+      <div className="p-6 pb-10">
         <div className="text-center mb-8 mt-4 flex flex-col items-center">
           <div className="w-[84px] h-[84px] rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 overflow-hidden shadow-[0_0_15px_rgba(16,185,129,0.3)] mb-4">
              <img src="https://i.postimg.cc/tZsyNg6D/Screenshot-2026-05-04-at-6-11-06-PM.png" alt="PwnShop Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
@@ -1326,7 +1372,6 @@ export default function App() {
         )}
 
             <div className={`mt-8 pt-6 border-t text-center relative overflow-hidden ${isDarkMode ? 'border-white/5' : 'border-zinc-200'}`}>
-           <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent animate-[scan_2s_ease-in-out_infinite]" />
            <h4 className={`text-[10px] font-bold mb-4 tracking-[0.2em] uppercase ${isDarkMode ? 'text-zinc-500' : 'text-zinc-600'}`}>Secret Recovery Protocol</h4>
            <div className="flex flex-col items-center space-y-4">
               <p className={`text-[10px] font-mono ${isDarkMode ? 'text-zinc-600' : 'text-zinc-500'}`}>ENCRYPTED GATEWAY // ATTEMPTS: {bruteForceTaps}</p>
@@ -1412,7 +1457,7 @@ export default function App() {
     }
 
     return (
-      <div className="p-4 space-y-5">
+      <div className="p-4 space-y-5 pb-10">
       <div className={`p-5 rounded-2xl flex items-start space-x-4 mb-4 ${isDarkMode ? 'bg-red-500/10 border-red-500/20 shadow-[inset_0_2px_10px_rgba(239,68,68,0.1)]' : 'bg-red-50 border-red-200 shadow-sm'}`}>
         <div className={`p-2 rounded-xl ${isDarkMode ? 'bg-red-500/20 text-red-500' : 'bg-red-100 text-red-600'}`}>
           <Terminal className="w-6 h-6 flex-shrink-0" />
@@ -1583,7 +1628,7 @@ export default function App() {
 
   const renderLootBox = () => {
     return (
-        <div className="p-6 space-y-6">
+        <div className="p-6 space-y-6 pb-10">
             <div>
                 <h2 className={`text-2xl font-bold mb-1 ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>Mystery Loot Box</h2>
                 <p className={`text-sm ${isDarkMode ? 'text-zinc-400' : 'text-zinc-500'}`}>Spend $10 for a chance to win a high-tier product!</p>
@@ -2016,7 +2061,7 @@ export default function App() {
   const renderScoreboard = () => {
     const progressPerc = Math.round((solvedChallenges.length / CHALLENGES.length) * 100);
     return (
-      <div className="p-4">
+      <div className="p-4 pb-10">
         <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-6 text-white text-center shadow-lg mb-6 relative overflow-hidden">
           {progressPerc === 100 && (
              <motion.button 
@@ -2226,17 +2271,16 @@ export default function App() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className={`${isDarkMode ? 'bg-[#020804] text-zinc-300' : 'bg-emerald-50 text-zinc-800'} min-h-screen flex font-sans ${isGlitching ? 'theme-darkweb' : ''} selection:bg-emerald-500/30 selection:text-emerald-200 transition-colors duration-500 relative overflow-hidden perspective-[1000px]`}
+        className={`${isDarkMode ? 'bg-[#020804] text-zinc-300' : 'bg-emerald-50 text-zinc-800'} min-h-screen flex font-sans ${isGlitching ? 'theme-darkweb' : ''} selection:bg-emerald-500/30 selection:text-emerald-200 app-container relative overflow-hidden perspective-[1000px]`}
       >
         {isDarkMode && <div className="crt-overlay" />}
-        <div className={`absolute inset-0 z-0 pointer-events-none transition-opacity duration-1000 ${isDarkMode ? 'bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-900/40 via-[#05110a] to-[#020503]' : 'bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-200/50 via-zinc-100 to-zinc-100'}`} />
-        
+
         <div 
-          className={`w-full md:max-w-md mx-auto ${isDarkMode ? 'bg-[#0c0f0e] md:border-[#1a2e23] shadow-[0_40px_80px_-20px_rgba(0,0,0,1),_0_0_120px_-20px_rgba(16,185,129,0.2),_inset_0_2px_4px_rgba(255,255,255,0.02),_inset_0_-2px_10px_rgba(0,0,0,0.8)]' : 'bg-[#ffffff] md:border-zinc-300 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.2),_0_0_100px_-20px_rgba(16,185,129,0.15),_inset_0_2px_4px_rgba(255,255,255,1),_inset_0_-2px_10px_rgba(0,0,0,0.05)]'} flex flex-col h-screen md:h-[92vh] md:my-auto md:rounded-[52px] overflow-hidden relative z-10 border-x md:border transition-transform duration-[1200ms] sm:transform-gpu ease-out`}
+          className={`w-full md:max-w-md mx-auto ${isDarkMode ? 'bg-[#0c0f0e] md:border-[#1a2e23] shadow-[0_40px_80px_-20px_rgba(0,0,0,1),_inset_0_2px_4px_rgba(255,255,255,0.02),_inset_0_-2px_10px_rgba(0,0,0,0.8)]' : 'bg-[#ffffff] md:border-zinc-300 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.2),_inset_0_2px_4px_rgba(255,255,255,1),_inset_0_-2px_10px_rgba(0,0,0,0.05)]'} flex flex-col h-screen md:h-[92vh] md:my-auto md:rounded-[52px] overflow-hidden relative z-10 md:border transition-transform duration-[1200ms] sm:transform-gpu ease-out`}
         >
-          {/* Faint green inside glow */}
-          <div className={`absolute inset-0 z-0 pointer-events-none transition-opacity duration-1000 ${isDarkMode ? 'bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-500/10 via-transparent to-transparent' : 'bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-400/20 via-transparent to-transparent'}`} />
-          
+          {/* Top Safety Buffer Spacer */}
+          <div className="w-full shrink-0" style={{ height: 'max(env(safe-area-inset-top), 20px)' }} />
+
           {/* Subtle Device Glare */}
           <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-white/10 via-transparent to-transparent z-[100] md:rounded-[52px] opacity-30 mix-blend-overlay" />
           
@@ -2244,32 +2288,31 @@ export default function App() {
           <AnimatePresence>
               {notification && (
                   <motion.div 
-                      initial={{ y: -100, opacity: 0 }}
+                      initial={{ y: 100, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: -100, opacity: 0 }}
-                      className="absolute top-20 left-4 right-4 z-50 bg-zinc-900 border border-white/20 p-4 rounded-2xl shadow-2xl flex items-center space-x-4"
+                      exit={{ y: 100, opacity: 0 }}
+                      className={`absolute bottom-24 left-6 right-6 z-50 border p-4 rounded-2xl shadow-2xl flex items-center space-x-4 backdrop-blur-xl ${isDarkMode ? 'bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.2)]' : 'bg-white/90 border-emerald-500/30'}`}
                   >
-                     <div className="bg-blue-500/20 text-blue-400 p-2 rounded-xl h-10 w-10 flex items-center justify-center">
+                     <div className="bg-emerald-500/20 text-emerald-500 p-2 rounded-xl h-10 w-10 flex items-center justify-center shadow-inner">
                          <Bell size={20} />
                      </div>
                      <div>
-                         <p className="font-bold text-white text-sm">{notification.title}</p>
-                         <p className="text-zinc-400 text-xs">{notification.message}</p>
+                         <p className={`font-bold text-sm ${isDarkMode ? 'text-emerald-400' : 'text-emerald-700'}`}>{notification.title}</p>
+                         <p className={`${isDarkMode ? 'text-zinc-400' : 'text-zinc-600'} text-xs font-medium`}>{notification.message}</p>
                      </div>
                   </motion.div>
               )}
           </AnimatePresence>
 
           {/* Header */}
-        <header className={`${isDarkMode ? 'bg-[#0a0a0a]/70 border-white/10' : 'bg-[#ffffff]/80 border-zinc-200'} backdrop-blur-2xl border-b p-4 flex items-center justify-between z-10 sticky top-0 overflow-hidden`}>
-          <div className={`absolute top-0 left-0 w-full h-[1px] ${isDarkMode ? 'bg-emerald-500/30' : 'bg-emerald-500/50'} animate-[scan_3s_linear_infinite]`} />
+        <header className={`${isDarkMode ? 'bg-[#0a0a0a]/70 border-white/10' : 'bg-[#ffffff]/80 border-zinc-200'} backdrop-blur-2xl border-b px-4 py-4 flex items-center justify-between z-10 sticky top-0 overflow-hidden`}>
           <div className="flex items-center space-x-3">
-            <div className="w-14 h-14 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 overflow-hidden shadow-[0_0_10px_rgba(16,185,129,0.3)]">
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 overflow-hidden shadow-[0_0_10px_rgba(16,185,129,0.3)]">
               <img src="https://i.postimg.cc/tZsyNg6D/Screenshot-2026-05-04-at-6-11-06-PM.png" alt="Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
             </div>
-            <div className={`${isDarkMode ? 'bg-zinc-900/80 border-white/10' : 'bg-zinc-100 border-zinc-200'} border px-3 py-1.5 rounded-lg flex flex-col justify-center`}>
-              <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest leading-none mb-0.5">Balance</span>
-              <span className="text-emerald-500 font-mono text-sm leading-none font-bold">{bountyCoins} BC</span>
+            <div className={`${isDarkMode ? 'bg-zinc-900/80 border-white/10' : 'bg-zinc-100 border-zinc-200'} border px-2.5 py-1 rounded-lg flex flex-col justify-center`}>
+              <span className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest leading-none mb-0.5">Balance</span>
+              <span className="text-emerald-500 font-mono text-xs leading-none font-bold">{bountyCoins} BC</span>
             </div>
           </div>
           <div className="flex items-center space-x-1">
@@ -2278,16 +2321,16 @@ export default function App() {
                 className={`${isDarkMode ? 'text-zinc-500 hover:bg-zinc-900/80' : 'text-zinc-400 hover:bg-zinc-100'} p-2 rounded-full transition-colors active:scale-95`}
                 title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
             >
-                {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+                {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
             </button>
             <button onClick={() => setIsMenuOpen(true)} className={`${isDarkMode ? 'text-zinc-600 hover:bg-zinc-900/80' : 'text-zinc-400 hover:bg-zinc-100'} p-2 rounded-full transition-colors active:scale-95`}>
-                <Menu size={20} />
+                <Menu size={18} />
             </button>
           </div>
         </header>
 
         {/* URL Bar Simulator */}
-        <div className={`${isDarkMode ? 'bg-zinc-950 border-white/5' : 'bg-zinc-100 border-zinc-200'} px-3 py-2 border-b flex items-center space-x-2 z-10 sticky top-[73px]`}>
+        <div className={`${isDarkMode ? 'bg-zinc-950 border-white/5' : 'bg-zinc-100 border-zinc-200'} px-3 py-1.5 border-b flex items-center space-x-2 z-10 sticky top-0`}>
            <Lock size={12} className={`${isDarkMode ? 'text-zinc-600' : 'text-zinc-400'}`} />
            <form className="flex-1" onSubmit={(e) => {
                e.preventDefault();
@@ -2333,7 +2376,7 @@ export default function App() {
                   <h2 className={`font-bold ${isDarkMode ? 'text-white' : 'text-zinc-900'}`}>Menu</h2>
                   <button onClick={() => setIsMenuOpen(false)} className={`p-2 ${isDarkMode ? 'text-zinc-500 hover:bg-zinc-800' : 'text-zinc-400 hover:bg-zinc-100'} rounded-full active:scale-95 transition-transform`}><X size={20} /></button>
                 </div>
-                <div className="p-4 flex-1 flex flex-col space-y-2 overflow-y-auto">
+                <div className="p-4 flex-1 flex flex-col space-y-2 overflow-y-auto pb-12">
                   {user && (() => {
                      const t = getThemeClasses(user.theme);
                      return (
@@ -2387,7 +2430,7 @@ export default function App() {
                     <span className="font-medium text-sm">System Log Scanner</span>
                   </button>
 
-                  <div className="flex-1" />
+                  {/* Spacer removed to keep items reachable in scroll */}
                   
                   <button 
                     onClick={() => { 
@@ -2435,7 +2478,7 @@ export default function App() {
                         Log.i("System", "Factory reset complete.");
                       }
                     }} 
-                    className="mt-4 p-3 rounded-xl border border-red-500/20 text-red-500 font-bold w-full text-sm hover:bg-red-500/10 transition-colors flex items-center justify-center space-x-2"
+                    className="mt-8 p-3 rounded-xl border border-red-500/20 text-red-500 font-bold w-full text-sm hover:bg-red-500/10 transition-colors flex items-center justify-center space-x-2"
                   >
                     <RefreshCw size={18} />
                     <span>{resetConfirm ? "Click to Confirm Reset" : "Factory Reset"}</span>
@@ -2447,14 +2490,14 @@ export default function App() {
                     </button>
                   )}
                   
-                  <div className="mt-6 flex justify-center">
-                    <details className="opacity-30 hover:opacity-100 transition-opacity w-full group">
-                      <summary className="text-xs text-zinc-600 cursor-pointer text-center select-none outline-none">Cheatsheet</summary>
-                      <div className="mt-2 text-[10px] text-zinc-500 max-h-48 overflow-y-auto space-y-2 p-2 bg-black/20 rounded-xl border border-white/5 text-left custom-scrollbar">
+                  <div className="mt-12 mb-6 flex justify-center">
+                    <details className="opacity-60 hover:opacity-100 transition-opacity w-full group">
+                      <summary className="text-xs text-zinc-500 font-bold cursor-pointer text-center select-none outline-none p-2 hover:text-emerald-500">Cheatsheet</summary>
+                      <div className={`mt-2 text-[10px] max-h-64 overflow-y-auto space-y-2 p-4 rounded-xl border text-left custom-scrollbar ${isDarkMode ? 'bg-zinc-800/60 border-emerald-500/20 text-zinc-200 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]' : 'bg-zinc-100 border-zinc-300 text-zinc-800 shadow-inner'}`}>
                         {CHALLENGES.map(c => (
-                          <div key={c.id}>
-                            <span className="font-bold text-emerald-500">{c.name}:</span> <span className="font-medium text-zinc-400">{c.desc}</span> <br/>
-                            <span className="text-zinc-600">Hint: {c.hint}</span>
+                          <div key={c.id} className={`border-b pb-2 last:border-0 ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
+                            <span className="font-bold text-emerald-500">{c.name}:</span> <span className={`font-medium ${isDarkMode ? 'text-zinc-300' : 'text-zinc-700'}`}>{c.desc}</span> <br/>
+                            <span className={`${isDarkMode ? 'text-zinc-500' : 'text-zinc-400'} italic`}>Hint: {c.hint}</span>
                           </div>
                         ))}
                       </div>
@@ -2474,7 +2517,7 @@ export default function App() {
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
                     onClick={() => { setIsChatOpen(true); setHasUnreadMessage(false); }}
-                    className="absolute bottom-28 right-4 z-40 bg-emerald-500 text-white p-4 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)] active:scale-95 transition-transform"
+                    className="fixed bottom-40 right-8 z-40 bg-emerald-500 text-white p-4 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.5)] active:scale-95 transition-transform"
                 >
                     <MessageSquare size={24} />
                     {hasUnreadMessage && (
@@ -2526,7 +2569,7 @@ export default function App() {
         </AnimatePresence>
 
         {/* Dynamic Content Area */}
-        <main className="flex-1 overflow-y-auto pb-24 relative no-scrollbar">
+        <main className="flex-1 overflow-y-auto pb-10 relative no-scrollbar">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentView}
@@ -2570,7 +2613,7 @@ export default function App() {
           {selectedExplanation && (
             <motion.div 
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/80 z-50 flex flex-col justify-end p-4 backdrop-blur-sm overflow-hidden"
+              className="absolute inset-0 bg-black/80 z-50 flex flex-col justify-end pb-[12vh] px-4 backdrop-blur-sm overflow-hidden"
               onClick={() => setSelectedExplanation(null)}
             >
               <motion.div 
@@ -2606,8 +2649,8 @@ export default function App() {
         </AnimatePresence>
 
         {/* Bottom Navigation */}
-        <nav className={`${isDarkMode ? 'bg-[#0a0a0a]/80 border-white/10' : 'bg-[#ffffff]/80 border-zinc-200'} backdrop-blur-2xl border-t absolute bottom-0 w-full z-20`} style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 16px) + 8px)' }}>
-          <div className="flex justify-around items-center p-2">
+        <nav className={`${isDarkMode ? 'bg-[#0a0a0a]/80 border-white/10' : 'bg-[#ffffff]/80 border-zinc-200'} backdrop-blur-2xl border-t w-full z-20 shrink-0`} style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 2px) + 2px)' }}>
+          <div className="flex justify-around items-center p-1">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentView === item.id;
@@ -2615,17 +2658,17 @@ export default function App() {
                 <button
                   key={item.id}
                   onClick={() => changeView(item.id)}
-                  className={`relative flex flex-col items-center justify-center p-3 sm:p-4 transition-all duration-300 ${
+                  className={`relative flex flex-col items-center justify-center p-2 sm:p-3 transition-all duration-300 ${
                     isActive ? 'text-emerald-500' : (isDarkMode ? 'text-zinc-600 hover:text-zinc-400' : 'text-zinc-500 hover:text-zinc-800')
                   }`}
                 >
                   <motion.div
-                    animate={isActive ? { scale: 1.1, y: -2 } : { scale: 1, y: 0 }}
+                    animate={isActive ? { scale: 1.05, y: -1 } : { scale: 1, y: 0 }}
                     transition={{ type: "spring", stiffness: 300 }}
                   >
-                    <Icon size={24} strokeWidth={isActive ? 2.5 : 2} />
+                    <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
                   </motion.div>
-                  <span className={`text-[10px] sm:text-xs mt-1 font-medium transition-all ${isActive ? 'opacity-100' : 'opacity-0 h-0 mt-0 overflow-hidden'}`}>
+                  <span className={`text-[9px] sm:text-[10px] mt-0.5 font-medium transition-all ${isActive ? 'opacity-100' : 'opacity-0 h-0 mt-0 overflow-hidden'}`}>
                     {item.label}
                   </span>
                   
