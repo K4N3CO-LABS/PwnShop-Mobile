@@ -9,9 +9,13 @@ Your **ultimate goal** is to step into the shoes of an **ethical hacker**. Navig
 
 Keep a close eye on the **Hacker Scoreboard** to track your progress. The more **vulnerabilities** you find, the closer you get to earning your **completion certificate!** Good luck, and remember: with great power comes great responsibility. Always conduct **security** research **ethically and legally**.
 
+---
+
 ## Gameplay
 
 <a href='https://postimg.cc/XBkLjQT1' target='_blank'><img src='https://i.postimg.cc/XBkLjQT1/Screenshot-2026-06-21-at-2-44-15-AM.png' border='0' alt='Screenshot-2026-06-21-at-2-44-15-AM'></a> <a href="https://postimg.cc/hXjsn8Mj" target="_blank"><img src="https://i.postimg.cc/hXjsn8Mj/Screenshot-2026-06-21-at-2-44-47-AM.png" alt="Screenshot-2026-06-21-at-2-44-47-AM"></a> <a href="https://postimg.cc/G42KRPzm" target="_blank"><img src="https://i.postimg.cc/G42KRPzm/Screenshot-2026-06-21-at-2-45-05-AM.png" alt="Screenshot-2026-06-21-at-2-45-05-AM"></a> <a href="https://postimg.cc/Hj63hP4v" target="_blank"><img src="https://i.postimg.cc/Hj63hP4v/Screenshot-2026-06-21-at-3-12-12-AM.png" alt="Screenshot-2026-06-21-at-3-12-12-AM"></a>
+
+---
 
 ## How to play
 
@@ -27,6 +31,8 @@ Feed the app **"broken"** data, **exploit** how it saves your info locally, and 
 
 Discovering a **bug** isn’t just **a win**—it’s a **lesson**. Every vulnerability you find reveals the technical **"why"** and the **industry-standard** way to patch it.
 
+---
+
 ## 📱 Mobile App (Android)
 
 **Prerequisites:** Node.js
@@ -34,6 +40,8 @@ Discovering a **bug** isn’t just **a win**—it’s a **lesson**. Every vulner
 1. Download the **latest** `.apk` from the **Releases section** onto your **Android** device.
 2. Enable **"Install from Unknown Sources"** in your Android **security** settings.
 3. **Install**, then **Launch** the app.
+
+---
 
 ## 🚀 Run Locally (On PC)
 
@@ -85,5 +93,3 @@ This project is **licensed** under the **MIT License**.
 Created for **Educational** Purposes. **DO NOT** perform these **attacks** against real targets.
 
 **Enjoy!!**
-
-
