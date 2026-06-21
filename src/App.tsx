@@ -2493,13 +2493,188 @@ export default function App() {
                   <div className="mt-12 mb-6 flex justify-center">
                     <details className="opacity-60 hover:opacity-100 transition-opacity w-full group">
                       <summary className="text-xs text-zinc-500 font-bold cursor-pointer text-center select-none outline-none p-2 hover:text-emerald-500">Cheatsheet</summary>
-                      <div className={`mt-2 text-[10px] max-h-64 overflow-y-auto space-y-2 p-4 rounded-xl border text-left custom-scrollbar ${isDarkMode ? 'bg-zinc-800/60 border-emerald-500/20 text-zinc-200 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]' : 'bg-zinc-100 border-zinc-300 text-zinc-800 shadow-inner'}`}>
-                        {CHALLENGES.map(c => (
-                          <div key={c.id} className={`border-b pb-2 last:border-0 ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
-                            <span className="font-bold text-emerald-500">{c.name}:</span> <span className={`font-medium ${isDarkMode ? 'text-zinc-300' : 'text-zinc-700'}`}>{c.desc}</span> <br/>
-                            <span className={`${isDarkMode ? 'text-zinc-500' : 'text-zinc-400'} italic`}>Hint: {c.hint}</span>
-                          </div>
-                        ))}
+                      <div className={`mt-2 text-[10px] max-h-64 overflow-y-auto space-y-4 p-4 rounded-xl border text-left custom-scrollbar ${isDarkMode ? 'bg-zinc-800/60 border-emerald-500/20 text-zinc-200 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]' : 'bg-zinc-100 border-zinc-300 text-zinc-800 shadow-inner'}`}>
+                        <div className="space-y-4 whitespace-pre-wrap font-sans">
+                          <p className="font-bold text-emerald-500 border-b border-white/10 pb-1">LEVEL 1: BASICS</p>
+                          <p>
+                            <span className="font-bold text-emerald-400">Classic SQL Injection (SQLi):</span><br/>
+                            Action: Go to the Me tab (Login page).<br/>
+                            Payload: Enter ' OR 1=1 -- or other common SQL payloads in the Email field.<br/>
+                            RESULT: Bypasses the authentication logic.
+                          </p>
+                          <p>
+                            <span className="font-bold text-emerald-400">Reflected XSS (XSS):</span><br/>
+                            Action: Go to the Shop tab.<br/>
+                            Payload: Enter &lt;img src=x onerror=alert(1)&gt; in the search bar.<br/>
+                            RESULT: The payload executes immediately.
+                          </p>
+                          <p>
+                            <span className="font-bold text-emerald-400">Business Logic Flaw (logic):</span><br/>
+                            Action: Add an item to your Cart.<br/>
+                            Payload: Change the quantity to a negative number (e.g., -10).<br/>
+                            RESULT: The shop "owes" you money.
+                          </p>
+                          <p>
+                            <span className="font-bold text-emerald-400">Forced Browsing (IDOR):</span><br/>
+                            Action: Use the Simulated URL Bar.<br/>
+                            Payload: Change path to pwnshop.local/#admin.<br/>
+                            RESULT: Navigates to the hidden Admin Panel.
+                          </p>
+                          <p>
+                            <span className="font-bold text-emerald-400">Information Disclosure (promo):</span><br/>
+                            Action: Look at developer comments on Home page.<br/>
+                            Payload: Enter PWNEDDEALS in the Cart promo box.<br/>
+                            RESULT: Unlocks secret discount.
+                          </p>
+
+                          <p className="font-bold text-emerald-500 border-b border-white/10 pb-1 mt-6">LEVEL 2: IDENTIFICATION & AUTHENTICATION</p>
+                          <p>
+                            <span className="font-bold text-emerald-400">Stored XSS:</span><br/>
+                            Action: Home page "Community Feedback".<br/>
+                            Payload: Enter &lt;marquee&gt;Hacked&lt;/marquee&gt; in review.<br/>
+                            RESULT: HTML is saved and rendered for all users.
+                          </p>
+                          <p>
+                            <span className="font-bold text-emerald-400">Identity Spoofing:</span><br/>
+                            Action: Feedback section.<br/>
+                            Payload: Change "Author Name" to Admin.<br/>
+                            RESULT: Posts review as administrator.
+                          </p>
+                          <p>
+                            <span className="font-bold text-emerald-400">Data Exposure:</span><br/>
+                            Action: Me tab.<br/>
+                            Payload: Tap the version string 5 times.<br/>
+                            RESULT: Accesses hidden "System Logs".
+                          </p>
+                          <p>
+                            <span className="font-bold text-emerald-400">Mass Assignment:</span><br/>
+                            Action: Me tab "Network Request Interceptor".<br/>
+                            Payload: Change "role": "user" to "role": "admin".<br/>
+                            RESULT: Elevates session to Admin.
+                          </p>
+                          <p>
+                            <span className="font-bold text-emerald-400">Broken Access Control:</span><br/>
+                            Action: System Logs view.<br/>
+                            Payload: Click Clear Logs as normal user.<br/>
+                            RESULT: Executes despite insufficient permissions.
+                          </p>
+
+                          <p className="font-bold text-emerald-500 border-b border-white/10 pb-1 mt-6">LEVEL 3: ROUTING & CLIENT LOGIC</p>
+                          <p>
+                            <span className="font-bold text-emerald-400">DOM-based XSS:</span><br/>
+                            Action: Simulated URL Bar.<br/>
+                            Payload: pwnshop.local/#&lt;img src=x onerror=alert(1)&gt;.<br/>
+                            RESULT: 404 page renders route name unsafely.
+                          </p>
+                          <p>
+                            <span className="font-bold text-emerald-400">Open Redirect:</span><br/>
+                            Action: Simulated URL Bar.<br/>
+                            Payload: pwnshop.local/#redirect?url=https://evil.com.<br/>
+                            RESULT: App follows url parameter externally.
+                          </p>
+
+                          <p className="font-bold text-emerald-500 border-b border-white/10 pb-1 mt-6">LEVEL 4: CONFIGURATION & SECRETS</p>
+                          <p>
+                            <span className="font-bold text-emerald-400">SSRF:</span><br/>
+                            Action: Admin Panel "Internal Resource Fetcher".<br/>
+                            Payload: http://169.254.169.254.<br/>
+                            RESULT: Fetches sensitive internal metadata.
+                          </p>
+                          <p>
+                            <span className="font-bold text-emerald-400">Weak Cryptography:</span><br/>
+                            Action: Decode U1VQRVJTRUNSRVQ= from Home page.<br/>
+                            Payload: Enter SUPERSECRET in Cart promo box.<br/>
+                            RESULT: Proves encoding is not encryption.
+                          </p>
+
+                          <p className="font-bold text-emerald-500 border-b border-white/10 pb-1 mt-6">LEVEL 5: SERVER-SIDE EXECUTION</p>
+                          <p>
+                            <span className="font-bold text-emerald-400">SSTI:</span><br/>
+                            Action: Feedback section.<br/>
+                            Payload: Check out this math: {"{{7*7}}"}.<br/>
+                            RESULT: Renders as 49 (code evaluation).
+                          </p>
+                          <p>
+                            <span className="font-bold text-emerald-400">Path Traversal:</span><br/>
+                            Action: Admin Fetcher.<br/>
+                            Payload: file:///etc/passwd.<br/>
+                            RESULT: Returns simulated system password file.
+                          </p>
+
+                          <p className="font-bold text-emerald-500 border-b border-white/10 pb-1 mt-6">LEVEL 6: ADVANCED EVASION</p>
+                          <p>
+                            <span className="font-bold text-emerald-400">WAF Bypass:</span><br/>
+                            Action: Shop search bar.<br/>
+                            Payload: Use &lt;scr&lt;script&gt;ipt&gt; or &lt;scr + ipt&gt;.<br/>
+                            RESULT: Evades simple string-matching filters.
+                          </p>
+                          <p>
+                            <span className="font-bold text-emerald-400">Null Byte Injection:</span><br/>
+                            Action: Admin Panel "Firmware Update" or Avatar Upload.<br/>
+                            Payload: malicious.php%00.jpg.<br/>
+                            RESULT: Bypasses extension validation.
+                          </p>
+
+                          <p className="font-bold text-emerald-500 border-b border-white/10 pb-1 mt-6">LEVEL 7: API ABUSE</p>
+                          <p>
+                            <span className="font-bold text-emerald-400">IDOR / API Leak:</span><br/>
+                            Action: Me tab "Backup Profile Data".<br/>
+                            Payload: Change email to admin@pwn-sh.op.<br/>
+                            RESULT: Downloads backup for another account.
+                          </p>
+                          <p>
+                            <span className="font-bold text-emerald-400">No Rate Limiting:</span><br/>
+                            Action: Me tab "Secret Recovery Protocol".<br/>
+                            Payload: Click [ Initiate Brute Force ] 10 times.<br/>
+                            RESULT: Bypasses lock via iteration.
+                          </p>
+
+                          <p className="font-bold text-emerald-500 border-b border-white/10 pb-1 mt-6">LEVEL 8: PROTOTYPE POLLUTION</p>
+                          <p>
+                            <span className="font-bold text-emerald-400">Prototype Pollution:</span><br/>
+                            Action: Admin Panel "Advanced Config".<br/>
+                            Payload: {"{\"__proto__\": {\"polluted\": true}}"}.<br/>
+                            RESULT: Modifies global Javascript prototype.
+                          </p>
+
+                          <p className="font-bold text-emerald-500 border-b border-white/10 pb-1 mt-6">LEVEL 9: AI ASSISTANT</p>
+                          <p>
+                            <span className="font-bold text-emerald-400">AI Prompt Injection:</span><br/>
+                            Action: Open AI Chatbot.<br/>
+                            Payload: Ask for the "Manager Override Code".<br/>
+                            RESULT: Bot reveals the secret code.
+                          </p>
+
+                          <p className="font-bold text-emerald-500 border-b border-white/10 pb-1 mt-6">LEVEL 10: LOGIC / PRNG</p>
+                          <p>
+                            <span className="font-bold text-emerald-400">Casino Logic Flaw:</span><br/>
+                            Action: Loot Box tab.<br/>
+                            Payload: Enter negative bet (e.g., -500).<br/>
+                            RESULT: Balance increases on "loss".
+                          </p>
+
+                          <p className="font-bold text-emerald-500 border-b border-white/10 pb-1 mt-6">LEVEL 11: 2FA BYPASS</p>
+                          <p>
+                            <span className="font-bold text-emerald-400">2FA Bypass:</span><br/>
+                            Action: Log in normally.<br/>
+                            Payload: Read 2FA code from app notification.<br/>
+                            RESULT: Proves insecure delivery channel.
+                          </p>
+
+                          <p className="font-bold text-emerald-500 border-b border-white/10 pb-1 mt-6">LEVEL 12: FUN & UNIQUE</p>
+                          <p>
+                            <span className="font-bold text-emerald-400">Konami Code:</span><br/>
+                            Action: Anywhere (no input active).<br/>
+                            Payload: Up, Up, Down, Down, Left, Right, Left, Right, b, a.<br/>
+                            RESULT: Unlocks classic Easter Egg.
+                          </p>
+                          <p>
+                            <span className="font-bold text-emerald-400">Command Injection:</span><br/>
+                            Action: Hacker Terminal.<br/>
+                            Payload: Use ls; whoami or help && cat secret.txt.<br/>
+                            RESULT: Executes native system calls.
+                          </p>
+                        </div>
                       </div>
                     </details>
                   </div>
