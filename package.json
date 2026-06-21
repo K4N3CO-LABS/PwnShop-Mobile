@@ -41,5 +41,15 @@
     "typescript": "~5.8.2",
     "vite": "^6.2.3",
     "vite-plugin-singlefile": "^2.3.3"
+  },
+  "allowScripts": {
+    "@google/genai@1.51.0": true,
+    "core-js@3.49.0": true,
+    "esbuild@0.28.0": true,
+    "esbuild@0.27.7": true,
+    "esbuild@0.25.12": true,
+    "fsevents@2.3.3": true,
+    "protobufjs@7.5.6": true,
+    "puppeteer@24.43.0": true
   }
 }
