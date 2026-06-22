@@ -12,7 +12,7 @@ Keep a close eye on the **Hacker Scoreboard** to track your progress. The more *
 
 ## Gameplay
 
-<a href='https://postimg.cc/XBkLjQT1' target='_blank'><img src='https://i.postimg.cc/XBkLjQT1/Screenshot-2026-06-21-at-2-44-15-AM.png' border='0' alt='Screenshot-2026-06-21-at-2-44-15-AM'></a> <a href="https://postimg.cc/hXjsn8Mj" target="_blank"><img src="https://i.postimg.cc/hXjsn8Mj/Screenshot-2026-06-21-at-2-44-47-AM.png" alt="Screenshot-2026-06-21-at-2-44-47-AM"></a> <a href="https://postimg.cc/G42KRPzm" target="_blank"><img src="https://i.postimg.cc/G42KRPzm/Screenshot-2026-06-21-at-2-45-05-AM.png" alt="Screenshot-2026-06-21-at-2-45-05-AM"></a> <a href="https://postimg.cc/Hj63hP4v" target="_blank"><img src="https://i.postimg.cc/Hj63hP4v/Screenshot-2026-06-21-at-3-12-12-AM.png" alt="Screenshot-2026-06-21-at-3-12-12-AM"></a>
+<a href='https://postimg.cc/XBkLjQT1' target='_blank'><img src='https://i.postimg.cc/XBkLjQT1/Screenshot-2026-06-21-at-2-44-15-AM.png' border='0' alt='Screenshot-2026-06-21-at-2-44-15-AM'></a> <a href="https://postimg.cc/hXjsn8Mj" target="_blank"><img src="https://i.postimg.cc/hXjsn8Mj/Screenshot-2026-06-21-at-2-44-47-AM.png" alt="Screenshot-2026-06-21-at-2-44-47-AM"></a> <a href="https://postimg.cc/G42KRPzm" target="_blank"><img src="https://i.postimg.cc/G42KRPzm/Screenshot-2026-06-21-at-2-45-05-AM.png" alt="Screenshot-2026-06-21-at-2-45-05-AM"></a> <a href="https://postimg.cc/Hj63hP4v" target="_blank"><img src="https://i.postimg.cc/Hj63hP4v/Screenshot-2026-06-21-at-3-12-12-AM.png" alt="Screenshot-2026-06-21-at-3-12-12-AM"></a> <a href="https://postimg.cc/4YTyHqSR" target="_blank"><img src="https://i.postimg.cc/4YTyHqSR/Screenshot-20260527-063344-Gallery.jpg" alt="Screenshot-20260527-063344-Gallery"></a>
 
 ---
 
