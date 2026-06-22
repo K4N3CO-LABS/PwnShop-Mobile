@@ -1,4 +1,3 @@
-[![Screenshot-20260621-085452-Bazaart.jpg](https://i.postimg.cc/PrPbZ8KT/Screenshot-20260621-085452-Bazaart.jpg)](https://postimg.cc/bsf2frKB)
 # About
 
 Inspired by the **legendary OWASP Juice Shop**, **The PwnShop** is a **deliberately insecure educational** application built **exclusively** for **mobile devices**. Designed for **everyone** from **beginners** to seasoned **professionals**, it provides a hands-on environment to **test, learn, and master** real-world vulnerabilities directly from your Android device.
